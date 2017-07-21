@@ -1,0 +1,27 @@
+{% from "common/components/formElements.html" import textField %}
+{% extends "question.html" %}
+{% block question %}
+{{ content.title | safe }}
+{% endblock %}
+
+{% block form %}
+
+<fieldset class="form-group">
+
+    <legend class="form-label-bold">{{ content.subtitle | safe }}</legend>
+
+    {{ textField(
+        name = 'name',
+        field = fields.name,
+        label = content.name
+    ) }}
+
+    {{ textField(
+        name = 'age',
+        field = fields.age,
+        label = content.age
+    ) }}
+
+</fieldset>
+
+{% endblock %}

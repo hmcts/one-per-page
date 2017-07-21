@@ -1,0 +1,44 @@
+{% macro yesNoRadio(label = '', hint, name, field, yes, no) %}
+<div id="{{ name }}" class="form-group {{ 'error' if field.error }}">
+    <fieldset class="inline">
+        <legend class="form-label text">{{ label | safe }}</legend>
+        <p class="form-hint text">{{ hint | safe }}</p>
+        {{ errorsFor(field) }}
+        {{ radioButton('Yes', yes, name, field) }}
+        {{ radioButton('No', no, name, field) }}
+    </fieldset>
+</div>
+{% endmacro %}
+
+{% macro radioButton(value, label, name, field, dataTarget = '') %}
+<label class="block-label" for="{{ name }}_{{ value }}" data-target={{ dataTarget }}>
+    <input id="{{ name }}_{{ value }}" type="radio" name="{{ name }}"
+           value="{{ value }}" {{ 'checked="checked" ' if field.value === value }}>
+    {{ label | safe }}
+</label>
+{% endmacro %}
+
+{% macro textField(name, field, label, hint = '', boldLabel = false) %}
+<div class="form-group {{ 'error' if field.error }}">
+    <label class="form-label{{ '-bold' if boldLabel }} text" for="{{ name }}">{{ label | safe }}</label>
+
+    {% if hint %}
+    <span class="form-hint text">{{ hint | safe }}</span>
+    {% endif %}
+
+    {{ errorsFor(field) }}
+    <input class="form-control"
+           id="{{ name }}"
+           name="{{ name }}"
+           type="text"
+           value="{{ field.value }}">
+</div>
+{% endmacro %}
+
+{% macro errorsFor(field) -%}
+{% if field.error %}
+<span class="error-message">
+      {{ field.errorMessage | safe}}
+    </span>
+{% endif %}
+{%- endmacro %}

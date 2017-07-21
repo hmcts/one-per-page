@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% from "common/errors.html" import errorsFor %}
+
+{% block page_title %}
+{{ common.serviceName }} - GOV.UK
+{% endblock %}
+
+{% block content %}
+<main id="content" role="main">
+    {% include "includes/phase_banner_beta.html" %}
+    <a class="link-back" href="#" onclick="javascript:history.go(-1)">{{common.back}}</a>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+
+            {% if errors.length > 0 %}
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+
+                <h1 class="heading-medium error-summary-heading" id="error-summary-heading">
+                    {{ common.errorSummaryHeading | safe }}
+                </h1>
+
+                <ul class="error-summary-list">
+                    {% for error in errors %}
+                    <li><a href="#{{error.param}}">{{error.msg | safe}}</a></li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+            {% endif %}
+
+            <h1 class="heading-large">
+                {% block question %}{% endblock %}
+            </h1>
+
+            <form method="POST" accept-charset="utf-8" class="form" id="form"
+                  enctype="{% block encoding %}application/x-www-form-urlencoded{% endblock %}"
+                  autocomplete="off">
+                {% block form %}{% endblock %}
+
+                <div class="form-group">
+                    <input type="submit" class="button" value="{{common.continue}}">
+                </div>
+                {% block help %}{% endblock %}
+            </form>
+
+        </div>
+        <div class="column-one-third">
+            <!-- side nav -->
+        </div>
+    </div>
+
+    {% block script %}{% endblock %}
+
+</main>
+{% endblock %}
+{% macro checked(isChecked, answer) %}
+{%if isChecked == answer %}
+checked
+{% endif %}
+{% endmacro %}
+
+
+{% macro inputTextLabel(id, name, content, field) %}
+<label class="form-label-bold" for="{{id}}">{{content | safe}}</label>
+{{ errorsFor(field) }}
+<input class="form-control" role="textbox" id="{{id}}" name="{{name}}" type="text" value="{{field.value}}">
+{% endmacro %}
+
+
+{% macro inputRadioLabel(id, name, content, field, value, target) %}
+<label class="block-label" for="{{id}}" {% if target %} data-target="{{target}}"{% endif %}>
+    <input id="{{id}}" name="{{name}}" value="{{value}}" type="radio" {{checked(field.value, value)}}>
+    {{content | safe}}
+</label>
+{% endmacro %}

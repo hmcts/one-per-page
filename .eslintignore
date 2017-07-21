@@ -1,0 +1,9 @@
+node_modules/*
+docs/*
+govuk_modules/*
+public/*
+app/assets/javascripts/application.js
+app/assets/javascripts/details.polyfill.js
+app/assets/javascripts/jquery-1.12.2.js
+test/coverage/*
+lib/*

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block question %}
+{{ content.title | safe }}
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+    {% include "includes/phase_banner_beta.html" %}
+
+    <div class="grid-row">
+
+        <div class="column-two-thirds">
+            <h1 class="heading-large">{{content.title | safe}}</h1>
+            <pre>fields: {{fields | json}}</pre>
+        </div>
+    </div>
+
+</main>
+
+{% endblock %}
