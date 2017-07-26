@@ -1,0 +1,12 @@
+{
+    "lng": "en",
+    "resources": {
+        "en": {
+            "translation": {
+                "serviceName": "My brilliant service",
+                "continue": "Continue",
+                "back": "Back"
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "lng": "en",
+  "resources": {
+    "en": {
+      "translation": {
+        "content": {
+          "title": "500 Bad request"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "lng": "en",
+  "resources": {
+    "en": {
+      "translation": {
+        "content": {
+          "title": "Step one title",
+          "subtitle": "Subtitle",
+          "name": "Name",
+          "age": "Age"
+        }
+      }
+    }
+  }
+}
