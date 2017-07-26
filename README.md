@@ -10,11 +10,11 @@ the framework or app.
 
 2. Once we're at a point the framework is stable, well tested we could leave the app here as is, or pull it out by:
    1. Moving the app out into it's own repo.
-   2. Ensure the app has a dependency to the framework.
-   3. From the app provide a Grunt task that copies node_modules/one-per-page into /lib/opp
-   4. Any application code wishing to use the framework would require classes:
+   2. Ensure the app has a dependency on the framework (the framework would be an NPM module)
+   3. Require classes through a suitable consumer API, for example any application code wishing to use the framework 
+   would require classes like so:
                  
-          const Step = require('lib/opp/steps/Step'); // opp is one-per-page
+          const Step = require('define an api to access specific classes such as Step');
 
 3. I've made some comments/assumptions within these files:
     1. [Page](/app/steps/page/Page.js) 
