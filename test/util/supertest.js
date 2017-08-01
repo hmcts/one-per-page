@@ -1,19 +1,13 @@
 const express = require('express');
 const supertest = require('supertest');
 const sessions = require('./../../src/services/sessions');
-const bodyParser = require('body-parser');
 const nunjucks = require('express-nunjucks');
 
 function testApp() {
   const app = express();
 
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({
-    extended: true
-  }));
   app.use(sessions());
-  app.set('view engine', 'html');
-  app.set('views', ['app/views/', 'lib/', 'test/views']);
+  app.set('views', ['lib/', 'test/views']);
 
   nunjucks(app, {
     autoescape: true,
