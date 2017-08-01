@@ -9,3 +9,4 @@ services:
       - .:/usr/src/app
     ports:
       - "9229:9229"
+      - "3000:3000"
