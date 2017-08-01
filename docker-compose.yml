@@ -1,0 +1,11 @@
+version: '2.1'
+
+services:
+  dev:
+    container_name: one-per-page
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "9229:9229"
