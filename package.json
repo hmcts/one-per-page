@@ -7,7 +7,7 @@
     "node": ">=6.0"
   },
   "scripts": {
-    "test": "NODE_PATH=. NODE_ENV=testing mocha test/**/*.test.js"
+    "test": "NODE_PATH=. NODE_ENV=testing mocha 'test/**/*.test.js'"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
