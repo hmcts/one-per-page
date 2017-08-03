@@ -1,0 +1,17 @@
+{
+  "name": "@hmcts/one-per-page-test-app",
+  "description": "Example app using one-per-page",
+  "version": "0.0.1",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0"
+  },
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.15.3",
+    "@hmcts/one-per-page": "./../../"
+  },
+  "devDependencies": {}
+}

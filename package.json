@@ -1,0 +1,29 @@
+{
+  "name": "@hmcts/one-per-page",
+  "description": "One question per page apps made easy",
+  "version": "0.0.1",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0"
+  },
+  "main": "./src/main.js",
+  "scripts": {
+    "test": "NODE_PATH=. NODE_ENV=testing mocha 'test/**/*.test.js'"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "config": "^1.26.1",
+    "express": "^4.15.3",
+    "express-nunjucks": "^2.2.3",
+    "express-session": "^1.15.4",
+    "js-yaml": "^3.9.0",
+    "nunjucks": "^3.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.3.0",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
+  }
+}
