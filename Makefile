@@ -1,4 +1,4 @@
-.PHONY: build test
+.PHONY: build test coverage
 
 define compose
 	docker-compose $(1)
@@ -16,5 +16,5 @@ build:
 bash:
 	$(call compose, run --service-ports dev bash)
 
-test lint:
+test lint coverage:
 	$(call yarn, $@)
