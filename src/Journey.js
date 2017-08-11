@@ -1,14 +1,12 @@
-const {Router} = require('express');
+const { Router: expressRouter } = require('express');
 
 const defaults = {
   steps: [],
   views: ['app/views/']
 };
 
-const Journey = ({
-  steps = defaults.steps
-} = defaults) => {
-  const router = Router();
+const journey = ({ steps = defaults.steps } = defaults) => {
+  const router = expressRouter();
 
   steps.forEach(step => {
     router.use(step.router);
@@ -17,4 +15,4 @@ const Journey = ({
   return router;
 };
 
-module.exports = Journey;
+module.exports = journey;

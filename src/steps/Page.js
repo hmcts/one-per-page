@@ -1,7 +1,7 @@
 const BaseStep = require('./BaseStep');
+const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 
 class Page extends BaseStep {
-
   get template() {
     return this.name;
   }
@@ -10,10 +10,9 @@ class Page extends BaseStep {
     if (req.method === 'GET') {
       res.render(this.template);
     } else {
-      res.sendStatus(405);
+      res.sendStatus(METHOD_NOT_ALLOWED);
     }
   }
-
 }
 
 module.exports = Page;
