@@ -8,7 +8,8 @@
   },
   "main": "./src/main.js",
   "scripts": {
-    "test": "NODE_PATH=. NODE_ENV=testing istanbul cover mocha 'test/**/*.test.js'",
+    "test": "NODE_PATH=. NODE_ENV=testing nyc mocha 'test/**/*.test.js'",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -27,8 +28,8 @@
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^4.3.0",
-    "istanbul": "^0.4.5",
     "mocha": "^3.4.2",
+    "nyc": "^11.1.0",
     "supertest": "^3.0.0"
   }
 }
