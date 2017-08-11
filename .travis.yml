@@ -5,3 +5,6 @@ services:
 
 script:
   - make build test
+
+after_success:
+  - make coverage
