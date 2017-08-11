@@ -8,7 +8,8 @@
   },
   "main": "./src/main.js",
   "scripts": {
-    "test": "NODE_PATH=. NODE_ENV=testing istanbul cover _mocha 'test/**/**.test.js'"
+    "test": "NODE_PATH=. NODE_ENV=testing istanbul cover mocha 'test/**/*.test.js'",
+    "lint": "eslint ."
   },
   "dependencies": {
     "body-parser": "^1.17.2",
@@ -16,10 +17,12 @@
     "express": "^4.15.3",
     "express-nunjucks": "^2.2.3",
     "express-session": "^1.15.4",
+    "http-status-codes": "^1.2.0",
     "js-yaml": "^3.9.0",
     "nunjucks": "^3.0.1"
   },
   "devDependencies": {
+    "@hmcts/eslint-config": "https://github.com/hmcts/eslint-config",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^4.3.0",

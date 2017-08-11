@@ -1,27 +1,26 @@
 const session = require('express-session');
 const config = require('config');
+const isTest = require('../util/isTest');
 
-const inmemory = () => {
-  return session({
-    secret: config.secret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false
-    }
-  });
-};
+const inmemory = () => session({
+  secret: config.secret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+});
 
 const redis = () => {
-  return {}; //TODO: implement and make configurable from entrypoint
+  // implement and make configurable from entrypoint
+  return {};
 };
 
 const sessions = () => {
-  const session = process.env.NODE_ENV === 'testing' ? inmemory() : redis();
+  const provider = isTest ? inmemory() : redis();
   const middleware = (req, res, next) => {
-    session(req, res, () => {
+    provider(req, res, () => {
       res.locals = res.locals || {};
-      res.locals.session = req.session; //TODO: Should page render be able to access session directly?
+      // Should page render be able to access session directly?
+      res.locals.session = req.session;
       next();
     });
   };

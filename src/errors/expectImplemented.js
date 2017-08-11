@@ -1,8 +1,11 @@
 class NotImplemented extends Error {
   constructor(obj, unimplemented) {
     super();
+    const thing = obj.constructor.name;
+    const missingMethods = unimplemented.join(', ');
+
     this.name = 'NotImplemented';
-    this.message = `${obj.constructor.name} must implement ${unimplemented.join(', ')}`;
+    this.message = `${thing} must implement ${missingMethods}`;
     this.unimplemented = unimplemented;
   }
 }

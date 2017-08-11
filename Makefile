@@ -16,5 +16,5 @@ build:
 bash:
 	$(call compose, run --service-ports dev bash)
 
-test:
+test lint:
 	$(call yarn, $@)
