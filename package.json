@@ -22,7 +22,7 @@
     "nunjucks": "^3.0.1"
   },
   "devDependencies": {
-    "@hmcts/eslint-config": "https://github.com/hmcts/eslint-config",
+    "@hmcts/eslint-config": "^1.0.1",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^4.3.0",
