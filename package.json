@@ -8,7 +8,7 @@
   },
   "main": "./src/main.js",
   "scripts": {
-    "test": "NODE_PATH=. NODE_ENV=testing mocha 'test/**/*.test.js'"
+    "test": "NODE_PATH=. NODE_ENV=testing istanbul cover _mocha 'test/**/**.test.js'"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
@@ -23,6 +23,7 @@
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^4.3.0",
+    "istanbul": "^0.4.5",
     "mocha": "^3.4.2",
     "supertest": "^3.0.0"
   }
