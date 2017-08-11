@@ -1,11 +1,14 @@
 const Page = require('./../../src/steps/Page');
-const {testStep} = require('../util/supertest');
-const {expect} = require('../util/chai');
-const {NotImplemented} = require('../../src/errors/expectImplemented');
+const { testStep } = require('../util/supertest');
+const { OK, METHOD_NOT_ALLOWED } = require('http-status-codes');
+const { expect } = require('../util/chai');
+const { NotImplemented } = require('../../src/errors/expectImplemented');
 
 describe('Page', () => {
   {
-    const unimplementedPage = () => { new class extends Page {}(); };
+    const unimplementedPage = () => {
+      return new class extends Page {}();
+    };
 
     it('expects url to be implemented', () => {
       return expect(unimplementedPage)
@@ -16,43 +19,56 @@ describe('Page', () => {
 
   {
     const page = testStep(new class extends Page {
-      get url() { return '/my/page'; }
-      get template() { return 'page_views/simplePage'; }
+      get url() {
+        return '/my/page';
+      }
+      get template() {
+        return 'page_views/simplePage';
+      }
     }());
 
     it('renders the page on GET', () => {
-      return page.get().expect(200, '<h1>Hello, World!</h1>\n');
+      return page.get().expect(OK, '<h1>Hello, World!</h1>\n');
     });
+
     it('returns 405 (method not allowed) on POST', () => {
-      return page.post().expect(405);
+      return page.post().expect(METHOD_NOT_ALLOWED);
     });
     it('returns 405 (method not allowed) on PUT', () => {
-      return page.put().expect(405);
+      return page.put().expect(METHOD_NOT_ALLOWED);
     });
     it('returns 405 (method not allowed) on DELETE', () => {
-      return page.delete().expect(405);
+      return page.delete().expect(METHOD_NOT_ALLOWED);
     });
     it('returns 405 (method not allowed) on PATCH', () => {
-      return page.patch().expect(405);
+      return page.patch().expect(METHOD_NOT_ALLOWED);
     });
   }
 
   it('has access to the session', () => {
     const page = new class extends Page {
-      get url() { return '/my/page'; }
-      get template() { return 'page_views/session'; }
+      get url() {
+        return '/my/page';
+      }
+      get template() {
+        return 'page_views/session';
+      }
     }();
 
     return testStep(page)
       .withSession({ foo: 'Foo', bar: 'Bar' })
       .get()
-      .expect(200, 'Foo Bar\n');
+      .expect(OK, 'Foo Bar\n');
   });
 
   it('looks for a template named [Step.name] by default', () => {
-    const page = new class extends Page { get url() { return '/page'; } }();
-    return testStep(page).get().expect(200, 'Default Page template\n');
+    const page = new class extends Page {
+      get url() {
+        return '/page';
+      }
+    }();
+    return testStep(page)
+      .get()
+      .expect(OK, 'Default Page template\n');
   });
 });
-
-

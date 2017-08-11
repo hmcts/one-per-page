@@ -3,6 +3,4 @@ const chaiAsPromised = require('chai-as-promised');
 
 chai.use(chaiAsPromised);
 
-module.exports = {
-  expect: chai.expect
-};
+module.exports = { expect: chai.expect };

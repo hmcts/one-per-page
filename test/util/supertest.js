@@ -21,7 +21,7 @@ function testApp() {
 const _supertest = Symbol('supertest');
 const _middleware = Symbol('middleware');
 
-const supertestInstance = (stepDSL) => {
+const supertestInstance = stepDSL => {
   if (stepDSL[_supertest]) return stepDSL[_supertest];
 
   const app = testApp(stepDSL.step);
@@ -57,11 +57,21 @@ class TestStepDSL {
     return supertestInstance(this)[method](this.step.url);
   }
 
-  get() { return this.execute('get'); }
-  post() { return this.execute('post'); }
-  patch() { return this.execute('patch'); }
-  put() { return this.execute('put'); }
-  delete() { return this.execute('delete'); }
+  get() {
+    return this.execute('get');
+  }
+  post() {
+    return this.execute('post');
+  }
+  patch() {
+    return this.execute('patch');
+  }
+  put() {
+    return this.execute('put');
+  }
+  delete() {
+    return this.execute('delete');
+  }
 }
 
 module.exports = {

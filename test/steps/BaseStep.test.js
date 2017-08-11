@@ -1,14 +1,14 @@
 const BaseStep = require('./../../src/steps/BaseStep');
-const {testStep} = require('../util/supertest');
-const {expect} = require('../util/chai');
+const { OK } = require('http-status-codes');
+const { testStep } = require('../util/supertest');
+const { expect } = require('../util/chai');
 
-const {NotImplemented} = require('../../src/errors/expectImplemented');
+const { NotImplemented } = require('../../src/errors/expectImplemented');
 
 describe('Step', () => {
   {
-    const unimplementedStep = () => {
-      new class extends BaseStep {}();
-    };
+    const unimplementedStep = () => new class extends BaseStep {}();
+
     it('expects url to be implemented', () => {
       return expect(unimplementedStep)
         .to.throw(NotImplemented)
@@ -22,31 +22,37 @@ describe('Step', () => {
   }
 
   describe('#router', () => {
-    const step = new class extends BaseStep {
-      get url() { return '/step'; }
-      handler() {}
-    };
+    {
+      const step = new class extends BaseStep {
+        get url() {
+          return '/step';
+        }
+        handler() { /* intentionally empty */ }
+      }();
 
-    it('returns an express router', () => {
-      expect(step.router).to.be.a('function');
-      expect(step.router).itself.to.respondTo('use');
-      expect(step.router).itself.to.respondTo('get');
-      expect(step.router).itself.to.respondTo('post');
-    });
+      it('returns an express router', () => {
+        expect(step.router).to.be.a('function');
+        expect(step.router).itself.to.respondTo('use');
+        expect(step.router).itself.to.respondTo('get');
+        expect(step.router).itself.to.respondTo('post');
+      });
 
-    it('memoises the router', () => {
-      expect(step.router).to.eql(step.router);
-    });
+      it('memoises the router', () => {
+        expect(step.router).to.eql(step.router);
+      });
+    }
 
     it('binds the handler function to the current url', () => {
       const step = new class extends BaseStep {
-        get url() { return '/step'; }
+        get url() {
+          return '/step';
+        }
         handler(req, res) {
-          res.status(200).json({ status: 'ok', url: this.url});
+          res.status(OK).json({ status: 'ok', url: this.url });
         }
       }();
       return testStep(step).get()
-        .expect(200, { status: 'ok', url: step.url });
+        .expect(OK, { status: 'ok', url: step.url });
     });
   });
 
@@ -58,14 +64,18 @@ describe('Step', () => {
       };
 
       const step = new class extends BaseStep {
-        get middleware() { return [fooAdder]; }
-        get url() { return '/step'; }
+        get middleware() {
+          return [fooAdder];
+        }
+        get url() {
+          return '/step';
+        }
         handler(req, res) {
-          res.status(200).json({ foo: req.foo });
+          res.status(OK).json({ foo: req.foo });
         }
       }();
       return testStep(step).get()
-        .expect(200, { foo: 'Foo' });
+        .expect(OK, { foo: 'Foo' });
     });
 
     it('are bound to the current step', () => {
@@ -74,15 +84,19 @@ describe('Step', () => {
           req.stepUrl = this.url;
           next();
         }
-        get middleware() { return [this.scopedMiddleware]; }
-        get url() { return '/step'; }
+        get middleware() {
+          return [this.scopedMiddleware];
+        }
+        get url() {
+          return '/step';
+        }
         handler(req, res) {
-          res.status(200).json({ url: req.stepUrl });
+          res.status(OK).json({ url: req.stepUrl });
         }
       }();
 
       return testStep(step).get()
-        .expect(200, { url: '/step' });
+        .expect(OK, { url: '/step' });
     });
   });
 });
