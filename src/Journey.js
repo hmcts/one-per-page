@@ -1,18 +1,16 @@
-const { Router: expressRouter } = require('express');
+const Router = require('router');
 
-const defaults = {
-  steps: [],
-  views: ['app/views/']
-};
+const defaults = { steps: [] };
 
-const journey = ({ steps = defaults.steps } = defaults) => {
-  const router = expressRouter();
+class Journey extends Router {
+  constructor(options = defaults) {
+    console.log(options);
+    super();
+    this.steps = options.steps;
+    this.steps.forEach(step => {
+      this.use(step.router);
+    });
+  }
+}
 
-  steps.forEach(step => {
-    router.use(step.router);
-  });
-
-  return router;
-};
-
-module.exports = journey;
+module.exports = Journey;
