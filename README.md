@@ -1,6 +1,6 @@
 # One per page 
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/hmcts/one-per-page.svg)](https://greenkeeper.io/)
+![Greenkeeper badge](https://badges.greenkeeper.io/hmcts/one-per-page.svg)
 
 A framework that aims to make building GOV.UK style one question per page
 transactions easy.
