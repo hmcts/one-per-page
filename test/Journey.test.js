@@ -1,4 +1,4 @@
-const Journey = require('../src/Journey');
+const journey = require('../src/Journey');
 const { supertest, testApp } = require('./util/supertest');
 const { OK } = require('http-status-codes');
 const { expect } = require('./util/chai');
@@ -15,8 +15,8 @@ class TestPage extends Page {
 }
 
 describe('Journey', () => {
-  it('returns an express router', () => {
-    const testJourney = new Journey();
+  it('returns an express app', () => {
+    const testJourney = journey(testApp());
 
     expect(testJourney).to.be.a('function');
     expect(testJourney).itself.to.respondTo('use');
@@ -25,10 +25,7 @@ describe('Journey', () => {
   });
 
   it('binds steps to the router', () => {
-    const myJourney = new Journey({ steps: [new TestPage()] });
-    const app = testApp();
-    app.use(myJourney);
-
+    const app = journey(testApp(), { steps: [new TestPage()] });
     return supertest(app).get(testUrl).expect(OK);
   });
 });

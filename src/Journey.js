@@ -1,16 +1,11 @@
-const Router = require('router');
 
 const defaults = { steps: [] };
 
-class Journey extends Router {
-  constructor(options = defaults) {
-    console.log(options);
-    super();
-    this.steps = options.steps;
-    this.steps.forEach(step => {
-      this.use(step.router);
-    });
-  }
-}
+const journey = (app, { steps = defaults.steps } = defaults) => {
+  steps.forEach(step => {
+    app.use(step.router);
+  });
+  return app;
+};
 
-module.exports = Journey;
+module.exports = journey;
