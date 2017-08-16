@@ -5,8 +5,6 @@ const nunjucks = require('express-nunjucks');
 
 function testApp() {
   const app = express();
-
-  app.use(sessions());
   app.set('views', ['lib/', 'test/views']);
 
   nunjucks(app, {
@@ -24,7 +22,8 @@ const _middleware = Symbol('middleware');
 const supertestInstance = stepDSL => {
   if (stepDSL[_supertest]) return stepDSL[_supertest];
 
-  const app = testApp(stepDSL.step);
+  const app = testApp();
+  app.use(sessions());
   stepDSL[_middleware].forEach(_ => app.use(_));
   app.use(stepDSL.step.router);
   stepDSL[_supertest] = supertest(app);
