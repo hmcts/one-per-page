@@ -1,7 +1,7 @@
 const config = require('config');
 const express = require('express');
 const path = require('path');
-const { Journey } = require('@hmcts/one-per-page');
+const { journey } = require('@hmcts/one-per-page');
 const lookAndFeel = require('@hmcts/look-and-feel');
 const HelloWorld = require('./steps/HelloWorld');
 
@@ -13,7 +13,6 @@ lookAndFeel.configure(app, {
   webpack: { entry: [path.resolve(__dirname, 'assets/scss/main.scss')] }
 });
 
-const helloworldJourney = new Journey({ steps: [new HelloWorld()] });
-app.use(helloworldJourney);
+journey(app, { steps: [new HelloWorld()] });
 
 app.listen(config.port);
