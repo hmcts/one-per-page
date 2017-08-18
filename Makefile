@@ -5,7 +5,7 @@ define compose
 endef
 
 define yarn
-	$(call compose, run dev yarn $1)
+	$(call compose, run -e CODACY_PROJECT_TOKEN dev yarn $1)
 endef
 
 all: build bash
