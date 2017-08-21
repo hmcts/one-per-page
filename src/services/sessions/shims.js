@@ -1,5 +1,3 @@
-const activeProperty = Symbol('active');
-
 const defineNotEnumerable = (target, property, value) => {
   Object.defineProperty(target, property, {
     enumerable: false,
@@ -8,12 +6,18 @@ const defineNotEnumerable = (target, property, value) => {
   });
 };
 
+const activeProperty = Symbol('active');
+const wrapSession = (session, { active = true } = {}) => {
+  defineNotEnumerable(session, activeProperty, active);
+  return session;
+};
+
 const generate = req => () => {
   if (req.session && typeof req.session.id === 'string') {
     req.session.destroy();
   }
   req.sessionStore.generate(req);
-  defineNotEnumerable(req.session, activeProperty, true);
+  return wrapSession(req.session);
 };
 
 const active = req => () => req.session && req.session[activeProperty];
@@ -32,19 +36,22 @@ const set = req => {
 const get = req => {
   const _get = req.sessionStore.get;
 
-  return (sessionId, onLoad) => {
-    return _get.call(req.sessionStore, sessionId, onLoad);
-  };
+  return (sessionId, onLoad) => _get.call(req.sessionStore, sessionId, onLoad);
 };
 
 const createSession = req => {
   const _createSession = req.sessionStore.createSession;
 
-  return (request, sessionDataPlusMetadata) => {
-    const { metadata, ...sessionData } = sessionDataPlusMetadata;
-    const session = _createSession.call(request.sessionStore, request, sessionData);
-    defineNotEnumerable(session, activeProperty, metadata.active);
-    return session;
+  return (request, json) => {
+    const { metadata } = json;
+    const sessionData = Object.assign({}, json);
+    delete sessionData.metadata;
+    const session = _createSession.call(
+      request.sessionStore,
+      request,
+      sessionData
+    );
+    return wrapSession(session, { active: metadata.active });
   };
 };
 
