@@ -142,22 +142,27 @@ describe('services/sessions', () => {
     const app = createServer({ store }, {
       respond(req, res) {
         if (req.session.active()) {
-          res.end('session loaded');
+          req.session.count += 1;
+          res.end(`session loaded ${req.session.count}`);
         } else {
           req.session.generate();
+          req.session.count = 0;
           res.end('session created');
         }
       }
     });
+    const loadSession = count => {
+      return res => supertest(app)
+        .get('/')
+        .set('Cookie', cookie(res))
+        .expect(200, `session loaded ${count}`);
+    };
     return supertest(app)
       .get('/')
       .expect(200, 'session created')
-      .then(first => {
-        return supertest(app)
-          .get('/')
-          .set('Cookie', cookie(first))
-          .expect(200, 'session loaded');
-      })
+      .then(loadSession(1))
+      .then(loadSession(2))
+      .then(loadSession(3))
       .then(shouldHave(1).sessionsIn(store));
   });
 });
