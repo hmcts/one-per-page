@@ -10,10 +10,10 @@ services:
     ports:
       - "9229:9229"
       - "3000:3000"
+    environment:
+      REDIS_URL: 'redis://redis:6379'
     links:
       - redis
 
   redis:
     image: redis
-    expose:
-      - 6789

@@ -1,16 +1,37 @@
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 const config = require('config');
+const { isTest } = require('../util/isTest');
 const shims = require('./sessions/shims');
 
-const expressSession = options => {
-  const settings = Object.assign({}, {
-    store: new session.MemoryStore(),
-    secret: config.secret,
-    resave: false,
-    saveUninitialized: false,
-    name: 'session',
-    cookie: { secure: false }
-  }, options);
+const MemoryStore = session.MemoryStore;
+
+const redisOrInMemory = (options = {}) => {
+  const redisOptions = options.redis || {};
+  return isTest ? new MemoryStore() : new RedisStore(redisOptions);
+};
+
+const defaultIfUndefined = (property, defaultValue) => {
+  if (typeof property === 'undefined') {
+    return defaultValue;
+  }
+  return property;
+};
+
+const expressSession = opts => {
+  const userCookie = opts.cookie || {};
+  const cookie = Object.assign({}, userCookie, {
+    secure: defaultIfUndefined(userCookie.secure, !isTest),
+    expires: defaultIfUndefined(userCookie.expires, false)
+  });
+
+  const store = opts.store || redisOrInMemory(opts);
+  const secret = defaultIfUndefined(opts.secret, config.secret);
+  const resave = defaultIfUndefined(opts.resave, false);
+  const saveUninitialized = defaultIfUndefined(opts.saveUninitialized, false);
+  const name = defaultIfUndefined(opts.name, 'session');
+
+  const settings = { store, secret, resave, saveUninitialized, name, cookie };
   return session(settings);
 };
 
@@ -23,13 +44,16 @@ const overrides = (req, res, next) => error => {
   // Should page render be able to access session directly?
   res.locals.session = req.session;
 
-  req.session.generate = shims.generate(req);
-  req.session.active = shims.active(req);
-  req.sessionStore.set = shims.set(req);
-  req.sessionStore.get = shims.get(req);
-  req.sessionStore.createSession = shims.createSession(req);
-
-  next();
+  if (req.session && req.sessionStore) {
+    req.session.generate = shims.generate(req);
+    req.session.active = shims.active(req);
+    req.sessionStore.set = shims.set(req);
+    req.sessionStore.get = shims.get(req);
+    req.sessionStore.createSession = shims.createSession(req);
+    next();
+  } else {
+    next(new Error('Store is disconnected'));
+  }
 };
 
 const sessions = (options = {}) => {

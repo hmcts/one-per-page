@@ -1,8 +1,11 @@
 const sessions = require('../../src/services/sessions');
-const { expect } = require('../util/chai');
+const proxyquire = require('proxyquire');
+const { expect, sinon } = require('../util/chai');
 const { testApp, supertest } = require('../util/supertest');
-const { MemoryStore } = require('express-session');
+const expressSession = require('express-session');
 const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
+
+const MemoryStore = expressSession.MemoryStore;
 
 const respondOk = (req, res) => res.sendStatus(OK);
 const handleError = (res, next) => {
@@ -16,13 +19,14 @@ const handleError = (res, next) => {
   };
 };
 
+const defaults = { secret: 'keyboard cat' };
+
 const createServer = (options, {
   respond = respondOk,
   setup = () => { /* intentionally blank */ }
 } = {}) => {
   const cookieOptions = Object.assign({ maxAge: 60 * 1000 }, options.cookie);
-  const opts = Object.assign({}, { secret: 'keyboard cat' }, options);
-  opts.cookie = cookieOptions;
+  const opts = Object.assign({}, defaults, options, { cookie: cookieOptions });
   const s = sessions(opts);
   const app = testApp();
 
@@ -77,14 +81,47 @@ const shouldHave = number => {
   };
 };
 
+
 describe('services/sessions', () => {
   it('presents an express middleware', () => {
-    const s = sessions();
+    const s = sessions(defaults);
     expect(s).to.be.a('function');
   });
 
+  describe('options', () => {
+    let spy = null;
+    let stubbedSessions = null;
+
+    beforeEach(() => {
+      spy = sinon.spy(expressSession);
+      stubbedSessions = proxyquire(
+        '../../src/services/sessions',
+        { 'express-session': spy }
+      );
+    });
+
+    describe('options.store', () => {
+      it('can override store', () => {
+        const store = new MemoryStore();
+        stubbedSessions({ secret: 'foo', store });
+        return expect(spy).calledWith(sinon.match({ store }));
+      });
+    });
+
+    describe('options.cookie.domain', () => {
+      it('is passed down to express-session', () => {
+        const domain = 'my.awesome.site.com';
+        stubbedSessions({
+          secret: 'foo',
+          cookie: { domain }
+        });
+        return expect(spy).calledWith(sinon.match({ cookie: { domain } }));
+      });
+    });
+  });
+
   it('bubbles up express-session errors', () => {
-    const app = createServer({ secret: undefined });
+    const app = createServer({ secret: null });
     return supertest(app)
       .get('/')
       .expect(500);

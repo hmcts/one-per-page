@@ -1,1 +1,1 @@
-secret: 'abcdef12345'
+NODE_ENV: 'testing'

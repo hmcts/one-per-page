@@ -23,7 +23,7 @@ const supertestInstance = stepDSL => {
   if (stepDSL[_supertest]) return stepDSL[_supertest];
 
   const app = testApp();
-  app.use(sessions());
+  app.use(sessions({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
   stepDSL[_middleware].forEach(_ => app.use(_));
   app.use(stepDSL.step.router);
   stepDSL[_supertest] = supertest(app);

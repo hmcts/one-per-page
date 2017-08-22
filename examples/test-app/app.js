@@ -9,18 +9,25 @@ const Sessions = require('./steps/Sessions');
 
 const app = express();
 
+const baseUrl = `http://localhost:${config.port}`;
+
 lookAndFeel.configure(app, {
-  baseUrl: `http://localhost:${config.port}`,
+  baseUrl,
   express: { views: [path.resolve(__dirname, 'views')] },
   webpack: { entry: [path.resolve(__dirname, 'assets/scss/main.scss')] }
 });
 
 journey(app, {
+  baseUrl,
   steps: [
     new HelloWorld(),
     new CreateSession(),
     new Sessions()
-  ]
+  ],
+  session: {
+    redis: { url: config.redisUrl },
+    cookie: { secure: false }
+  }
 });
 
 app.listen(config.port);
