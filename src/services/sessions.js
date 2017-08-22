@@ -1,6 +1,5 @@
 const session = require('express-session');
 const config = require('config');
-const isTest = require('../util/isTest');
 const shims = require('./sessions/shims');
 
 const expressSession = options => {
@@ -35,9 +34,7 @@ const overrides = (req, res, next) => error => {
 
 const sessions = (options = {}) => {
   const provider = expressSession(options);
-  return (req, res, next) => {
-    return provider(req, res, overrides(req, res, next));
-  };
+  return (req, res, next) => provider(req, res, overrides(req, res, next));
 };
 
 module.exports = sessions;

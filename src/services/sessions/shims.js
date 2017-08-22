@@ -7,7 +7,7 @@ const defineNotEnumerable = (target, property, value) => {
 };
 
 const activeProperty = Symbol('active');
-const wrapSession = (session, { active = true } = {}) => {
+const wrapSession = (session, { active = false } = {}) => {
   defineNotEnumerable(session, activeProperty, active);
   return session;
 };
@@ -17,41 +17,44 @@ const generate = req => () => {
     req.session.destroy();
   }
   req.sessionStore.generate(req);
-  return wrapSession(req.session);
+  return wrapSession(req.session, { active: true });
 };
 
 const active = req => () => req.session && req.session[activeProperty];
 
+const _set = Symbol('set');
 const set = req => {
-  const _set = req.sessionStore.set;
+  if (req.sessionStore[_set]) return req.sessionStore.set;
 
+  req.sessionStore[_set] = req.sessionStore.set;
   return (sessionId, session, onSet) => {
     const metadata = { active: session[activeProperty] };
     const modified = Object.assign({}, session, { metadata });
 
-    return _set.call(req.sessionStore, sessionId, modified, onSet);
+    return req.sessionStore[_set](sessionId, modified, onSet);
   };
 };
 
+const _get = Symbol('get');
 const get = req => {
-  const _get = req.sessionStore.get;
+  if (req.sessionStore[_get]) return req.sessionStore.get;
 
-  return (sessionId, onLoad) => _get.call(req.sessionStore, sessionId, onLoad);
+  req.sessionStore[_get] = req.sessionStore.get;
+  return (sessionId, onLoad) => req.sessionStore[_get](sessionId, onLoad);
 };
 
+const _create = Symbol('createSession');
 const createSession = req => {
-  const _createSession = req.sessionStore.createSession;
+  if (req.sessionStore[_create]) return req.sessionStore.createSession;
 
+  req.sessionStore[_create] = req.sessionStore.createSession;
   return (request, json) => {
     const { metadata } = json;
     const sessionData = Object.assign({}, json);
     delete sessionData.metadata;
-    const session = _createSession.call(
-      request.sessionStore,
-      request,
-      sessionData
-    );
-    return wrapSession(session, { active: metadata.active });
+    const session = request.sessionStore[_create](request, sessionData);
+
+    return wrapSession(session, metadata);
   };
 };
 
