@@ -1,8 +1,10 @@
+const proxyquire = require('proxyquire');
 const journey = require('../src/Journey');
 const { supertest, testApp } = require('./util/supertest');
 const { OK } = require('http-status-codes');
-const { expect } = require('./util/chai');
+const { expect, sinon } = require('./util/chai');
 const Page = require('./../src/steps/Page');
+const sessions = require('./../src/services/sessions');
 
 const testUrl = '/test/page';
 class TestPage extends Page {
@@ -13,10 +15,19 @@ class TestPage extends Page {
     return 'Page';
   }
 }
+const defaultOptions = {
+  session: { secret: 'foo' },
+  baseUrl: 'http://localhost'
+};
+const options = overrides => Object.assign(
+  {},
+  defaultOptions,
+  overrides
+);
 
 describe('Journey', () => {
   it('returns an express app', () => {
-    const testJourney = journey(testApp());
+    const testJourney = journey(testApp(), defaultOptions);
 
     expect(testJourney).to.be.a('function');
     expect(testJourney).itself.to.respondTo('use');
@@ -25,7 +36,75 @@ describe('Journey', () => {
   });
 
   it('binds steps to the router', () => {
-    const app = journey(testApp(), { steps: [new TestPage()] });
+    const app = journey(testApp(), options({ steps: [new TestPage()] }));
     return supertest(app).get(testUrl).expect(OK);
+  });
+
+  describe('baseUrl option', () => {
+    let spy = null;
+    let stubbedJourney = null;
+
+    beforeEach(() => {
+      spy = sinon.spy(sessions);
+      stubbedJourney = proxyquire(
+        '../src/Journey',
+        { './services/sessions': spy }
+      );
+    });
+
+    const test = domain => () => {
+      const baseUrl = `http://${domain}:1231/foo/bar`;
+      stubbedJourney(testApp(), { baseUrl, session: { secret: 'foo' } });
+      return expect(spy).calledWith(sinon.match({ cookie: { domain } }));
+    };
+
+    it('used as default for cookie.domain (localhost)', test('localhost'));
+    it('used as default for cookie.domain (127.0.0.1)', test('127.0.0.1'));
+    it('used as default for cookie.domain (example.com)', test('example.com'));
+    it('used as default for cookie.domain (new tld)', test('allen.digital'));
+
+    it('wont override an explicit cookie.domain', () => {
+      const domain = 'explicit.override.com';
+      const baseUrl = 'http://base.url.com';
+      stubbedJourney(testApp(), {
+        baseUrl,
+        session: { secret: 'foo', cookie: { domain } }
+      });
+      return expect(spy).calledWith(sinon.match({ cookie: { domain } }));
+    });
+  });
+
+  describe('session option', () => {
+    describe('as a function', () => {
+      it('overrides the session middleware', () => {
+        const sessionOverride = (req, res) => {
+          res.end(`Using override, session: ${req.session}`);
+        };
+        const app = journey(testApp(), { session: sessionOverride });
+        return supertest(app)
+          .get('/')
+          .expect('Using override, session: undefined');
+      });
+    });
+
+    describe('as an object', () => {
+      it('requires a baseUrl to be provided', () => {
+        expect(() => journey(testApp(), {})).to.throw('Must provide a baseUrl');
+      });
+
+      it('configures the session middleware', () => {
+        const spy = sinon.spy(sessions);
+        const stubbedJourney = proxyquire(
+          '../src/Journey',
+          { './services/sessions': spy }
+        );
+        const domain = '127.0.0.1';
+        const baseUrl = `http://${domain}`;
+        const secret = 'keyboard cat';
+        stubbedJourney(testApp(), { baseUrl, session: { secret } });
+        expect(spy).calledWith(sinon.match({ secret }));
+        expect(spy).calledWith(sinon.match({ cookie: { domain } }));
+      });
+    });
   });
 });
