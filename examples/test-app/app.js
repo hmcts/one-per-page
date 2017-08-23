@@ -1,15 +1,19 @@
 const config = require('config');
 const express = require('express');
-const nunjucks = require('express-nunjucks');
-const { journey, patterns } = require('@hmcts/one-per-page');
+const path = require('path');
+const { Journey } = require('@hmcts/one-per-page');
+const lookAndFeel = require('@hmcts/look-and-feel');
 const HelloWorld = require('./steps/HelloWorld');
 
 const app = express();
 
-const helloworldJourney = journey({ steps: [new HelloWorld()] });
-app.use(helloworldJourney);
+lookAndFeel.configure(app, {
+  baseUrl: `http://localhost:${config.port}`,
+  express: { views: [path.resolve(__dirname, 'views')] },
+  webpack: { entry: [path.resolve(__dirname, 'assets/scss/main.scss')] }
+});
 
-app.set('views', ['views', patterns()]);
-nunjucks(app);
+const helloworldJourney = new Journey({ steps: [new HelloWorld()] });
+app.use(helloworldJourney);
 
 app.listen(config.port);
