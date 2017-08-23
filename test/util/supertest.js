@@ -2,6 +2,8 @@ const express = require('express');
 const supertest = require('supertest');
 const sessions = require('./../../src/services/sessions');
 const nunjucks = require('express-nunjucks');
+const zepto = require('zepto-node');
+const domino = require('domino');
 
 function testApp() {
   const app = express();
@@ -38,6 +40,17 @@ const supertestInstance = stepDSL => {
   return stepDSL[_supertest];
 };
 
+const wrap = supertestObj => {
+  supertestObj.html = assertions => {
+    return supertestObj.expect(200).then(res => {
+      const _window = domino.createWindow(res.text);
+      const $ = zepto(_window);
+      return assertions($);
+    });
+  };
+  return supertestObj;
+};
+
 class TestStepDSL {
   constructor(step, middleware = []) {
     this.step = step;
@@ -67,7 +80,7 @@ class TestStepDSL {
   }
 
   execute(method) {
-    return supertestInstance(this)[method](this.step.url);
+    return wrap(supertestInstance(this)[method](this.step.url));
   }
 
   get() {
