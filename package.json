@@ -29,13 +29,17 @@
     "@hmcts/eslint-config": "^1.0.5",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
+    "chai-jq": "^0.0.9",
     "codacy-coverage": "^2.0.2",
+    "domino": "^1.0.29",
     "eslint": "^4.5.0",
+    "jquery": "^3.2.1",
     "mocha": "^3.4.2",
     "nyc": "^11.1.0",
     "proxyquire": "^1.8.0",
     "sinon": "^3.2.1",
     "sinon-chai": "^2.13.0",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "zepto-node": "^1.0.0"
   }
 }
