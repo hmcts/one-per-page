@@ -1,15 +1,21 @@
-const defineNotEnumerable = (target, property, value) => {
-  Object.defineProperty(target, property, {
+const activeProperty = Symbol('active');
+const setActive = (session, value) => {
+  Object.defineProperty(session, activeProperty, {
     enumerable: false,
-    value,
+    value: value || session[activeProperty],
     writable: true
   });
 };
 
-const activeProperty = Symbol('active');
-const wrapSession = (session, { active = false } = {}) => {
-  defineNotEnumerable(session, activeProperty, active);
-  return session;
+const active = req => () => req.session && req.session[activeProperty];
+
+const shimSession = (req, { active: isActive = false } = {}) => {
+  setActive(req.session, isActive);
+  req.session.active = active(req);
+  /* eslint-disable no-use-before-define */
+  req.session.generate = generate(req);
+  /* eslint-enable */
+  return req.session;
 };
 
 const generate = req => () => {
@@ -17,10 +23,9 @@ const generate = req => () => {
     req.session.destroy();
   }
   req.sessionStore.generate(req);
-  return wrapSession(req.session, { active: true });
+  return shimSession(req, { active: true });
 };
 
-const active = req => () => req.session && req.session[activeProperty];
 
 const _set = Symbol('set');
 const set = req => {
@@ -52,10 +57,10 @@ const createSession = req => {
     const { metadata } = json;
     const sessionData = Object.assign({}, json);
     delete sessionData.metadata;
-    const session = request.sessionStore[_create](request, sessionData);
+    request.sessionStore[_create](request, sessionData);
 
-    return wrapSession(session, metadata);
+    return shimSession(request, metadata);
   };
 };
 
-module.exports = { generate, active, get, set, createSession };
+module.exports = { get, set, createSession, shimSession };
