@@ -19,11 +19,26 @@ const defaultOptions = {
   session: { secret: 'foo' },
   baseUrl: 'http://localhost'
 };
-const options = overrides => Object.assign(
+const options = (...overrides) => Object.assign(
   {},
   defaultOptions,
-  overrides
+  ...overrides
 );
+const handlerTest = ({ test, options: extraOptions }) => {
+  const testPage = new class extends Page {
+    get url() {
+      return '/test';
+    }
+    handler(req, res) {
+      test(req, res);
+      res.end();
+    }
+  }();
+  const opts = options({ steps: [testPage] }, extraOptions);
+  const app = journey(testApp(), opts);
+  return () => supertest(app).get('/test').expect(200);
+};
+
 
 describe('Journey', () => {
   it('returns an express app', () => {
@@ -38,6 +53,21 @@ describe('Journey', () => {
   it('binds steps to the router', () => {
     const app = journey(testApp(), options({ steps: [new TestPage()] }));
     return supertest(app).get(testUrl).expect(OK);
+  });
+
+  describe('req.journey', () => {
+    it('is created by journey', handlerTest({
+      test(req) {
+        expect(req.journey).to.be.an('object');
+      }
+    }));
+
+    it('is created by journey', handlerTest({
+      options: { noSessionHandler: (req, res, next) => next() },
+      test(req) {
+        expect(req.journey.noSessionHandler).to.be.a('function');
+      }
+    }));
   });
 
   describe('baseUrl option', () => {

@@ -45,8 +45,7 @@ const overrides = (req, res, next) => error => {
   res.locals.session = req.session;
 
   if (req.session && req.sessionStore) {
-    req.session.generate = shims.generate(req);
-    req.session.active = shims.active(req);
+    shims.shimSession(req);
     req.sessionStore.set = shims.set(req);
     req.sessionStore.get = shims.get(req);
     req.sessionStore.createSession = shims.createSession(req);

@@ -23,6 +23,13 @@ const supertestInstance = stepDSL => {
   if (stepDSL[_supertest]) return stepDSL[_supertest];
 
   const app = testApp();
+
+  app.use((req, res, next) => {
+    // setup req.journey (added by Journey)
+    req.journey = req.journey || {};
+    next();
+  });
+
   app.use(sessions({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
   stepDSL[_middleware].forEach(_ => app.use(_));
   app.use(stepDSL.step.router);
@@ -44,6 +51,13 @@ class TestStepDSL {
   withSession(session) {
     return this.withMiddleware((req, res, next) => {
       req.session = Object.assign(req.session, session);
+      next();
+    });
+  }
+
+  withSetup(setup) {
+    return this.withMiddleware((req, res, next) => {
+      setup(req, res);
       next();
     });
   }

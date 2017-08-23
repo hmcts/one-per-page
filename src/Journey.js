@@ -8,7 +8,21 @@ const parseUrl = baseUrl => {
   return urlParse(baseUrl);
 };
 
-const journey = (app, { baseUrl, steps = [], session = {} } = {}) => {
+const journey = (app, {
+  baseUrl,
+  steps = [],
+  session = {},
+  noSessionHandler
+} = {}) => {
+  const setupMiddleware = (req, res, next) => {
+    req.journey = req.journey || {};
+    if (typeof noSessionHandler !== 'undefined') {
+      req.journey.noSessionHandler = noSessionHandler;
+    }
+    next();
+  };
+  app.use(setupMiddleware);
+
   if (typeof session === 'function') {
     app.use(session);
   } else {
