@@ -5,7 +5,7 @@ const { expect } = require('../util/chai');
 
 const { NotImplemented } = require('../../src/errors/expectImplemented');
 
-describe('Step', () => {
+describe('steps/BaseStep', () => {
   {
     const unimplementedStep = () => new class extends BaseStep {}();
 
@@ -53,6 +53,19 @@ describe('Step', () => {
       }();
       return testStep(step).get()
         .expect(OK, { status: 'ok', url: step.url });
+    });
+
+    it('binds the current step to req.currentStep', () => {
+      const test = new class extends BaseStep {
+        get url() {
+          return '/test';
+        }
+        handler(req, res) {
+          expect(req.currentStep).to.eql(this);
+          res.end();
+        }
+      }();
+      return testStep(test).get().expect(OK);
     });
   });
 
