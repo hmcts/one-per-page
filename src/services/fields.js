@@ -1,4 +1,4 @@
-class Field {
+class ParsedField {
   constructor(name, value) {
     this.name = name;
     this.value = value;
@@ -9,11 +9,11 @@ class FieldDesriptor {
   constructor(name) {
     this.name = name;
   }
-  parse(req) {
-    req.fields[this.name] = new Field(this.name, '');
+  parse(/* req */) {
+    return new ParsedField(this.name, '');
   }
 }
 
 const field = name => new FieldDesriptor(name);
 
-module.exports = { field, FieldDesriptor };
+module.exports = { field, FieldDesriptor, ParsedField };
