@@ -1,9 +1,14 @@
-const BaseStep = require('./BaseStep');
+const Page = require('./Page');
 const requireSession = require('./../middleware/requireSession');
+const parseRequest = require('../middleware/parseRequest');
 
-class Question extends BaseStep {
+class Question extends Page {
   get middleware() {
-    return [requireSession];
+    return [
+      ...super.middleware,
+      requireSession,
+      parseRequest
+    ];
   }
 
   get template() {
@@ -12,7 +17,7 @@ class Question extends BaseStep {
 
   handler(req, res) {
     if (req.method === 'GET') {
-      res.render(this.template);
+      super.handler(req, res);
     } else {
       // handle post
     }
