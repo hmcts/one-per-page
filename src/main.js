@@ -1,11 +1,19 @@
 const BaseStep = require('./steps/BaseStep');
 const Page = require('./steps/Page');
+const Question = require('./steps/Question');
+
 const journey = require('./Journey');
+
 const requireSession = require('./middleware/requireSession');
+const parseRequest = require('./middleware/parseRequest');
+
+const { field } = require('./services/fields');
 
 module.exports = {
-  Page,
   BaseStep,
+  Page,
+  Question,
   journey,
-  middleware: { requireSession }
+  middleware: { requireSession, parseRequest },
+  field
 };
