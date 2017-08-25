@@ -1,0 +1,22 @@
+{% extends "look-and-feel/layouts/question.html" %}
+{% from "look-and-feel/components/header.njk" import header %}
+{% from "look-and-feel/components/fields.njk" import textbox, formSection %}
+
+{% set phase="ALPHA" %}
+{% set feedbackLink="https://github.com/hmcts/one-per-page/issues/new" %}
+{% set title %}
+  What is your name?
+{% endset %}
+
+{% block head -%}
+<link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
+{% endblock %}
+
+{% block fields %}
+
+  {% call formSection() %}
+    {{ textbox(fields.firstName, "First name(s)", hint="Include all middle names here") }}
+    {{ textbox(fields.lastName, "Last name(s)") }}
+  {% endcall %}
+
+{% endblock %}

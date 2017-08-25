@@ -8,11 +8,12 @@
   },
   "scripts": {
     "start": "node app.js",
-    "start-dev": "node-dev app.js"
+    "start-dev": "node-dev --inspect=0.0.0.0:9229 app.js"
   },
   "dependencies": {
-    "@hmcts/look-and-feel": "^0.2.0",
+    "@hmcts/look-and-feel": "./../../../look-and-feel",
     "@hmcts/one-per-page": "./../../",
+    "copy-webpack-plugin": "^4.0.1",
     "express": "^4.15.3"
   },
   "devDependencies": {

@@ -6,6 +6,7 @@ const lookAndFeel = require('@hmcts/look-and-feel');
 const HelloWorld = require('./steps/HelloWorld');
 const CreateSession = require('./steps/CreateSession');
 const Sessions = require('./steps/Sessions');
+const Name = require('./steps/Name');
 
 const app = express();
 
@@ -22,7 +23,8 @@ journey(app, {
   steps: [
     new HelloWorld(),
     new CreateSession(),
-    new Sessions()
+    new Sessions(),
+    new Name()
   ],
   session: {
     redis: { url: config.redisUrl },
