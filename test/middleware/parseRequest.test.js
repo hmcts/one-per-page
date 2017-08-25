@@ -2,9 +2,9 @@ const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Page = require('../../src/steps/Page');
 const parseRequest = require('../../src/middleware/parseRequest');
-const { field } = require('../../src/services/fields.js');
+const { field, form } = require('../../src/services/fields.js');
 
-const handlerTest = ({ handler, fields }) => {
+const handlerTest = (_form, assertions) => {
   const _step = new class extends Page {
     get middleware() {
       return [parseRequest];
@@ -12,11 +12,11 @@ const handlerTest = ({ handler, fields }) => {
     get url() {
       return '/test';
     }
-    get fields() {
-      return fields;
+    get form() {
+      return _form;
     }
     handler(req, res) {
-      handler(req, res);
+      assertions(req, res);
       res.end();
     }
   }();
@@ -24,17 +24,33 @@ const handlerTest = ({ handler, fields }) => {
 };
 
 describe('middleware/parseRequest', () => {
-  describe('req.fields', () => {
-    it('is empty if step.fields is empty', () => {
-      return handlerTest({
-        fields: [],
-        handler(req) {
-          expect(req.fields).to.be.an('object');
-          expect(req.fields).to.be.empty;
-        }
-      });
+  it('attaches an Object to req.fields', () => {
+    return handlerTest(form(), req => {
+      expect(req).to.have.property('fields');
+      expect(req.fields).to.be.an('object');
     });
+  });
 
+  it('attaches a ParsedField for each field to req.fields.[name]', () => {
+    return handlerTest(form(field('foo'), field('bar')), req => {
+      expect(req.fields).to.have.property('foo');
+      expect(req.fields).to.have.property('bar');
+    });
+  });
+
+  it('attaches #valid to req.fields', () => {
+    return handlerTest(form(), req => {
+      expect(req.fields.validate).to.be.a('function');
+    });
+  });
+
+  it('attaches req.fields to the currentStep (this in handler)', () => {
+    return handlerTest(form(field('foo'), field('bar')), req => {
+      expect(req.currentStep.fields).to.eql(req.fields);
+    });
+  });
+
+  describe('req.fields', () => {
     it('is empty if step.fields is not defined', () => {
       const step = new class extends Page {
         get middleware() {
@@ -53,24 +69,19 @@ describe('middleware/parseRequest', () => {
       return testStep(step).get().expect(200);
     });
 
+
     it('has a field for each declared field', () => {
-      return handlerTest({
-        fields: [field('foo'), field('bar')],
-        handler(req) {
-          expect(req.fields).to.have.keys(['foo', 'bar']);
-        }
+      return handlerTest(form(field('foo'), field('bar')), req => {
+        expect(req.fields).to.have.keys(['foo', 'bar']);
       });
     });
 
     it('calls #parse for each field', () => {
       const fakeField = field('fake');
       sinon.spy(fakeField, 'parse');
-      return handlerTest({
-        fields: [fakeField],
-        handler(req) {
-          expect(req.fields).to.have.key('fake');
-          expect(req.fields.fake).to.have.property('name', 'fake');
-        }
+      return handlerTest(form(fakeField), req => {
+        expect(req.fields).to.have.key('fake');
+        expect(req.fields.fake).to.have.property('name', 'fake');
       }).then(() => expect(fakeField.parse).calledOnce);
     });
   });

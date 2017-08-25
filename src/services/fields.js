@@ -1,5 +1,31 @@
 const option = require('option');
 
+class Form {
+  constructor(fields = []) {
+    this.fields = fields;
+  }
+
+  parse(req) {
+    return this.fields.map(field => field.parse(req));
+  }
+
+  validate(/* parsedFields */) {
+    /* intentionally blank */
+  }
+
+  errors(/* parsedFields */) {
+    // placeholder for now
+    return [];
+  }
+
+  valid(/* parsedFields */) {
+    // placeholder for now
+    return true;
+  }
+}
+
+const form = (...fields) => new Form(fields);
+
 class ParsedField {
   constructor(name, id, value) {
     this.name = name;
@@ -18,15 +44,16 @@ class FieldDesriptor {
 
     const valueFromSession = option
       .fromNullable(req.session)
-      .map(session => session[id]);
+      .flatMap(session => option.fromNullable(session[id]));
 
     const valueFromBody = option
       .fromNullable(req.body)
-      .map(body => body[id]);
+      .flatMap(body => option.fromNullable(body[id]));
 
     const value = valueFromBody
       .orElse(valueFromSession)
       .valueOrElse('');
+
     return new ParsedField(this.name, id, value);
   }
 
@@ -38,6 +65,6 @@ class FieldDesriptor {
   }
 }
 
-const field = name => new FieldDesriptor(name);
+const field = (name, validator) => new FieldDesriptor(name, validator);
 
-module.exports = { field, FieldDesriptor, ParsedField };
+module.exports = { field, FieldDesriptor, ParsedField, form, Form };

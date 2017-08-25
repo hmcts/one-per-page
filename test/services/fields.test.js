@@ -1,8 +1,10 @@
-const { expect } = require('../util/chai');
+const { expect, sinon } = require('../util/chai');
 const {
   field,
   FieldDesriptor,
-  ParsedField
+  ParsedField,
+  form,
+  Form
 } = require('../../src/services/fields');
 
 describe('services/fields', () => {
@@ -10,6 +12,47 @@ describe('services/fields', () => {
     it('returns a FieldDesriptor', () => {
       const foo = field('foo');
       expect(foo).to.be.an.instanceof(FieldDesriptor);
+    });
+  });
+
+  describe('#form', () => {
+    it('returns a Form', () => {
+      const f = form(field('foo'));
+      expect(f).to.be.an.instanceof(Form);
+      expect(f.fields).to.eql([field('foo')]);
+    });
+
+    it('is happy with no fields', () => {
+      const f = form();
+      expect(f).to.be.an.instanceof(Form);
+      expect(f.fields).to.eql([]);
+    });
+  });
+
+  describe('Form', () => {
+    it('accepts an array of fields', () => {
+      const fields = [field('foo'), field('bar')];
+      const f = new Form(fields);
+      expect(f).to.have.property('fields').that.eql(fields);
+    });
+
+    describe('#parse', () => {
+      it('calls field.parse on each field', () => {
+        const fields = [field('foo'), field('bar')];
+        const f = new Form(fields);
+        const req = { currentStep: {} };
+
+        fields.forEach(_field => sinon.spy(_field, 'parse'));
+        f.parse(req);
+        fields.forEach(_field => expect(_field.parse).calledOnce);
+      });
+
+      it('returns an array of ParsedFields', () => {
+        const f = new Form([]);
+        const req = { currentStep: {} };
+        const parsed = f.parse(req);
+        expect(parsed).to.be.an('array');
+      });
     });
   });
 
@@ -27,6 +70,7 @@ describe('services/fields', () => {
 
       it('fills ParsedField.value with answer from the session', () => {
         const req = {
+          body: {},
           session: { NameStep_firstName: 'Michael' },
           currentStep: { name: 'NameStep' }
         };
@@ -37,6 +81,7 @@ describe('services/fields', () => {
       it('fills ParsedField.value with answer from request body', () => {
         const req = {
           body: { NameStep_firstName: 'Michael' },
+          session: {},
           currentStep: { name: 'NameStep' }
         };
         const firstName = new FieldDesriptor('firstName');
