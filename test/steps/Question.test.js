@@ -2,6 +2,7 @@ const { expect } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
 const { NotImplemented } = require('../../src/errors/expectImplemented');
+const { field, form } = require('../../src/services/fields');
 
 describe('steps/Question', () => {
   {
@@ -18,6 +19,9 @@ describe('steps/Question', () => {
 
   {
     const question = new class extends Question {
+      get form() {
+        return form(field('name'));
+      }
       get url() {
         return '/question-1';
       }
@@ -33,6 +37,18 @@ describe('steps/Question', () => {
           .get()
           .html($ => {
             return expect($('h1')).to.contain.$text('Question 1');
+          });
+      });
+
+      it('loads fields from the session', () => {
+        return testStep(question)
+          .withSetup(req => {
+            req.session.generate();
+            req.session.Question_name = 'Michael Allen';
+          })
+          .get()
+          .html($ => {
+            expect($('#Question_name')).to.contain.$val('Michael Allen');
           });
       });
     });

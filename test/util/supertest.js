@@ -18,13 +18,20 @@ function testApp() {
   return app;
 }
 
+const cookie = res => {
+  const setCookie = res.headers['set-cookie'];
+  return (setCookie && setCookie[0]) || undefined;
+};
+
 const _supertest = Symbol('supertest');
+const _app = Symbol('app');
 const _middleware = Symbol('middleware');
 
 const supertestInstance = stepDSL => {
   if (stepDSL[_supertest]) return stepDSL[_supertest];
 
   const app = testApp();
+  stepDSL[_app] = app;
 
   app.use((req, res, next) => {
     // setup req.journey (added by Journey)
@@ -33,6 +40,11 @@ const supertestInstance = stepDSL => {
   });
 
   app.use(sessions({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
+
+  app.get('/supertest-check-session', (req, res) => {
+    res.end(JSON.stringify(req.session));
+  });
+
   stepDSL[_middleware].forEach(_ => app.use(_));
   app.use(stepDSL.step.router);
   stepDSL[_supertest] = supertest(app);
@@ -40,7 +52,7 @@ const supertestInstance = stepDSL => {
   return stepDSL[_supertest];
 };
 
-const wrap = supertestObj => {
+const wrapWithResponseAssertions = supertestObj => {
   supertestObj.html = assertions => {
     return supertestObj.expect(200).then(res => {
       const _window = domino.createWindow(res.text);
@@ -48,12 +60,25 @@ const wrap = supertestObj => {
       return assertions($);
     });
   };
+  supertestObj.session = (assertions) => {
+    return supertestObj.then(res => {
+      const sid = cookie(res);
+      return supertest(supertestObj.app)
+        .get('/supertest-check-session')
+        .set('Cookie', sid)
+        .expect(200);
+    }).then(res => {
+      const session = JSON.parse(res.text);
+      return Promise.all([assertions(session)]);
+    });
+  };
   return supertestObj;
 };
 
 class TestStepDSL {
-  constructor(step, middleware = []) {
+  constructor(step, body = {}, middleware = []) {
     this.step = step;
+    this.body = body;
     this[_middleware] = middleware;
   }
 
@@ -68,6 +93,12 @@ class TestStepDSL {
     });
   }
 
+  withField(field, value) {
+    const fieldName = `${this.step.name}_${field}`;
+    const newBody = Object.assign({}, this.body, { [fieldName]: value });
+    return new TestStepDSL(this.step, newBody, this[_middleware]);
+  }
+
   withSetup(setup) {
     return this.withMiddleware((req, res, next) => {
       setup(req, res);
@@ -75,19 +106,25 @@ class TestStepDSL {
     });
   }
 
-  withMiddleware(middleware) {
-    return new TestStepDSL(this.step, [...this[_middleware], middleware]);
+  withMiddleware(newMiddleware) {
+    const middleware = [...this[_middleware], newMiddleware];
+    return new TestStepDSL(this.step, this.body, middleware);
   }
 
   execute(method) {
-    return wrap(supertestInstance(this)[method](this.step.url));
+    const testExecution = supertestInstance(this)[method](this.step.url);
+    return wrapWithResponseAssertions(testExecution);
   }
 
   get() {
     return this.execute('get');
   }
   post() {
-    return this.execute('post');
+    const postRequest = this.execute('post');
+    if (Object.keys(this.body).length !== 0) {
+      return postRequest.send(this.body);
+    }
+    return postRequest;
   }
   patch() {
     return this.execute('patch');
