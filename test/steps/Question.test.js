@@ -52,5 +52,17 @@ describe('steps/Question', () => {
           });
       });
     });
+
+    describe('POST', () => {
+      it('saves answers in the session', () => {
+        return testStep(question)
+          .withSetup(req => req.session.generate())
+          .withField('name', 'Michael Allen')
+          .post()
+          .session(session => {
+            expect(session).to.contain.key('Question_name');
+          });
+      });
+    });
   }
 });

@@ -17,13 +17,23 @@ const parseRequest = (req, res, next) => {
     return;
   }
   const form = req.currentStep.form;
-  const parsedFields = form.parse(req);
 
-  parsedFields.forEach(field => {
-    req.fields[field.name] = field;
-  });
+  if (req.method === 'POST') {
+    const parsedFields = form.parse(req);
+
+    parsedFields.forEach(field => {
+      req.fields[field.name] = field;
+    });
+  } else if (req.method === 'GET') {
+    const retrievedFields = form.retrieve(req);
+
+    retrievedFields.forEach(field => {
+      req.fields[field.name] = field;
+    });
+  }
 
   defineNotEnumberable(req.fields, 'validate', () => form.validate(req.fields));
+  defineNotEnumberable(req.fields, 'store', () => form.store(req));
   defineNotEnumberable(req.fields, 'errors', () => form.errors(req.fields));
   defineNotEnumberable(req.fields, 'valid', () => form.valid(req.fields));
 

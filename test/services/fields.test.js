@@ -2,7 +2,6 @@ const { expect, sinon } = require('../util/chai');
 const {
   field,
   FieldDesriptor,
-  ParsedField,
   form,
   Form
 } = require('../../src/services/fields');
@@ -47,11 +46,87 @@ describe('services/fields', () => {
         fields.forEach(_field => expect(_field.parse).calledOnce);
       });
 
-      it('returns an array of ParsedFields', () => {
+      it('returns an array of FieldDesriptor', () => {
         const f = new Form([]);
         const req = { currentStep: {} };
         const parsed = f.parse(req);
         expect(parsed).to.be.an('array');
+        parsed.forEach(parsedField => {
+          expect(parsedField).to.be.an.instanceof(FieldDesriptor);
+        });
+        expect(parsed).to.be.an('array');
+      });
+    });
+
+    describe('#retrieve', () => {
+      it('calls field.deserialize on each field', () => {
+        const fields = [field('foo'), field('bar')];
+        const f = new Form(fields);
+        const req = { currentStep: {} };
+
+        fields.forEach(_field => sinon.spy(_field, 'deserialize'));
+        f.retrieve(req);
+        fields.forEach(_field => expect(_field.deserialize).calledOnce);
+      });
+
+      it('returns an array of FieldDesriptor', () => {
+        const f = new Form([]);
+        const req = { currentStep: {} };
+        const retrieved = f.retrieve(req);
+        expect(retrieved).to.be.an('array');
+        retrieved.forEach(retrievedField => {
+          expect(retrievedField).to.be.an.instanceof(FieldDesriptor);
+        });
+        expect(retrieved).to.be.an('array');
+      });
+    });
+
+    describe('#store', () => {
+      const name = new FieldDesriptor('name', 'Details_name', 'Michael Allen');
+      const colour = new FieldDesriptor('colour', 'Prefs_colour', 'Green');
+
+      it('throws an error if session is not initialized', () => {
+        const f = new Form();
+        const req = {};
+
+        expect(() => f.store(req)).to.throw('Session not initialized');
+      });
+
+      it('throws an error if a field is missing in req.fields', () => {
+        const f = new Form([name]);
+        const req = { fields: {}, session: {} };
+
+        expect(() => f.store(req)).to.throw(/Field name not present in/);
+      });
+
+      it('calls req.field.serialize on each field', () => {
+        const f = new Form([name, colour]);
+        const req = { fields: { name, colour }, session: {} };
+
+        sinon.spy(name, 'serialize');
+        sinon.spy(colour, 'serialize');
+        f.store(req);
+        expect(name.serialize).calledOnce;
+        expect(colour.serialize).calledOnce;
+        name.serialize.restore();
+        colour.serialize.restore();
+      });
+
+      it('stores the serialized fields in the session', () => {
+        const f = new Form([field('name'), field('colour')]);
+        const req = { fields: { name, colour }, session: {} };
+
+        f.store(req);
+        expect(req.session).to.have.property('Details_name', 'Michael Allen');
+        expect(req.session).to.have.property('Prefs_colour', 'Green');
+      });
+
+      it('only calls serialize on fields declared in the form', () => {
+        const f = new Form([field('colour')]);
+        const req = { fields: { name, colour }, session: {} };
+
+        f.store(req);
+        expect(req.session).to.eql({ Prefs_colour: 'Green' });
       });
     });
   });
@@ -62,36 +137,50 @@ describe('services/fields', () => {
       expect(f).to.have.property('name', 'my name');
     });
 
-    describe('#parse', () => {
-      it('returns a ParsedField', () => {
-        const foo = new FieldDesriptor('first_name');
-        expect(foo.parse({})).to.be.an.instanceof(ParsedField);
+    describe('#serialize', () => {
+      it('returns an object representing the field', () => {
+        const f = new FieldDesriptor('name', 'Prefs_colour', 'Green');
+        expect(f.serialize()).to.eql({ [f.id]: f.value });
       });
 
-      it('fills ParsedField.value with answer from the session', () => {
+      it('returns an empty object if no ID', () => {
+        const f = new FieldDesriptor('name', undefined, 'Green');
+        expect(f.serialize()).to.eql({});
+      });
+
+      it('returns an empty object if no value', () => {
+        const f = new FieldDesriptor('name', 'Prefs_colour');
+        expect(f.serialize()).to.eql({});
+      });
+    });
+
+    describe('#deserialize', () => {
+      it('returns a FieldDesriptor', () => {
+        const foo = new FieldDesriptor('first_name');
+        expect(foo.deserialize({})).to.be.an.instanceof(FieldDesriptor);
+      });
+
+      it('fills FieldDesriptor.value with answer from the session', () => {
         const req = {
           body: {},
           session: { NameStep_firstName: 'Michael' },
           currentStep: { name: 'NameStep' }
         };
         const firstName = new FieldDesriptor('firstName');
-        expect(firstName.parse(req)).to.have.property('value', 'Michael');
+        expect(firstName.deserialize(req)).to.have.property('value', 'Michael');
+      });
+    });
+
+    describe('#parse', () => {
+      it('returns a FieldDesriptor', () => {
+        const foo = new FieldDesriptor('first_name');
+        expect(foo.parse({})).to.be.an.instanceof(FieldDesriptor);
       });
 
-      it('fills ParsedField.value with answer from request body', () => {
+      it('fills FieldDesriptor.value with answer from request body', () => {
         const req = {
-          body: { NameStep_firstName: 'Michael' },
+          body: { firstName: 'Michael' },
           session: {},
-          currentStep: { name: 'NameStep' }
-        };
-        const firstName = new FieldDesriptor('firstName');
-        expect(firstName.parse(req)).to.have.property('value', 'Michael');
-      });
-
-      it('prefers answer from request body over session', () => {
-        const req = {
-          body: { NameStep_firstName: 'Michael' },
-          session: { NameStep_firstName: 'John' },
           currentStep: { name: 'NameStep' }
         };
         const firstName = new FieldDesriptor('firstName');
@@ -110,15 +199,6 @@ describe('services/fields', () => {
         const fakeStep = { name: 'NameStep' };
         expect(foo.makeId(fakeStep)).to.eql(`${fakeStep.name}_${foo.name}`);
       });
-    });
-  });
-
-  describe('ParsedField', () => {
-    it('stores name, id and parsed value', () => {
-      const f = new ParsedField('my_name', 'my_id', 'my value');
-      expect(f).to.have.property('name', 'my_name');
-      expect(f).to.have.property('id', 'my_id');
-      expect(f).to.have.property('value', 'my value');
     });
   });
 });

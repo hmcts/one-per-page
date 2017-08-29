@@ -7,7 +7,7 @@ const journey = require('./Journey');
 const requireSession = require('./middleware/requireSession');
 const parseRequest = require('./middleware/parseRequest');
 
-const { field } = require('./services/fields');
+const { field, form } = require('./services/fields');
 
 module.exports = {
   BaseStep,
@@ -15,5 +15,6 @@ module.exports = {
   Question,
   journey,
   middleware: { requireSession, parseRequest },
-  field
+  field,
+  form
 };
