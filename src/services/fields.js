@@ -9,8 +9,22 @@ class Form {
     return this.fields.map(field => field.parse(req));
   }
 
-  validate(/* parsedFields */) {
-    /* intentionally blank */
+  store(req) {
+    if (typeof req.session === 'undefined') {
+      throw new Error('Session not initialized');
+    }
+    this.fields.forEach(field => {
+      if (typeof req.fields[field.name] === 'undefined') {
+        const fields = JSON.stringify({ 'req.fields': req.fields });
+        throw new Error(`Field ${field.name} not present in ${fields}`);
+      }
+      const serialized = req.fields[field.name].serialize();
+      Object.assign(req.session, serialized);
+    });
+  }
+
+  retrieve(req) {
+    return this.fields.map(field => field.deserialize(req));
   }
 
   errors(/* parsedFields */) {
@@ -26,35 +40,39 @@ class Form {
 
 const form = (...fields) => new Form(fields);
 
-class ParsedField {
+class FieldDesriptor {
   constructor(name, id, value) {
     this.name = name;
     this.id = id;
     this.value = value;
   }
-}
-
-class FieldDesriptor {
-  constructor(name) {
-    this.name = name;
-  }
 
   parse(req) {
     const id = this.makeId(req.currentStep);
 
-    const valueFromSession = option
-      .fromNullable(req.session)
-      .flatMap(session => option.fromNullable(session[id]));
-
-    const valueFromBody = option
+    const value = option
       .fromNullable(req.body)
-      .flatMap(body => option.fromNullable(body[id]));
-
-    const value = valueFromBody
-      .orElse(valueFromSession)
+      .flatMap(body => option.fromNullable(body[this.name]))
       .valueOrElse('');
 
-    return new ParsedField(this.name, id, value);
+    return new FieldDesriptor(this.name, id, value);
+  }
+
+  deserialize(req) {
+    const id = this.makeId(req.currentStep);
+
+    const value = option
+      .fromNullable(req.session)
+      .flatMap(session => option.fromNullable(session[id]))
+      .valueOrElse('');
+
+    return new FieldDesriptor(this.name, id, value);
+  }
+
+  serialize() {
+    if (typeof this.id === 'undefined') return {};
+    if (typeof this.value === 'undefined') return {};
+    return { [this.id]: this.value };
   }
 
   makeId(step) {
@@ -65,6 +83,6 @@ class FieldDesriptor {
   }
 }
 
-const field = (name, validator) => new FieldDesriptor(name, validator);
+const field = name => new FieldDesriptor(name);
 
-module.exports = { field, FieldDesriptor, ParsedField, form, Form };
+module.exports = { field, FieldDesriptor, form, Form };
