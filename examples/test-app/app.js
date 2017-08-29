@@ -6,6 +6,7 @@ const lookAndFeel = require('@hmcts/look-and-feel');
 const HelloWorld = require('./steps/HelloWorld');
 const CreateSession = require('./steps/CreateSession');
 const Sessions = require('./steps/Sessions');
+const Start = require('./steps/Start');
 const Name = require('./steps/Name');
 
 const app = express();
@@ -21,6 +22,7 @@ lookAndFeel.configure(app, {
 journey(app, {
   baseUrl,
   steps: [
+    new Start(),
     new HelloWorld(),
     new CreateSession(),
     new Sessions(),
