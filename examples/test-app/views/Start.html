@@ -1,0 +1,28 @@
+{% extends "look-and-feel/layouts/start_page.html" %}
+
+{% set title='Apply for Divorce' %}
+{% set phase='ALPHA' %}
+{% set feedbackLink='https://github.com/hmcts/look-and-feel/issues/new' %}
+
+{% block head -%}
+  <link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
+{% endblock %}
+
+{% block guidance %}
+
+<p class="text">
+  You can use this service to apply for a divorce in England and Wales.
+</p>
+<div class="panel panel-border-wide">
+  <p class="text">
+    Divorces in <a href="https://www.scotcourts.gov.uk/taking-action/divorce-and-dissolution-of-civil-partnership" target="_blank">Scotland</a>
+    and <a href="http://www.courtsni.gov.uk/en-GB/Services/Matrimonial/Pages/default.aspx" target="_blank">Northern Ireland</a>
+    are handled by the courts there.
+  </p>
+</div>
+<p class="text">
+  It usually takes 4 to 6 months to get a divorce if it's 'uncontested'
+  (your husband/wife doesn't defend the divorce).
+</p>
+
+{% endblock%}
