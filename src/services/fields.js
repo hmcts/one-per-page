@@ -5,10 +5,23 @@ class Form {
     this.fields = fields;
   }
 
+  /**
+   * Parses the fields described in the form from the request body
+   * Used on POST requests.
+   *
+   * @param {object} req - the express request
+   * @return {list} fields - the parsed fields containing their values
+   */
   parse(req) {
     return this.fields.map(field => field.parse(req));
   }
 
+  /**
+   * Stores the fields described in the form to the session by querying their
+   * parsed values in request.fields
+   *
+   * @param {object} req - the express request
+   */
   store(req) {
     if (typeof req.session === 'undefined') {
       throw new Error('Session not initialized');
@@ -23,6 +36,13 @@ class Form {
     });
   }
 
+  /**
+   * Loads the fields described in the form from the session.
+   * Used on GET requests to prepopulate fields with existing values.
+   *
+   * @param {object} req - the express request
+   * @return {list} fields - the populated fields containing their values
+   */
   retrieve(req) {
     return this.fields.map(field => field.deserialize(req));
   }
@@ -47,6 +67,13 @@ class FieldDesriptor {
     this.value = value;
   }
 
+  /**
+   * Parses the request body looking for a parameter with the same name
+   * as this field.
+   *
+   * @param {object} req - the express request
+   * @return {FieldDescriptor} field - the parsed field filled with it's value
+   */
   parse(req) {
     const id = this.makeId(req.currentStep);
 
@@ -58,6 +85,12 @@ class FieldDesriptor {
     return new FieldDesriptor(this.name, id, value);
   }
 
+  /**
+   * Deserializes this field from the session
+   *
+   * @param {object} req - the express request
+   * @return {FieldDescriptor} field - the loaded field filled with it's value
+   */
   deserialize(req) {
     const id = this.makeId(req.currentStep);
 
@@ -69,6 +102,12 @@ class FieldDesriptor {
     return new FieldDesriptor(this.name, id, value);
   }
 
+  /**
+   * Serializes the field in to format to be stored in the session
+   *
+   * @return {{ [field id]: [field value] }} - the values to be store in the
+   *   session
+   */
   serialize() {
     if (typeof this.id === 'undefined') return {};
     if (typeof this.value === 'undefined') return {};
