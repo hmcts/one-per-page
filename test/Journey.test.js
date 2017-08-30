@@ -62,12 +62,32 @@ describe('Journey', () => {
       }
     }));
 
-    it('is created by journey', handlerTest({
+    it('binds the noSessionHandler, so sessions can access it', handlerTest({
       options: { noSessionHandler: (req, res, next) => next() },
       test(req) {
         expect(req.journey.noSessionHandler).to.be.a('function');
       }
     }));
+
+    it('binds all steps to req.journey.[step name]', () => {
+      const foo = new class Foo extends TestPage {
+        get url() {
+          return '/foo';
+        }
+      }();
+      const bar = new class Bar extends TestPage {
+        get url() {
+          return '/bar';
+        }
+      }();
+      return handlerTest({
+        options: { steps: [foo, bar] },
+        test(req) {
+          expect(req.journey).to.have.property('Foo', foo);
+          expect(req.journey).to.have.property('Bar', bar);
+        }
+      });
+    });
   });
 
   describe('baseUrl option', () => {

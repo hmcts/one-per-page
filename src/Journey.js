@@ -19,6 +19,9 @@ const journey = (app, {
     if (typeof noSessionHandler !== 'undefined') {
       req.journey.noSessionHandler = noSessionHandler;
     }
+    steps.forEach(step => {
+      req.journey[step.name] = step;
+    });
     next();
   };
   app.use(setupMiddleware);
