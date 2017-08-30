@@ -8,6 +8,7 @@ const CreateSession = require('./steps/CreateSession');
 const Sessions = require('./steps/Sessions');
 const Start = require('./steps/Start');
 const Name = require('./steps/Name');
+const Entry = require('./steps/Entry');
 
 const app = express();
 
@@ -23,6 +24,7 @@ journey(app, {
   baseUrl,
   steps: [
     new Start(),
+    new Entry(),
     new HelloWorld(),
     new CreateSession(),
     new Sessions(),
