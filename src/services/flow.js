@@ -1,9 +1,13 @@
-const goTo = step => {
-  return {
-    redirect(req, res) {
-      res.redirect(step.url);
-    }
-  };
-};
+class Redirector {
+  constructor(step) {
+    this.nextStep = step;
+  }
 
-module.exports = { goTo };
+  redirect(req, res) {
+    res.redirect(this.nextStep.url);
+  }
+}
+
+const goTo = step => new Redirector(step);
+
+module.exports = { goTo, Redirector };
