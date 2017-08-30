@@ -42,7 +42,12 @@ const supertestInstance = stepDSL => {
   app.use(sessions({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
 
   app.get('/supertest-check-session', (req, res) => {
-    res.end(JSON.stringify(req.session));
+    const session = Object.assign(
+      {},
+      req.session,
+      { active: req.session.active() }
+    );
+    res.end(JSON.stringify(session));
   });
 
   stepDSL[_middleware].forEach(_ => app.use(_));
