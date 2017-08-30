@@ -1,8 +1,9 @@
 const { Router: expressRouter } = require('express');
 const { expectImplemented } = require('../errors/expectImplemented');
 
-const bindToReq = (_this, property) => (req, res, next) => {
-  req[property] = _this;
+const bindStepToReq = step => (req, res, next) => {
+  req.currentStep = step;
+  step.journey = req.journey;
   next();
 };
 
@@ -21,7 +22,7 @@ class BaseStep {
     if (this._router) return this._router;
 
     this._router = expressRouter();
-    this._router.all(this.url, bindToReq(this, 'currentStep'));
+    this._router.all(this.url, bindStepToReq(this));
     this.middleware.forEach(middleware => {
       this._router.all(this.url, middleware.bind(this));
     });
