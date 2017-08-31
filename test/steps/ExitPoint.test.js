@@ -1,6 +1,6 @@
 const { testStep } = require('../util/supertest');
 const { expect } = require('../util/chai');
-const EntryPoint = require('../../src/steps/ExitPoint');
+const ExitPoint = require('../../src/steps/ExitPoint');
 const { goTo } = require('../../src/services/flow');
 
 describe('steps/ExitPoint', () => {
