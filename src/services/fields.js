@@ -5,6 +5,13 @@ class Form {
     this.fields = fields;
   }
 
+  get getFields() {
+    return this.fields.reduce((fields, field) => {
+      fields[field.name] = field;
+      return fields;
+    }, {});
+  }
+
   /**
    * Parses the fields described in the form from the request body
    * Used on POST requests.
@@ -13,7 +20,7 @@ class Form {
    * @return {list} fields - the parsed fields containing their values
    */
   parse(req) {
-    return this.fields.map(field => field.parse(req));
+    this.fields.forEach(field => field.parse(req));
   }
 
   /**
@@ -31,7 +38,7 @@ class Form {
         const fields = JSON.stringify({ 'req.fields': req.fields });
         throw new Error(`Field ${field.name} not present in ${fields}`);
       }
-      const serialized = req.fields[field.name].serialize();
+      const serialized = field.serialize();
       Object.assign(req.session, serialized);
     });
   }
@@ -44,7 +51,7 @@ class Form {
    * @return {list} fields - the populated fields containing their values
    */
   retrieve(req) {
-    return this.fields.map(field => field.deserialize(req));
+    this.fields.forEach(field => field.deserialize(req));
   }
 
   errors(/* parsedFields */) {
@@ -52,19 +59,26 @@ class Form {
     return [];
   }
 
-  valid(/* parsedFields */) {
-    // placeholder for now
-    return true;
+  get invalidFields() {
+    return this.fields.filter(field => !field.validate());
+  }
+
+  get valid() {
+    const validLength = 0;
+    return this.invalidFields.length === validLength;
   }
 }
 
 const form = (...fields) => new Form(fields);
 
+const defaultValidator = () => null;
+
 class FieldDesriptor {
-  constructor(name, id, value) {
+  constructor(name = '', id, value = '') {
     this.name = name;
     this.id = id;
     this.value = value;
+    this.validator = defaultValidator;
   }
 
   /**
@@ -82,7 +96,9 @@ class FieldDesriptor {
       .flatMap(body => option.fromNullable(body[this.name]))
       .valueOrElse('');
 
-    return new FieldDesriptor(this.name, id, value);
+    this.id = id;
+    this.value = value;
+    return this;
   }
 
   /**
@@ -99,7 +115,9 @@ class FieldDesriptor {
       .flatMap(session => option.fromNullable(session[id]))
       .valueOrElse('');
 
-    return new FieldDesriptor(this.name, id, value);
+    this.id = id;
+    this.value = value;
+    return this;
   }
 
   /**
@@ -119,6 +137,15 @@ class FieldDesriptor {
       return this.name;
     }
     return `${step.name}_${this.name}`;
+  }
+
+  validate(validator) {
+    if (validator) {
+      this.validator = validator;
+      return this;
+    }
+    this.error = this.validator(this);
+    return !this.error;
   }
 }
 

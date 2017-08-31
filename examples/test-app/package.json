@@ -14,7 +14,8 @@
     "@hmcts/look-and-feel": "./../../../look-and-feel",
     "@hmcts/one-per-page": "./../../",
     "copy-webpack-plugin": "^4.0.1",
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "joi": "^10.6.0"
   },
   "devDependencies": {
     "node-dev": "^3.1.3"

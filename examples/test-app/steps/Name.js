@@ -1,4 +1,5 @@
 const { Question, field, form, goTo } = require('@hmcts/one-per-page');
+const { isString } = require('../utils/validators');
 
 class Name extends Question {
   get url() {
@@ -7,8 +8,8 @@ class Name extends Question {
 
   get form() {
     return form(
-      field('firstName'),
-      field('lastName')
+      field('firstName').validate(isString()),
+      field('lastName').validate(isString())
     );
   }
 
