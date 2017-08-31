@@ -1,17 +1,8 @@
 {
   "name": "@hmcts/one-per-page",
   "description": "One question per page apps made easy",
-  "version": "0.0.1",
-  "license": "MIT",
-  "engines": {
-    "node": ">=6.0"
-  },
+  "version": "0.1.0",
   "main": "./src/main.js",
-  "scripts": {
-    "test": "NODE_PATH=. NODE_ENV=testing nyc mocha 'test/**/*.test.js'",
-    "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
-    "lint": "eslint ."
-  },
   "dependencies": {
     "body-parser": "^1.17.2",
     "config": "^1.26.2",
@@ -42,5 +33,14 @@
     "sinon-chai": "^2.13.0",
     "supertest": "^3.0.0",
     "zepto-node": "^1.0.0"
-  }
+  },
+  "engines": {
+    "node": ">=6.0"
+  },
+  "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
+    "lint": "eslint .",
+    "test": "NODE_PATH=. NODE_ENV=testing nyc mocha 'test/**/*.test.js'"
+  },
+  "license": "MIT"
 }
