@@ -1,4 +1,4 @@
-const { Question, field, form } = require('@hmcts/one-per-page');
+const { Question, field, form, goTo } = require('@hmcts/one-per-page');
 
 class Name extends Question {
   get url() {
@@ -10,6 +10,10 @@ class Name extends Question {
       field('firstName'),
       field('lastName')
     );
+  }
+
+  next() {
+    return goTo(this.journey.Sessions);
   }
 }
 

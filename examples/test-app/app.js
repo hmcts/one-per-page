@@ -8,7 +8,9 @@ const CreateSession = require('./steps/CreateSession');
 const Sessions = require('./steps/Sessions');
 const Start = require('./steps/Start');
 const Name = require('./steps/Name');
+const Country = require('./steps/Country');
 const Entry = require('./steps/Entry');
+const ExitNorthernIreland = require('./steps/ExitNorthernIreland');
 
 const app = express();
 
@@ -28,7 +30,9 @@ journey(app, {
     new HelloWorld(),
     new CreateSession(),
     new Sessions(),
-    new Name()
+    new Name(),
+    new Country(),
+    new ExitNorthernIreland()
   ],
   session: {
     redis: { url: config.redisUrl },
