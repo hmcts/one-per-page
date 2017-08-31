@@ -65,7 +65,7 @@ const wrapWithResponseAssertions = supertestObj => {
       return assertions($);
     });
   };
-  supertestObj.session = (assertions) => {
+  supertestObj.session = assertions => {
     return supertestObj.then(res => {
       const sid = cookie(res);
       return supertest(supertestObj.app)
