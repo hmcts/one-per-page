@@ -17,6 +17,9 @@ class Conditional {
 
 class Redirector {
   constructor(step) {
+    if (typeof step === 'undefined') {
+      throw new Error('Step given to redirect to is undefined');
+    }
     this.nextStep = step;
   }
 
