@@ -3,42 +3,31 @@ const { expect } = require('../util/chai');
 const ExitPoint = require('../../src/steps/ExitPoint');
 const { goTo } = require('../../src/services/flow');
 
-describe('steps/ExitPoint', () => {
-  it('expects #middleware to be implemented', () => {
-    const noMiddlewareDefined = () => new class extends ExitPoint {
-      get url() {
-        return '/foo';
-      }
-    }();
-    expect(noMiddlewareDefined).to.throw(/ExitPoint must implement middleware/);
-  });
+const shouldNotSetCookie = name => {
+  return res => Promise.all([
+    expect(Object.keys(res.headers)).to.not.include('set-cookie'),
+    expect(res.headers['set-cookie']).to.not.include.match(name)
+  ]);
+};
 
+describe('steps/ExitPoint', () => {
   describe('GET', () => {
-    const destroySession = (req, res, next) => {
-        req.session.destroy();
-    }; 
     const exit = new class extends ExitPoint {
       get url() {
         return '/foo';
       }
-      get middleware() {
-        return [...super.middleware, destroySession];
-      }
     }();
 
-
-    it('destroys a session', () => {
+    it('destroys a session and cookie is not set', () => {
       return testStep(exit)
-        .get()
-        .session(session => {
-          expect(session.active).to.be.false;
-        });
+      .get()
+      .expect(200)
+      .expect(shouldNotSetCookie(/session/))
     });
   });
 
   describe('POST', () => {
     it('returns 405 (Method not allowed)', () => {
-      const fakeStep = { url: '/bar' };
       const exit = new class extends ExitPoint {
         get url() {
           return '/foo';
