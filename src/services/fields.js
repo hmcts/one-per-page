@@ -34,13 +34,12 @@ class Form {
       throw new Error('Session not initialized');
     }
     this.fields.forEach(field => {
-      if (typeof req.fields[field.name] === 'undefined') {
-        const fields = JSON.stringify({ 'req.fields': req.fields });
-        throw new Error(`Field ${field.name} not present in ${fields}`);
-      }
       const serialized = field.serialize();
+      // console.log('field', field);
+      // console.log('serialized', serialized);
       Object.assign(req.session, serialized);
     });
+      // console.log(req.session);
   }
 
   /**
@@ -93,7 +92,7 @@ class FieldDesriptor {
 
     const value = option
       .fromNullable(req.body)
-      .flatMap(body => option.fromNullable(body[this.name]))
+      .flatMap(body => option.fromNullable(body[id]))
       .valueOrElse('');
 
     this.id = id;

@@ -2,8 +2,8 @@ const Page = require('./Page');
 const requireSession = require('./../middleware/requireSession');
 const parseRequest = require('../middleware/parseRequest');
 const bodyParser = require('body-parser');
-const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const { expectImplemented } = require('../errors/expectImplemented');
+const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 
 class Question extends Page {
   constructor() {
@@ -34,6 +34,8 @@ class Question extends Page {
       } else {
         res.render(this.template);
       }
+    } else {
+      res.sendStatus(METHOD_NOT_ALLOWED);
     }
   }
 }

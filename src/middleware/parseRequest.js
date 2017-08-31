@@ -8,8 +8,6 @@ const parseRequest = (req, res, next) => {
     return;
   }
 
-  console.log(req.body);
-
   const form = req.currentStep.form;
 
   if (req.method === 'POST') {

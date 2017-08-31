@@ -58,7 +58,7 @@ describe('steps/Question', () => {
   });
 
   {
-    const question = new class extends Question {
+    const question = new class SimpleQuestion extends Question {
       get form() {
         return form(field('name'));
       }
@@ -105,7 +105,7 @@ describe('steps/Question', () => {
 
       it('saves answers in the session', () => {
         return postRequest.session(session => {
-          expect(session).to.contain.key('Question_name');
+          expect(session).to.contain.key('SimpleQuestion_name');
         });
       });
 
