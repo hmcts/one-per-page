@@ -31,8 +31,6 @@ class Question extends Page {
       if (this.fields.valid()) {
         this.fields.store();
         this.next().redirect(req, res);
-      } else {
-        res.redirect(this.url);
       }
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
