@@ -42,5 +42,8 @@
     "lint": "eslint .",
     "test": "NODE_PATH=. NODE_ENV=testing nyc mocha 'test/**/*.test.js'"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }
