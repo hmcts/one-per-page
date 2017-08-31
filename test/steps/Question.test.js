@@ -7,15 +7,35 @@ const { goTo } = require('../../src/services/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 
 describe('steps/Question', () => {
-  {
+  it('expects url to be implemented', () => {
     const unimplementedQuestion = () => {
       return new class extends Question {}();
     };
 
-    it('expects url to be implemented', () => {
+    return expect(unimplementedQuestion)
+      .to.throw(NotImplemented)
+      .that.has.property('unimplemented').which.contains('url');
+  });
+
+  {
+    const unimplementedQuestion = () => {
+      return new class extends Question {
+        get url() {
+          return '/foo';
+        }
+      }();
+    };
+
+    it('expects form to be implemented', () => {
       return expect(unimplementedQuestion)
         .to.throw(NotImplemented)
-        .that.has.property('unimplemented').which.contains('url');
+        .that.has.property('unimplemented').which.contains('form');
+    });
+
+    it('expects next to be implemented', () => {
+      return expect(unimplementedQuestion)
+        .to.throw(NotImplemented)
+        .that.has.property('unimplemented').which.contains('next');
     });
   }
 
