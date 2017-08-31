@@ -3,8 +3,14 @@ const requireSession = require('./../middleware/requireSession');
 const parseRequest = require('../middleware/parseRequest');
 const bodyParser = require('body-parser');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
+const { expectImplemented } = require('../errors/expectImplemented');
 
 class Question extends Page {
+  constructor() {
+    super();
+    expectImplemented(this, 'next', 'form');
+  }
+
   get middleware() {
     return [
       ...super.middleware,
