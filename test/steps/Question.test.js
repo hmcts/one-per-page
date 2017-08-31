@@ -39,6 +39,24 @@ describe('steps/Question', () => {
     });
   }
 
+  describe('#template', () => {
+    it('returns the step name by default', () => {
+      const foo = new class Foo extends Question {
+        get url() {
+          return '/foo';
+        }
+        get form() {
+          // intentionally blank
+          return '';
+        }
+        next() {
+          // intentionally blank
+        }
+      }();
+      expect(foo.template).to.eql(foo.name);
+    });
+  });
+
   {
     const question = new class extends Question {
       get form() {
@@ -91,7 +109,7 @@ describe('steps/Question', () => {
         });
       });
 
-      it('redirects to the next step', () => {
+      it('redirects to the next step if valid', () => {
         return postRequest.expect(302).expect('Location', '/next-step');
       });
     });
