@@ -11,7 +11,7 @@ const parseRequest = require('./middleware/parseRequest');
 
 const { field, form } = require('./services/fields');
 
-const { goTo } = require('./services/flow');
+const { goTo, branch } = require('./services/flow');
 
 module.exports = {
   EntryPoint,
@@ -23,5 +23,6 @@ module.exports = {
   middleware: { requireSession, parseRequest },
   field,
   form,
-  goTo
+  goTo,
+  branch
 };
