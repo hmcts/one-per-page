@@ -1,3 +1,10 @@
+<a name="0.3.0"></a>
+# 0.3.0 (2017-08-31)
+
+* Enable scoped packages being published to public npm ([50dcb8b](https://github.com/hmcts/one-per-page/commit/50dcb8b))
+
+
+
 <a name="0.2.0"></a>
 # 0.2.0 (2017-08-31)
 
