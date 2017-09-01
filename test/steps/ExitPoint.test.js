@@ -1,14 +1,7 @@
-const { testStep } = require('../util/supertest');
+const { testStep,shouldNotSetCookie} = require('../util/supertest');
 const { expect } = require('../util/chai');
 const ExitPoint = require('../../src/steps/ExitPoint');
 const { goTo } = require('../../src/services/flow');
-
-const shouldNotSetCookie = name => {
-  return res => Promise.all([
-    expect(Object.keys(res.headers)).to.not.include('set-cookie'),
-    expect(res.headers['set-cookie']).to.not.include.match(name)
-  ]);
-};
 
 describe('steps/ExitPoint', () => {
   describe('GET', () => {

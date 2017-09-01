@@ -4,6 +4,7 @@ const sessions = require('./../../src/services/sessions');
 const nunjucks = require('express-nunjucks');
 const zepto = require('zepto-node');
 const domino = require('domino');
+const { expect } = require('../util/chai');
 
 function testApp() {
   const app = express();
