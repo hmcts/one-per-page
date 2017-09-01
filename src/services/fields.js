@@ -66,7 +66,9 @@ class Form {
 
 const form = (...fields) => new Form(fields);
 
-const defaultValidator = () => null;
+const defaultValidator = () => undefined;
+const isNullOrUndefined = value =>
+  typeof value === 'undefined' || value === null;
 
 class FieldDesriptor {
   constructor(name, id, value) {
@@ -139,8 +141,11 @@ class FieldDesriptor {
       this.validator = validator;
       return this;
     }
-    this.error = this.validator(this);
-    return !this.error;
+    const error = this.validator(this);
+    if (!isNullOrUndefined(error)) {
+      this.error = error;
+    }
+    return isNullOrUndefined(error);
   }
 }
 
