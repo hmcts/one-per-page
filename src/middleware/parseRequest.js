@@ -18,10 +18,8 @@ const parseRequest = (req, res, next) => {
   }
 
   // set accessors for fields
-  req.fields = form.getFields;
-  res.locals.fields = form.getFields;
-
-  // set current step fields
+  req.fields = form;
+  res.locals.fields = form;
   req.currentStep.fields = form;
 
   next();

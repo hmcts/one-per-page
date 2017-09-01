@@ -1,9 +1,9 @@
 <h1>Question 1</h1>
 
 <div>
-  {{ fields.name }}
-  <input name="{{ fields.name.id }}"
-         value="{{ fields.name.value }}"
-         id="{{ fields.name.id }}"
+  {{ fields.get('name') }}
+  <input name="{{ fields.get('name').id }}"
+         value="{{ fields.get('name').value }}"
+         id="{{ fields.get('name').id }}"
          type="text">
 </div>

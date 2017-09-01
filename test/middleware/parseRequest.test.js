@@ -2,7 +2,7 @@ const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Page = require('../../src/steps/Page');
 const parseRequest = require('../../src/middleware/parseRequest');
-const { field, form } = require('../../src/services/fields.js');
+const { field, form, Form, FieldDesriptor } = require('../../src/services/fields.js');
 
 const handlerTest = (_form, { method = 'get', assertions }) => {
   const _step = new class extends Page {
@@ -34,18 +34,12 @@ describe('middleware/parseRequest', () => {
   });
 
   it('attaches a FieldDesriptor for each field to req.fields.[name]', () => {
-    return handlerTest(form(field('foo'), field('bar')), {
+    const foo = field('foo');
+    const bar = field('bar');
+    return handlerTest(form(foo, bar), {
       assertions(req) {
-        expect(req.fields).to.have.property('foo');
-        expect(req.fields).to.have.property('bar');
-      }
-    });
-  });
-
-  it('attaches #valid to req.fields', () => {
-    return handlerTest(form(), {
-      assertions(req) {
-        expect(req.fields.validate).to.be.a('function');
+        expect(req.fields.get('foo')).to.be.an.instanceof(FieldDesriptor);
+        expect(req.fields.get('bar')).to.be.an.instanceof(FieldDesriptor);
       }
     });
   });
@@ -53,7 +47,7 @@ describe('middleware/parseRequest', () => {
   it('attaches req.fields to the currentStep (this in handler)', () => {
     return handlerTest(form(field('foo'), field('bar')), {
       assertions(req) {
-        expect(req.currentStep.fields).to.eql(req.fields);
+        expect(req.currentStep.fields).to.be.an.instanceof(Form);
       }
     });
   });
@@ -79,9 +73,12 @@ describe('middleware/parseRequest', () => {
 
 
     it('has a field for each declared field', () => {
-      return handlerTest(form(field('foo'), field('bar')), {
+      const foo = field('foo');
+      const bar = field('bar');
+      return handlerTest(form(foo, bar), {
         assertions(req) {
-          expect(req.fields).to.have.keys(['foo', 'bar']);
+          expect(req.fields.get('foo')).to.equal(foo);
+          expect(req.fields.get('bar')).to.equal(bar);
         }
       });
     });
@@ -92,8 +89,8 @@ describe('middleware/parseRequest', () => {
         sinon.spy(fakeField, 'deserialize');
         return handlerTest(form(fakeField), {
           assertions(req) {
-            expect(req.fields).to.have.key('fake');
-            expect(req.fields.fake).to.have.property('name', 'fake');
+            expect(req.fields.get('fake')).to.equal(fakeField);
+            expect(req.fields.get('fake')).to.have.property('name', 'fake');
           }
         }).then(() => expect(fakeField.deserialize).calledOnce);
       });
@@ -106,8 +103,8 @@ describe('middleware/parseRequest', () => {
         return handlerTest(form(fakeField), {
           method: 'post',
           assertions(req) {
-            expect(req.fields).to.have.key('fake');
-            expect(req.fields.fake).to.have.property('name', 'fake');
+            expect(req.fields.get('fake')).to.equal(fakeField);
+            expect(req.fields.get('fake')).to.have.property('name', 'fake');
           }
         }).then(() => expect(fakeField.parse).calledOnce);
       });

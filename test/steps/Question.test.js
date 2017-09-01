@@ -88,11 +88,11 @@ describe('steps/Question', () => {
         return testStep(question)
           .withSetup(req => {
             req.session.generate();
-            req.session.Question_name = 'Michael Allen';
+            req.session.SimpleQuestion_name = 'Michael Allen';
           })
           .get()
           .html($ => {
-            expect($('#Question_name')).to.contain.$val('Michael Allen');
+            expect($('#SimpleQuestion_name')).to.contain.$val('Michael Allen');
           });
       });
     });

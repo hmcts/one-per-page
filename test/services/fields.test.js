@@ -46,15 +46,14 @@ describe('services/fields', () => {
         fields.forEach(_field => expect(_field.parse).calledOnce);
       });
 
-      it('returns an array of FieldDesriptor', () => {
+      it('creates an array of FieldDesriptor', () => {
         const f = new Form([]);
         const req = { currentStep: {} };
-        const parsed = f.parse(req);
-        expect(parsed).to.be.an('array');
-        parsed.forEach(parsedField => {
+        f.parse(req);
+        expect(f.fields).to.be.an('array');
+        f.fields.forEach(parsedField => {
           expect(parsedField).to.be.an.instanceof(FieldDesriptor);
         });
-        expect(parsed).to.be.an('array');
       });
     });
 
@@ -69,15 +68,14 @@ describe('services/fields', () => {
         fields.forEach(_field => expect(_field.deserialize).calledOnce);
       });
 
-      it('returns an array of FieldDesriptor', () => {
+      it('creates an array of FieldDesriptors', () => {
         const f = new Form([]);
         const req = { currentStep: {} };
-        const retrieved = f.retrieve(req);
-        expect(retrieved).to.be.an('array');
-        retrieved.forEach(retrievedField => {
+        f.retrieve(req);
+        expect(f.fields).to.be.an('array');
+        f.fields.forEach(retrievedField => {
           expect(retrievedField).to.be.an.instanceof(FieldDesriptor);
         });
-        expect(retrieved).to.be.an('array');
       });
     });
 
@@ -90,13 +88,6 @@ describe('services/fields', () => {
         const req = {};
 
         expect(() => f.store(req)).to.throw('Session not initialized');
-      });
-
-      it('throws an error if a field is missing in req.fields', () => {
-        const f = new Form([name]);
-        const req = { fields: {}, session: {} };
-
-        expect(() => f.store(req)).to.throw(/Field name not present in/);
       });
 
       it('calls req.field.serialize on each field', () => {
@@ -114,19 +105,31 @@ describe('services/fields', () => {
 
       it('stores the serialized fields in the session', () => {
         const f = new Form([field('name'), field('colour')]);
-        const req = { fields: { name, colour }, session: {} };
-
+        const req = {
+          body: {
+            name: 'Michael Allen',
+            colour: 'Green'
+          },
+          session: {}
+        };
+        f.parse(req);
         f.store(req);
-        expect(req.session).to.have.property('Details_name', 'Michael Allen');
-        expect(req.session).to.have.property('Prefs_colour', 'Green');
+        expect(req.session).to.have.property('name', 'Michael Allen');
+        expect(req.session).to.have.property('colour', 'Green');
       });
 
       it('only calls serialize on fields declared in the form', () => {
         const f = new Form([field('colour')]);
-        const req = { fields: { name, colour }, session: {} };
-
+        const req = {
+          body: {
+            name: 'Michael Allen',
+            colour: 'Green'
+          },
+          session: {}
+        };
+        f.parse(req);
         f.store(req);
-        expect(req.session).to.eql({ Prefs_colour: 'Green' });
+        expect(req.session).to.eql({ colour: 'Green' });
       });
     });
   });
@@ -179,7 +182,7 @@ describe('services/fields', () => {
 
       it('fills FieldDesriptor.value with answer from request body', () => {
         const req = {
-          body: { firstName: 'Michael' },
+          body: { NameStep_firstName: 'Michael' },
           session: {},
           currentStep: { name: 'NameStep' }
         };

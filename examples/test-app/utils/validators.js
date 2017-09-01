@@ -12,4 +12,13 @@ const isString = (min = defaultMin, max = defaultMax, required = true) => {
   return field => Joi.validate(field.value, validator).error;
 };
 
-module.exports = { isString };
+const isOneOf = (validValues = [], required = false) => {
+  const validator = Joi.string()
+    .valid(validValues);
+  if (required) {
+    validator.required();
+  }
+  return field => Joi.validate(field.value, validator).error;
+};
+
+module.exports = { isString, isOneOf };

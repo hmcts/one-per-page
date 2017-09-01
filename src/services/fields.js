@@ -5,11 +5,8 @@ class Form {
     this.fields = fields;
   }
 
-  get getFields() {
-    return this.fields.reduce((fields, field) => {
-      fields[field.name] = field;
-      return fields;
-    }, {});
+  get(name) {
+    return this.fields.find(field => field.name === name);
   }
 
   /**
@@ -21,6 +18,7 @@ class Form {
    */
   parse(req) {
     this.fields.forEach(field => field.parse(req));
+    return this;
   }
 
   /**
@@ -35,11 +33,8 @@ class Form {
     }
     this.fields.forEach(field => {
       const serialized = field.serialize();
-      // console.log('field', field);
-      // console.log('serialized', serialized);
       Object.assign(req.session, serialized);
     });
-      // console.log(req.session);
   }
 
   /**
@@ -51,6 +46,7 @@ class Form {
    */
   retrieve(req) {
     this.fields.forEach(field => field.deserialize(req));
+    return this;
   }
 
   errors(/* parsedFields */) {
@@ -73,7 +69,7 @@ const form = (...fields) => new Form(fields);
 const defaultValidator = () => null;
 
 class FieldDesriptor {
-  constructor(name = '', id, value = '') {
+  constructor(name, id, value) {
     this.name = name;
     this.id = id;
     this.value = value;
