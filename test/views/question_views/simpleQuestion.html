@@ -1,6 +1,13 @@
 <h1>Question 1</h1>
 
 <div>
+
+  {% if fields.get('name').error %}
+    <span class="error-message">
+      {{ fields.get('name').error | safe}}
+    </span>
+  {% endif %}
+
   {{ fields.get('name') }}
   <input name="{{ fields.get('name').id }}"
          value="{{ fields.get('name').value }}"

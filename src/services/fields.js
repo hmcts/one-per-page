@@ -66,7 +66,7 @@ class Form {
 
 const form = (...fields) => new Form(fields);
 
-const defaultValidator = () => undefined;
+const defaultValidator = () => null;
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
 
