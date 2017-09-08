@@ -46,15 +46,14 @@ describe('services/fields', () => {
         fields.forEach(_field => expect(_field.parse).calledOnce);
       });
 
-      it('returns an array of FieldDesriptor', () => {
+      it('creates an array of FieldDesriptor', () => {
         const f = new Form([]);
         const req = { currentStep: {} };
-        const parsed = f.parse(req);
-        expect(parsed).to.be.an('array');
-        parsed.forEach(parsedField => {
+        f.parse(req);
+        expect(f.fields).to.be.an('array');
+        f.fields.forEach(parsedField => {
           expect(parsedField).to.be.an.instanceof(FieldDesriptor);
         });
-        expect(parsed).to.be.an('array');
       });
     });
 
@@ -69,15 +68,14 @@ describe('services/fields', () => {
         fields.forEach(_field => expect(_field.deserialize).calledOnce);
       });
 
-      it('returns an array of FieldDesriptor', () => {
+      it('creates an array of FieldDesriptors', () => {
         const f = new Form([]);
         const req = { currentStep: {} };
-        const retrieved = f.retrieve(req);
-        expect(retrieved).to.be.an('array');
-        retrieved.forEach(retrievedField => {
+        f.retrieve(req);
+        expect(f.fields).to.be.an('array');
+        f.fields.forEach(retrievedField => {
           expect(retrievedField).to.be.an.instanceof(FieldDesriptor);
         });
-        expect(retrieved).to.be.an('array');
       });
     });
 
@@ -90,13 +88,6 @@ describe('services/fields', () => {
         const req = {};
 
         expect(() => f.store(req)).to.throw('Session not initialized');
-      });
-
-      it('throws an error if a field is missing in req.fields', () => {
-        const f = new Form([name]);
-        const req = { fields: {}, session: {} };
-
-        expect(() => f.store(req)).to.throw(/Field name not present in/);
       });
 
       it('calls req.field.serialize on each field', () => {
@@ -114,19 +105,89 @@ describe('services/fields', () => {
 
       it('stores the serialized fields in the session', () => {
         const f = new Form([field('name'), field('colour')]);
-        const req = { fields: { name, colour }, session: {} };
-
+        const req = {
+          body: {
+            name: 'Michael Allen',
+            colour: 'Green'
+          },
+          session: {}
+        };
+        f.parse(req);
         f.store(req);
-        expect(req.session).to.have.property('Details_name', 'Michael Allen');
-        expect(req.session).to.have.property('Prefs_colour', 'Green');
+        expect(req.session).to.have.property('name', 'Michael Allen');
+        expect(req.session).to.have.property('colour', 'Green');
       });
 
       it('only calls serialize on fields declared in the form', () => {
         const f = new Form([field('colour')]);
-        const req = { fields: { name, colour }, session: {} };
-
+        const req = {
+          body: {
+            name: 'Michael Allen',
+            colour: 'Green'
+          },
+          session: {}
+        };
+        f.parse(req);
         f.store(req);
-        expect(req.session).to.eql({ Prefs_colour: 'Green' });
+        expect(req.session).to.eql({ colour: 'Green' });
+      });
+    });
+
+    describe('#invalidFields', () => {
+      const errorMessage = 'Error message';
+      const returnIsValid = sinon.stub().returns();
+      const returnIsInvalid = sinon.stub().returns(errorMessage);
+
+      it('returns invalid fields', () => {
+        const invalidField = new FieldDesriptor('name')
+          .validate(returnIsInvalid);
+        const f = new Form([invalidField]);
+        expect(f.invalidFields).to.eql([invalidField]);
+        expect(f.invalidFields[0]).to.be.an.instanceof(FieldDesriptor);
+      });
+
+      it('only returns invalid fields', () => {
+        const validField1 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const validField2 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const invalidField = new FieldDesriptor('name')
+          .validate(returnIsInvalid);
+
+        const f = new Form([validField1, validField2, invalidField]);
+        expect(f.invalidFields).to.eql([invalidField]);
+        expect(f.invalidFields[0]).to.be.an.instanceof(FieldDesriptor);
+      });
+    });
+
+    describe('#valid', () => {
+      const errorMessage = 'Error message';
+      const returnIsValid = sinon.stub().returns();
+      const returnIsInvalid = sinon.stub().returns(errorMessage);
+
+      it('returns valid if all fields pass validation', () => {
+
+        const validField1 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const validField2 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const validField3 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+
+        const f = new Form([validField1, validField2, validField3]);
+        expect(f.valid).to.eql(true);
+      });
+
+      it('returns invalid if one of the fields fails validation', () => {
+        const validField1 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const validField2 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const invalidField1 = new FieldDesriptor('name')
+          .validate(returnIsInvalid);
+
+        const f = new Form([validField1, validField2, invalidField1]);
+        expect(f.valid).to.eql(false);
       });
     });
   });
@@ -179,7 +240,7 @@ describe('services/fields', () => {
 
       it('fills FieldDesriptor.value with answer from request body', () => {
         const req = {
-          body: { firstName: 'Michael' },
+          body: { NameStep_firstName: 'Michael' },
           session: {},
           currentStep: { name: 'NameStep' }
         };
@@ -198,6 +259,79 @@ describe('services/fields', () => {
         const foo = new FieldDesriptor('first_name', 'Michael');
         const fakeStep = { name: 'NameStep' };
         expect(foo.makeId(fakeStep)).to.eql(`${fakeStep.name}_${foo.name}`);
+      });
+    });
+
+    describe('#validate', () => {
+      const errorMessage = 'Error message';
+
+      it('sets a validator function', () => {
+        const validValidator = sinon.stub().returns();
+        const foo = new FieldDesriptor('foo');
+        // set validator functon
+        foo.validate(validValidator);
+        foo.validate();
+        expect(validValidator).to.have.been.calledOnce;
+      });
+
+      it('uses a default validator function if not set', () => {
+        const defaultValidator = sinon.stub().returns();
+
+        const foo = new class extends FieldDesriptor {
+          constructor(name, id, value) {
+            super(name, id, value);
+            this.validator = defaultValidator;
+          }
+        }('foo');
+
+        foo.validate();
+        expect(defaultValidator).to.have.been.calledOnce;
+      });
+
+      it('returns true if field is valid and validator returns undefined',
+        () => {
+          const validValidator = sinon.stub().returns();
+          const foo = new FieldDesriptor('foo')
+            .validate(validValidator);
+
+          const isValid = foo.validate();
+
+          expect(validValidator).to.have.been.calledOnce;
+          expect(isValid).to.eql(true);
+        });
+
+      it('returns true if field is validator returns null', () => {
+        const validValidator = sinon.stub().returns(null);
+        const foo = new FieldDesriptor('foo')
+          .validate(validValidator);
+
+        const isValid = foo.validate();
+
+        expect(validValidator).to.have.been.calledOnce;
+        expect(isValid).to.eql(true);
+      });
+
+      it('returns false if field is valid', () => {
+        const invalidValidator = sinon.stub().returns(errorMessage);
+        const foo = new FieldDesriptor('foo')
+          .validate(invalidValidator);
+
+        const isValid = foo.validate();
+
+        expect(isValid).to.eql(false);
+        expect(invalidValidator).to.have.been.calledOnce;
+      });
+
+      it('sets error to context if field is invalid', () => {
+        const invalidValidator = sinon.stub().returns(errorMessage);
+        const foo = new FieldDesriptor('foo')
+          .validate(invalidValidator);
+
+        const isValid = foo.validate();
+
+        expect(isValid).to.eql(false);
+        expect(foo.error).to.eql(errorMessage);
+        expect(invalidValidator).to.have.been.calledOnce;
       });
     });
   });

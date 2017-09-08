@@ -127,7 +127,9 @@ class TestStepDSL {
   post() {
     const postRequest = this.execute('post');
     if (Object.keys(this.body).length !== 0) {
-      return postRequest.send(this.body);
+      return postRequest
+        .type('form')
+        .send(this.body);
     }
     return postRequest;
   }

@@ -1,4 +1,4 @@
-const { expect } = require('../util/chai');
+const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
 const { NotImplemented } = require('../../src/errors/expectImplemented');
@@ -58,7 +58,7 @@ describe('steps/Question', () => {
   });
 
   {
-    const question = new class extends Question {
+    const SimpleQuestion = class extends Question {
       get form() {
         return form(field('name'));
       }
@@ -72,7 +72,9 @@ describe('steps/Question', () => {
       next() {
         return goTo({ url: '/next-step' });
       }
-    }();
+    };
+
+    const question = new SimpleQuestion();
 
     describe('GET', () => {
       it('renders the page on GET', () => {
@@ -88,11 +90,11 @@ describe('steps/Question', () => {
         return testStep(question)
           .withSetup(req => {
             req.session.generate();
-            req.session.Question_name = 'Michael Allen';
+            req.session.SimpleQuestion_name = 'Michael Allen';
           })
           .get()
           .html($ => {
-            expect($('#Question_name')).to.contain.$val('Michael Allen');
+            expect($('#SimpleQuestion_name')).to.contain.$val('Michael Allen');
           });
       });
     });
@@ -105,12 +107,61 @@ describe('steps/Question', () => {
 
       it('saves answers in the session', () => {
         return postRequest.session(session => {
-          expect(session).to.contain.key('Question_name');
+          expect(session).to.contain.key('SimpleQuestion_name');
         });
       });
 
-      it('redirects to the next step if valid', () => {
+      it('redirects to the next step', () => {
         return postRequest.expect(302).expect('Location', '/next-step');
+      });
+
+      describe('is invalid', () => {
+        const errorMessage = 'Error message';
+        const returnIsInvalid = sinon.stub().returns(errorMessage);
+        const InvalidQuestion = class extends SimpleQuestion {
+          get url() {
+            return '/question-1';
+          }
+          get form() {
+            return form(
+              field('name').validate(returnIsInvalid)
+            );
+          }
+        };
+        const invalidQuestion = new InvalidQuestion();
+
+        it('renders step with error message', () => {
+          return testStep(invalidQuestion)
+            .withSetup(req => req.session.generate())
+            .withField('name', 'Invalid Answer')
+            .post()
+            .html($ => {
+              return expect($('.error-message')).to.contain.$text(errorMessage);
+            });
+        });
+      });
+
+      describe('is valid', () => {
+        const returnIsValid = sinon.stub().returns();
+        const ValidQuestion = class extends SimpleQuestion {
+          get url() {
+            return '/next-step';
+          }
+          get form() {
+            return form(
+              field('name').validate(returnIsValid)
+            );
+          }
+        };
+        const validQuestion = new ValidQuestion();
+
+        it('redirects to the next step if valid', () => {
+          const response = testStep(validQuestion)
+            .withSetup(req => req.session.generate())
+            .withField('name', 'valid answer')
+            .post();
+          return response.expect(302).expect('Location', '/next-step');
+        });
       });
     });
 

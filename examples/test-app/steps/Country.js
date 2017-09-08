@@ -1,4 +1,5 @@
 const { Question, form, field, goTo, branch } = require('@hmcts/one-per-page');
+const { isOneOf } = require('../utils/validators');
 
 class Country extends Question {
   get url() {
@@ -6,11 +7,13 @@ class Country extends Question {
   }
 
   get form() {
-    return form(field('country'));
+    const validAnswers = ['northern-ireland', 'scotland', 'england', 'wales'];
+    return form(field('country').validate(isOneOf(validAnswers)));
   }
 
   next() {
-    const livesInNI = () => this.fields.country.value === 'northern-ireland';
+    const livesInNI = () =>
+      this.fields.get('country').value === 'northern-ireland';
 
     return branch(
       goTo(this.journey.ExitNorthernIreland).if(livesInNI),

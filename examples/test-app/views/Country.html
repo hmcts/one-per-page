@@ -14,13 +14,13 @@
 {% block fields %}
 
   {% call formSection() %}
-    {{ selectionButtons(fields.country, "Where do you live?",
+    {{ selectionButtons(fields.get('country'), "Where do you live?",
       hint = 'Some advice about the question',
       options = [
         { label: "Northern Ireland", value: "northern-ireland" },
-        { label: "Scotland" },
-        { label: "England" },
-        { label: "Wales" }
+        { label: "Scotland", value: "scotland" },
+        { label: "England", value: "england" },
+        { label: "Wales", value: "wales" }
       ]
     ) }}
   {% endcall %}
