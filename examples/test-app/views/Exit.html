@@ -1,0 +1,98 @@
+{% extends "look-and-feel/layouts/two_thirds.html" %}
+{% from "look-and-feel/components/header.njk" import header %}
+
+{% block head -%}
+<link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+	<div class="phase-banner-beta">
+  <p>
+    <strong class="phase-tag">BETA</strong>
+    <span>This is a new service – your <a target="_blank" rel="noopener noreferrer" href="/feedback">feedback</a> will help us improve it</span>
+  </p>
+</div>
+
+	<div class="grid-row">
+		<div class="column-two-thirds">
+
+			<div class="govuk-box-highlight">
+				
+        <h1 class="bold-large">Application complete</h1>
+        
+        <p>
+         Your reference number is <br>
+          <strong class="heading-medium">HDJ2123F</strong>
+        </p>
+			</div>
+
+      <br>
+
+      <p class="text">
+      Email confirmation has been sent to <strong class="bold-small"></strong>.
+      </p>
+
+      <h2 class="heading-medium">What happens next</h2>
+
+<p class="text">
+  The court will check your application. If it's correct and the fee has been paid, you'll be sent a ’notice of proceedings’ confirming that court action has begun, with your case number and a copy of the application stamped by the court.
+</p> 
+
+<p class="text">
+  You can find more information about the entire divorce process in the email that's been sent to you.
+</p>
+
+<p class="text">
+  Contact the court if you don't hear anything back after 2 weeks.
+</p>
+
+			
+<h2 class="heading-medium">If you need help</h2>
+
+<p class"text">
+  You can contact the court if you need help with your application. Court staff can’t give you legal advice however, and you should speak to a <a href="https://www.gov.uk/find-a-legal-adviser"target="blank">solicitor or legal adviser</a> if you need help with that.
+</p>
+
+<p class"text">
+  Email: eastmidlandsdivorce@hmcts.gsi.gov.uk
+</p>
+
+<p class"text">
+  Phone: 0115 955 8186
+</p>
+
+<p class"text">
+  Courts are open Monday to Friday, 10:00am to 2:00pm
+</p>
+
+<h2 class="heading-medium">Help with fees</h2>
+
+<p class="text">
+    How much financial help you get with your fee depends on your individual circumstances. The court will check if your help with fees application has been successful, and if you still need to pay anything.
+</p>
+
+<p class="text">
+    You’ll be contacted if you need to pay anything.
+</p>
+
+<h2 class="heading-medium">Dividing your money and property</h2>
+
+
+
+<p class="text">
+  If you agree with your husband/wife on how your money and property will be split, and want it to be legally binding, you can <a href="https://www.gov.uk/money-property-when-relationship-ends/apply-for-consent-order">apply for a consent order</a>.
+</p>
+<p class="text">
+  If in the future you want the court to settle your financial arrangements with your husband/wife, you can only <a href="https://www.gov.uk/money-property-when-relationship-ends/apply-for-a-financial-order">apply for a financial order</a> until you remarry. Once you've married someone else, you will lose the right to do so.
+</p>
+
+
+            <form method="POST" accept-charset="utf-8" class="form" id="form" enctype="application/x-www-form-urlencoded">
+
+
+</div>
+
+</main>
+{% endblock %}

@@ -4,6 +4,7 @@ const sessions = require('./../../src/services/sessions');
 const nunjucks = require('express-nunjucks');
 const zepto = require('zepto-node');
 const domino = require('domino');
+const { expect } = require('../util/chai');
 
 function testApp() {
   const app = express();
@@ -80,6 +81,20 @@ const wrapWithResponseAssertions = supertestObj => {
   return supertestObj;
 };
 
+const shouldNotSetCookie = name => {
+  return res => Promise.all([
+    expect(Object.keys(res.headers)).to.not.include('set-cookie'),
+    expect(res.headers['set-cookie']).to.not.include.match(name)
+  ]);
+};
+
+const shouldSetCookie = name => {
+  return res => Promise.all([
+    expect(Object.keys(res.headers)).to.include('set-cookie'),
+    expect(res.headers['set-cookie']).to.include.match(name)
+  ]).then(() => res);
+};
+
 class TestStepDSL {
   constructor(step, body = {}, middleware = []) {
     this.step = step;
@@ -147,5 +162,7 @@ class TestStepDSL {
 module.exports = {
   supertest,
   testApp,
-  testStep: TestStepDSL.create
+  testStep: TestStepDSL.create,
+  shouldNotSetCookie,
+  shouldSetCookie
 };

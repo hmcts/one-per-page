@@ -11,6 +11,7 @@ const Name = require('./steps/Name');
 const Country = require('./steps/Country');
 const Entry = require('./steps/Entry');
 const ExitNorthernIreland = require('./steps/ExitNorthernIreland');
+const Exit = require('./steps/Exit');
 
 const app = express();
 
@@ -32,7 +33,8 @@ journey(app, {
     new Sessions(),
     new Name(),
     new Country(),
-    new ExitNorthernIreland()
+    new ExitNorthernIreland(),
+    new Exit()
   ],
   session: {
     redis: { url: config.redisUrl },

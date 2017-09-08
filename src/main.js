@@ -2,6 +2,7 @@ const BaseStep = require('./steps/BaseStep');
 const Page = require('./steps/Page');
 const Question = require('./steps/Question');
 const EntryPoint = require('./steps/EntryPoint');
+const ExitPoint = require('./steps/ExitPoint');
 const Redirect = require('./steps/Redirect');
 
 const journey = require('./Journey');
@@ -15,6 +16,7 @@ const { goTo, branch } = require('./services/flow');
 
 module.exports = {
   EntryPoint,
+  ExitPoint,
   Redirect,
   BaseStep,
   Page,

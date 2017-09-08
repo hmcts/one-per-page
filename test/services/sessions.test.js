@@ -1,7 +1,7 @@
 const sessions = require('../../src/services/sessions');
 const proxyquire = require('proxyquire');
 const { expect, sinon } = require('../util/chai');
-const { testApp, supertest } = require('../util/supertest');
+const { testApp, supertest,shouldSetCookie,shouldNotSetCookie } = require('../util/supertest');
 const expressSession = require('express-session');
 const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
@@ -40,20 +40,6 @@ const createServer = (options, {
   app.use(respond);
 
   return app;
-};
-
-const shouldNotSetCookie = name => {
-  return res => Promise.all([
-    expect(Object.keys(res.headers)).to.not.include('set-cookie'),
-    expect(res.headers['set-cookie']).to.not.include.match(name)
-  ]);
-};
-
-const shouldSetCookie = name => {
-  return res => Promise.all([
-    expect(Object.keys(res.headers)).to.include('set-cookie'),
-    expect(res.headers['set-cookie']).to.include.match(name)
-  ]).then(() => res);
 };
 
 const cookie = res => {
