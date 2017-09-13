@@ -7,9 +7,11 @@
 
 {% block two_thirds %}
 
-{{ header("Hello World!") }}
+{{ header(content.title) }}
 
-<p>A basic page.</p>
-<p>Hello, {{ session.username }} (loaded from session)</p>
+<p>{{ content.basicPage }}</p>
+<p>{{ content.hello }}</p>
+
+{{ session | dump }}
 
 {% endblock %}

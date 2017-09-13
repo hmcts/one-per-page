@@ -5,7 +5,7 @@
 {% set phase="ALPHA" %}
 {% set feedbackLink="https://github.com/hmcts/one-per-page/issues/new" %}
 {% set title %}
-  What is your name?
+  {{ content.title | safe }}
 {% endset %}
 
 {% block head -%}
@@ -15,8 +15,8 @@
 {% block fields %}
 
   {% call formSection() %}
-    {{ textbox(fields.get('firstName'), "First name(s)", hint="Include all middle names here") }}
-    {{ textbox(fields.get('lastName'), "Last name(s)") }}
+    {{ textbox(fields.get('firstName'), fields.get('firstName').content.title, hint=fields.get('firstName').content.hint) }}
+    {{ textbox(fields.get('lastName'), fields.get('lastName').content.title) }}
   {% endcall %}
 
 {% endblock %}
