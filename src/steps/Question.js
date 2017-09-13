@@ -20,10 +20,6 @@ class Question extends Page {
     ];
   }
 
-  get template() {
-    return this.name;
-  }
-
   handler(req, res) {
     if (req.method === 'GET') {
       super.handler(req, res);
