@@ -147,6 +147,12 @@ class FieldDesriptor {
     }
     return isNullOrUndefined(error);
   }
+
+  // one time setter, used once to set the content of the field
+  content(content) {
+    this.content = content;
+    return this;
+  }
 }
 
 const field = name => new FieldDesriptor(name);

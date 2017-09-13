@@ -334,5 +334,15 @@ describe('services/fields', () => {
         expect(invalidValidator).to.have.been.calledOnce;
       });
     });
+
+    describe('#content', () => {
+      const content = { title: 'some title' };
+
+      it('sets and gets the content for the field', () => {
+        const foo = new FieldDesriptor('foo');
+        foo.content(content);
+        expect(foo.content).to.eql(content);
+      });
+    });
   });
 });
