@@ -1,6 +1,6 @@
-const { Page } = require('@hmcts/one-per-page');
+const { BaseStep } = require('@hmcts/one-per-page');
 
-class CreateSession extends Page {
+class CreateSession extends BaseStep {
   get url() {
     return '/create-session';
   }
@@ -10,7 +10,7 @@ class CreateSession extends Page {
     req.session.username = 'Michael';
     req.session.Name_firstName = 'Michael';
     req.session.Name_lastName = 'Allen';
-    res.redirect('/sessions');
+    res.redirect('/hello-world');
   }
 }
 

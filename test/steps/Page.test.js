@@ -45,6 +45,75 @@ describe('Page', () => {
     });
   }
 
+  describe('content', () => {
+    const content = { title: 'some title' };
+
+    it('creates i18next if i18NextContent exsists', () => {
+      const page = new class extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get template() {
+          return 'page_views/simplePage';
+        }
+        get i18NextContent() {
+          return content;
+        }
+      }();
+      expect(page.i18next).to.not.undefined;
+    });
+
+    it('does not create i18next if i18NextContent does not exsists', () => {
+      const page = new class extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get template() {
+          return 'page_views/simplePage';
+        }
+      }();
+      expect(page.i18next).to.be.undefined;
+    });
+
+    it('transforms session items in content', () => {
+      const contentWithSessionData = {
+        en: {
+          translation: {
+            title: 'some title {{ session.foo }}',
+            subTitle: 'some subtitle {{ session.bar }}'
+          }
+        }
+      };
+      const session = { foo: 'some value', bar: 'some other value' };
+      const page = new class extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get template() {
+          return 'page_views/simplePage';
+        }
+        get i18NextContent() {
+          return contentWithSessionData;
+        }
+      }();
+      page.locals = { session };
+      expect(page.content.title).to.eql('some title some value');
+      expect(page.content.subTitle).to.eql('some subtitle some other value');
+    });
+
+    it('returns empty content if no i18NextContent exsists', () => {
+      const page = new class extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get template() {
+          return 'page_views/simplePage';
+        }
+      }();
+      expect(page.content).to.eql({});
+    });
+  });
+
   it('has access to the session', () => {
     const page = new class extends Page {
       get url() {

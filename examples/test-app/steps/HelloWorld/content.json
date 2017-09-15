@@ -1,0 +1,9 @@
+{
+  "en": {
+    "translation": {
+      "title": "Hello World!",
+      "basicPage": "A basic page.",
+      "hello": "Hello, {{ session.username }} (loaded from session)"
+    }
+  }
+}

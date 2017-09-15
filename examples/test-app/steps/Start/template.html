@@ -1,0 +1,24 @@
+{% extends "look-and-feel/layouts/start_page.html" %}
+
+{% set title='Apply for Divorce' %}
+{% set phase='ALPHA' %}
+{% set feedbackLink='https://github.com/hmcts/look-and-feel/issues/new' %}
+
+{% block head -%}
+  <link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
+{% endblock %}
+
+{% block guidance %}
+
+<p class="text">{{ content.useThisService }}</p>
+
+<div class="panel panel-border-wide">
+  <p class="text">
+    {{ content.divorces | safe }}
+  </p>
+</div>
+<p class="text">
+  {{ content.4To6Months | safe }}
+</p>
+
+{% endblock%}

@@ -53,7 +53,7 @@ describe('steps/Question', () => {
           // intentionally blank
         }
       }();
-      expect(foo.template).to.eql(foo.name);
+      expect(foo.template).to.eql(`${foo.name}/template`);
     });
   });
 

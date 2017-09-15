@@ -5,7 +5,7 @@ const { journey } = require('@hmcts/one-per-page');
 const lookAndFeel = require('@hmcts/look-and-feel');
 const HelloWorld = require('./steps/HelloWorld');
 const CreateSession = require('./steps/CreateSession');
-const Sessions = require('./steps/Sessions');
+const Sessions = require('./steps/Session');
 const Start = require('./steps/Start');
 const Name = require('./steps/Name');
 const Country = require('./steps/Country');
@@ -19,7 +19,7 @@ const baseUrl = `http://localhost:${config.port}`;
 
 lookAndFeel.configure(app, {
   baseUrl,
-  express: { views: [path.resolve(__dirname, 'views')] },
+  express: { views: [path.resolve(__dirname, 'steps')] },
   webpack: { entry: [path.resolve(__dirname, 'assets/scss/main.scss')] }
 });
 
