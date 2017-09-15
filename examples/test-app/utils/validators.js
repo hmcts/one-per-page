@@ -37,7 +37,6 @@ const isOneOf = ({ language = {}, validValues = [], required = true }) => {
     }
     return error;
   };
-  // return field => Joi.validate(field.value, validator).error;
 };
 
 module.exports = { isString, isOneOf };
