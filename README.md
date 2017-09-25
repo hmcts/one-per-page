@@ -23,5 +23,5 @@ make
 
 Once complete you will be dropped in to a shell where you can run `yarn`.
 
-[Dockerfile]:https://github.com/hmcts/nodejs-one-per-page/blob/master/Dockerfile
-[docker-compose.yml]:https://github.com/hmcts/nodejs-one-per-page/blob/master/docker-compose.yml
+[Dockerfile]:https://github.com/hmcts/one-per-page/blob/master/Dockerfile
+[docker-compose.yml]:https://github.com/hmcts/one-per-page/blob/master/docker-compose.yml
