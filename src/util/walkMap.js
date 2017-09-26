@@ -1,3 +1,7 @@
+// This file will soon be removed. To save time, for now, I am ignoring linting.
+
+/* eslint-disable */
+
 /* Walk map loops through each item in array or object returning a
  * to the item. For example an object like:
  * const obj = { foo: { bar: 'bar', bar2: 'bar2'} }
