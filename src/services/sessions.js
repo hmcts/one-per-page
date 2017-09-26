@@ -2,7 +2,7 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const config = require('config');
 const { isTest } = require('../util/isTest');
-const shims = require('./sessions/shims');
+const { shimSession } = require('../session/sessionShims');
 const { shimSessionStore } = require('../session/sessionStoreShims');
 
 const MemoryStore = session.MemoryStore;
@@ -46,7 +46,7 @@ const overrides = (req, res, next) => error => {
   res.locals.session = req.session;
 
   if (req.session && req.sessionStore) {
-    shims.shimSession(req);
+    shimSession(req);
     shimSessionStore(req);
     next();
   } else {
