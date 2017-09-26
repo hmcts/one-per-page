@@ -1,5 +1,5 @@
 const Page = require('./Page');
-const destroySession = require('../middleware/destroySession');
+const destroySession = require('../session/destroySession');
 
 class ExitPoint extends Page {
   get middleware() {

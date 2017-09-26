@@ -1,9 +1,9 @@
 const { expect } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Page = require('../../src/steps/Page');
-const requireSession = require('../../src/middleware/requireSession');
+const requireSession = require('../../src/session/requireSession');
 
-describe('middleware/requireSession', () => {
+describe('session/requireSession', () => {
   const page = new class extends Page {
     get middleware() {
       return [requireSession, ...super.middleware];

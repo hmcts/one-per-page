@@ -1,5 +1,5 @@
 const Redirect = require('./Redirect');
-const createSession = require('../middleware/createSession');
+const createSession = require('../session/createSession');
 
 class EntryPoint extends Redirect {
   get middleware() {
