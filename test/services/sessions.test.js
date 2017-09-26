@@ -1,7 +1,12 @@
 const sessions = require('../../src/services/sessions');
 const proxyquire = require('proxyquire');
 const { expect, sinon } = require('../util/chai');
-const { testApp, supertest,shouldSetCookie,shouldNotSetCookie } = require('../util/supertest');
+const {
+  testApp,
+  supertest,
+  shouldSetCookie,
+  shouldNotSetCookie
+} = require('../util/supertest');
 const expressSession = require('express-session');
 const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 

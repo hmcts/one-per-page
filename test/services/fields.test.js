@@ -1,3 +1,4 @@
+/* eslint max-lines: 0 */
 const { expect, sinon } = require('../util/chai');
 const {
   field,
@@ -166,7 +167,6 @@ describe('services/fields', () => {
       const returnIsInvalid = sinon.stub().returns(errorMessage);
 
       it('returns valid if all fields pass validation', () => {
-
         const validField1 = new FieldDesriptor('name')
           .validate(returnIsValid);
         const validField2 = new FieldDesriptor('name')

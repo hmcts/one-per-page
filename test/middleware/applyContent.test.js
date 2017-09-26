@@ -4,7 +4,7 @@ const applyContent = require('../../src/middleware/applyContent');
 describe('middleware/applyContent', () => {
   it('sets current steps content to res.locals', () => {
     const content = { title: 'some title' };
-    const req = { currentStep: { content: content } };
+    const req = { currentStep: { content } };
     const res = {};
     const next = sinon.stub();
     applyContent(req, res, next);

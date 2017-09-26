@@ -36,4 +36,3 @@ class Country extends Question {
 }
 
 module.exports = Country;
-
