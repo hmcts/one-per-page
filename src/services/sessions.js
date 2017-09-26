@@ -3,6 +3,7 @@ const RedisStore = require('connect-redis')(session);
 const config = require('config');
 const { isTest } = require('../util/isTest');
 const shims = require('./sessions/shims');
+const { shimSessionStore } = require('../session/sessionStoreShims');
 
 const MemoryStore = session.MemoryStore;
 
@@ -46,9 +47,7 @@ const overrides = (req, res, next) => error => {
 
   if (req.session && req.sessionStore) {
     shims.shimSession(req);
-    req.sessionStore.set = shims.set(req);
-    req.sessionStore.get = shims.get(req);
-    req.sessionStore.createSession = shims.createSession(req);
+    shimSessionStore(req);
     next();
   } else {
     next(new Error('Store is disconnected'));
