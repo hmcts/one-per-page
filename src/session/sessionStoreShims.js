@@ -1,4 +1,4 @@
-const { shimSession, activeProperty } = require('../services/sessions/shims');
+const { shimSession, activeProperty } = require('./sessionShims');
 
 const _set = Symbol('set');
 const set = req => {
