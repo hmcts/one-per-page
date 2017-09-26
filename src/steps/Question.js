@@ -1,5 +1,5 @@
 const Page = require('./Page');
-const requireSession = require('./../middleware/requireSession');
+const requireSession = require('./../session/requireSession');
 const parseRequest = require('../middleware/parseRequest');
 const bodyParser = require('body-parser');
 const { expectImplemented } = require('../errors/expectImplemented');

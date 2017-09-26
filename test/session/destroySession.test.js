@@ -1,7 +1,7 @@
 const { expect, sinon } = require('../util/chai');
-const destroySession = require('../../src/middleware/destroySession');
+const destroySession = require('../../src/session/destroySession');
 
-describe('middleware/destroySession', () => {
+describe('session/destroySession', () => {
   it('calls req.session.destroy() to destroy a session', done => {
     const req = { session: { destroy: sinon.stub() } };
     const res = {};
