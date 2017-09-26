@@ -1,39 +1,33 @@
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const expressSession = require('express-session');
+const RedisStore = require('connect-redis')(expressSession);
 const config = require('config');
 const { isTest } = require('../util/isTest');
+const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { shimSession } = require('../session/sessionShims');
 const { shimSessionStore } = require('../session/sessionStoreShims');
 
-const MemoryStore = session.MemoryStore;
+const MemoryStore = expressSession.MemoryStore;
 
 const redisOrInMemory = (options = {}) => {
   const redisOptions = options.redis || {};
   return isTest ? new MemoryStore() : new RedisStore(redisOptions);
 };
 
-const defaultIfUndefined = (property, defaultValue) => {
-  if (typeof property === 'undefined') {
-    return defaultValue;
-  }
-  return property;
-};
-
-const expressSession = opts => {
-  const userCookie = opts.cookie || {};
+const sessionOptions = userOpts => {
+  const userCookie = userOpts.cookie || {};
   const cookie = Object.assign({}, userCookie, {
     secure: defaultIfUndefined(userCookie.secure, !isTest),
     expires: defaultIfUndefined(userCookie.expires, false)
   });
 
-  const store = opts.store || redisOrInMemory(opts);
-  const secret = defaultIfUndefined(opts.secret, config.secret);
-  const resave = defaultIfUndefined(opts.resave, false);
-  const saveUninitialized = defaultIfUndefined(opts.saveUninitialized, false);
-  const name = defaultIfUndefined(opts.name, 'session');
-
-  const settings = { store, secret, resave, saveUninitialized, name, cookie };
-  return session(settings);
+  return {
+    store: userOpts.store || redisOrInMemory(userOpts),
+    secret: defaultIfUndefined(userOpts.secret, config.secret),
+    resave: defaultIfUndefined(userOpts.resave, false),
+    saveUninitialized: defaultIfUndefined(userOpts.saveUninitialized, false),
+    name: defaultIfUndefined(userOpts.name, 'session'),
+    cookie
+  };
 };
 
 const overrides = (req, res, next) => error => {
@@ -54,7 +48,8 @@ const overrides = (req, res, next) => error => {
   }
 };
 
-const sessions = (options = {}) => {
+const sessions = (userOptions = {}) => {
+  const options = sessionOptions(userOptions);
   const provider = expressSession(options);
   return (req, res, next) => provider(req, res, overrides(req, res, next));
 };
