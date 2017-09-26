@@ -1,3 +1,13 @@
+<a name="0.5.0"></a>
+# 0.5.0 (2017-09-26)
+
+* Content (#26) ([1bb9911](https://github.com/hmcts/one-per-page/commit/1bb9911))
+* Exit Step and Session Destroy (#23) ([7722475](https://github.com/hmcts/one-per-page/commit/7722475))
+* Fix linting issues introduced in recent PRs ([f2d143c](https://github.com/hmcts/one-per-page/commit/f2d143c))
+* Question validation (#25) ([4eb7e5d](https://github.com/hmcts/one-per-page/commit/4eb7e5d))
+
+
+
 <a name="0.3.0"></a>
 # 0.3.0 (2017-08-31)
 
