@@ -2,7 +2,7 @@ const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
 const { NotImplemented } = require('../../src/errors/expectImplemented');
-const { field, form } = require('../../src/services/fields');
+const { field, form } = require('../../src/forms');
 const { goTo } = require('../../src/services/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 

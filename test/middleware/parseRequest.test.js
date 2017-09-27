@@ -7,7 +7,7 @@ const {
   form,
   Form,
   FieldDesriptor
-} = require('../../src/services/fields.js');
+} = require('../../src/forms');
 
 const handlerTest = (_form, { method = 'get', assertions }) => {
   const _step = new class extends Page {

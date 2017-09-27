@@ -133,7 +133,7 @@ describe('Journey', () => {
         const sessionOverride = (req, res) => {
           res.end(`Using override, session: ${req.session}`);
         };
-        const app = journey(testApp(), { session: sessionOverride });
+        const app = journey(testApp(), options({ session: sessionOverride }));
         return supertest(app)
           .get('/')
           .expect('Using override, session: undefined');
