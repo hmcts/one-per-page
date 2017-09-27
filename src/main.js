@@ -12,7 +12,7 @@ const parseRequest = require('./middleware/parseRequest');
 
 const { field, form } = require('./forms');
 
-const { goTo, branch } = require('./services/flow');
+const { goTo, branch } = require('./flow');
 
 module.exports = {
   EntryPoint,

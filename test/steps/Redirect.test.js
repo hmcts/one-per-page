@@ -1,7 +1,7 @@
 const { testStep } = require('../util/supertest');
 const { expect } = require('../util/chai');
 const Redirect = require('../../src/steps/Redirect');
-const { goTo } = require('../../src/services/flow');
+const { goTo } = require('../../src/flow');
 
 describe('steps/Redirect', () => {
   it('expects #next to be implemented', () => {

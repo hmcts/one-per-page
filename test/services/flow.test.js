@@ -5,9 +5,9 @@ const {
   Redirector,
   Conditional,
   Branch
-} = require('../../src/services/flow');
+} = require('../../src/flow');
 
-describe('services/flow', () => {
+describe('flow', () => {
   describe('#goTo', () => {
     it('returns a Redirector with a redirect method', () => {
       const fakeStep = { url: '/foo' };

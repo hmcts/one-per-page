@@ -1,7 +1,7 @@
 const { testStep } = require('../util/supertest');
 const { expect } = require('../util/chai');
 const EntryPoint = require('../../src/steps/EntryPoint');
-const { goTo } = require('../../src/services/flow');
+const { goTo } = require('../../src/flow');
 
 describe('steps/EntryPoint', () => {
   it('expects #next to be implemented', () => {
