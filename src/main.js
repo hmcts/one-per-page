@@ -10,7 +10,7 @@ const journey = require('./Journey');
 const requireSession = require('./middleware/requireSession');
 const parseRequest = require('./middleware/parseRequest');
 
-const { field, form } = require('./services/fields');
+const { field, form } = require('./forms');
 
 const { goTo, branch } = require('./services/flow');
 
