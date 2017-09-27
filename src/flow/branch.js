@@ -1,36 +1,4 @@
-class Conditional {
-  constructor(redirector, condition) {
-    this.redirector = redirector;
-    this.condition = condition;
-  }
-
-  redirect(req, res) {
-    if (this.condition()) {
-      this.redirector.redirect(req, res);
-    }
-  }
-
-  check() {
-    return this.condition();
-  }
-}
-
-class Redirector {
-  constructor(step) {
-    if (typeof step === 'undefined') {
-      throw new Error('Step given to redirect to is undefined');
-    }
-    this.nextStep = step;
-  }
-
-  redirect(req, res) {
-    res.redirect(this.nextStep.url);
-  }
-
-  if(condition) {
-    return new Conditional(this, condition);
-  }
-}
+const Conditional = require('./conditional');
 
 class Branch {
   constructor(...redirectors) {
@@ -65,7 +33,4 @@ class Branch {
   }
 }
 
-const goTo = step => new Redirector(step);
-const branch = (...redirectors) => new Branch(...redirectors);
-
-module.exports = { goTo, Redirector, Conditional, branch, Branch };
+module.exports = Branch;

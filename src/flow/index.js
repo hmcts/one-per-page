@@ -1,9 +1,7 @@
-const {
-  goTo,
-  Redirector,
-  Conditional,
-  branch,
-  Branch
-} = require('../services/flow');
+const Redirector = require('./redirector');
+const Branch = require('./branch');
 
-module.exports = { goTo, Redirector, Conditional, branch, Branch };
+const goTo = step => new Redirector(step);
+const branch = (...redirectors) => new Branch(...redirectors);
+
+module.exports = { goTo, branch };
