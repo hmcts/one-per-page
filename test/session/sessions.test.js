@@ -1,4 +1,4 @@
-const sessions = require('../../src/services/sessions');
+const session = require('../../src/session');
 const proxyquire = require('proxyquire');
 const { expect, sinon } = require('../util/chai');
 const {
@@ -32,7 +32,7 @@ const createServer = (options, {
 } = {}) => {
   const cookieOptions = Object.assign({ maxAge: 60 * 1000 }, options.cookie);
   const opts = Object.assign({}, defaults, options, { cookie: cookieOptions });
-  const s = sessions(opts);
+  const s = session(opts);
   const app = testApp();
 
   app.use((req, res, next) => {
@@ -73,9 +73,9 @@ const shouldHave = number => {
 };
 
 
-describe('services/sessions', () => {
+describe('sessions', () => {
   it('presents an express middleware', () => {
-    const s = sessions(defaults);
+    const s = session(defaults);
     expect(s).to.be.a('function');
   });
 
@@ -86,7 +86,7 @@ describe('services/sessions', () => {
     beforeEach(() => {
       spy = sinon.spy(expressSession);
       stubbedSessions = proxyquire(
-        '../../src/services/sessions',
+        '../../src/session',
         { 'express-session': spy }
       );
     });
