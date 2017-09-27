@@ -1,8 +1,7 @@
-/* eslint max-lines: 0 */
 const { expect, sinon } = require('../util/chai');
-const { field, FieldDesriptor } = require('../../src/services/fields');
+const { field, FieldDesriptor } = require('../../src/forms');
 
-describe('services/fields', () => {
+describe('forms/field', () => {
   describe('#field', () => {
     it('returns a FieldDesriptor', () => {
       const foo = field('foo');
