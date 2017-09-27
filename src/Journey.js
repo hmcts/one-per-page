@@ -1,5 +1,6 @@
-const sessions = require('./services/sessions');
+const session = require('./session');
 const urlParse = require('url-parse');
+const defaultIfUndefined = require('./util/defaultIfUndefined');
 
 const parseUrl = baseUrl => {
   if (typeof baseUrl === 'undefined') {
@@ -8,37 +9,49 @@ const parseUrl = baseUrl => {
   return urlParse(baseUrl);
 };
 
-const journey = (app, {
-  baseUrl,
-  steps = [],
-  session = {},
-  noSessionHandler
-} = {}) => {
+const options = userOpts => {
+  let sessionProvider = null;
+
+  if (typeof userOpts.session === 'function') {
+    sessionProvider = userOpts.session;
+  } else {
+    const cookie = Object.assign(
+      { domain: parseUrl(userOpts.baseUrl).hostname },
+      userOpts.session.cookie || {}
+    );
+    const sessionOpts = Object.assign({}, userOpts.session, { cookie });
+    sessionProvider = session(sessionOpts);
+  }
+
+  return {
+    baseUrl: userOpts.baseUrl,
+    steps: defaultIfUndefined(userOpts.steps, []),
+    session: sessionProvider,
+    noSessionHandler: userOpts.noSessionHandler
+  };
+};
+
+const journey = (app, userOpts) => {
+  const opts = options(userOpts);
+
   const setupMiddleware = (req, res, next) => {
     req.journey = req.journey || {};
-    if (typeof noSessionHandler !== 'undefined') {
-      req.journey.noSessionHandler = noSessionHandler;
+    if (typeof opts.noSessionHandler !== 'undefined') {
+      req.journey.noSessionHandler = opts.noSessionHandler;
     }
-    steps.forEach(step => {
+    opts.steps.forEach(step => {
       req.journey[step.name] = step;
     });
     next();
   };
-  app.use(setupMiddleware);
 
-  if (typeof session === 'function') {
-    app.use(session);
-  } else {
-    const cookie = Object.assign(
-      { domain: parseUrl(baseUrl).hostname },
-      session.cookie || {}
-    );
-    const sessionOptions = Object.assign({}, session, { cookie });
-    app.use(sessions(sessionOptions));
-  }
-  steps.forEach(step => {
+  app.use(setupMiddleware);
+  app.use(opts.session);
+
+  opts.steps.forEach(step => {
     app.use(step.router);
   });
+
   return app;
 };
 

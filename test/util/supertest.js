@@ -1,6 +1,6 @@
 const express = require('express');
 const supertest = require('supertest');
-const sessions = require('./../../src/services/sessions');
+const session = require('./../../src/session');
 const nunjucks = require('express-nunjucks');
 const zepto = require('zepto-node');
 const domino = require('domino');
@@ -40,15 +40,15 @@ const supertestInstance = stepDSL => {
     next();
   });
 
-  app.use(sessions({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
+  app.use(session({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
 
   app.get('/supertest-check-session', (req, res) => {
-    const session = Object.assign(
+    const currentSession = Object.assign(
       {},
       req.session,
       { active: req.session.active() }
     );
-    res.end(JSON.stringify(session));
+    res.end(JSON.stringify(currentSession));
   });
 
   stepDSL[_middleware].forEach(_ => app.use(_));
@@ -74,8 +74,8 @@ const wrapWithResponseAssertions = supertestObj => {
         .set('Cookie', sid)
         .expect(200);
     }).then(res => {
-      const session = JSON.parse(res.text);
-      return Promise.all([assertions(session)]);
+      const currentSession = JSON.parse(res.text);
+      return Promise.all([assertions(currentSession)]);
     });
   };
   return supertestObj;
@@ -106,9 +106,9 @@ class TestStepDSL {
     return new TestStepDSL(step);
   }
 
-  withSession(session) {
+  withSession(sessionData) {
     return this.withMiddleware((req, res, next) => {
-      req.session = Object.assign(req.session, session);
+      req.session = Object.assign(req.session, sessionData);
       next();
     });
   }
