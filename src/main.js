@@ -7,7 +7,7 @@ const Redirect = require('./steps/Redirect');
 
 const journey = require('./Journey');
 
-const requireSession = require('./middleware/requireSession');
+const requireSession = require('./session/requireSession');
 const parseRequest = require('./middleware/parseRequest');
 
 const { field, form } = require('./forms');
