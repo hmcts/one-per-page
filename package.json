@@ -41,7 +41,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
     "lint": "eslint .",
-    "test": "NODE_PATH=. NODE_ENV=testing nyc mocha 'test/**/*.test.js'"
+    "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha 'test/**/*.test.js'"
   },
   "license": "MIT",
   "publishConfig": {
