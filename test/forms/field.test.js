@@ -67,19 +67,6 @@ describe('forms/field', () => {
       });
     });
 
-    describe('#makeId', () => {
-      it('returns the FieldDesriptors name if step is undefined', () => {
-        const foo = new FieldDesriptor('first_name', 'Michael');
-        expect(foo.makeId()).to.eql(foo.name);
-      });
-
-      it('returns an id based on the fields name and step', () => {
-        const foo = new FieldDesriptor('first_name', 'Michael');
-        const fakeStep = { name: 'NameStep' };
-        expect(foo.makeId(fakeStep)).to.eql(`${fakeStep.name}_${foo.name}`);
-      });
-    });
-
     describe('#validations', () => {
       it('is an empty array on init', () => {
         const _field = new FieldDesriptor('name');
@@ -146,16 +133,6 @@ describe('forms/field', () => {
           expect(foo.errors).to.contain(errorMessage);
           expect(invalidValidator).to.have.been.calledOnce;
         });
-      });
-    });
-
-    describe('#content', () => {
-      const content = { title: 'some title' };
-
-      it('sets and gets the content for the field', () => {
-        const foo = new FieldDesriptor('foo');
-        foo.content(content);
-        expect(foo.content).to.eql(content);
       });
     });
 
