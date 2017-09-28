@@ -2,23 +2,17 @@
   "en": {
     "translation": {
       "title": "Where do you live?",
-
+      "errors": {
+        "required": "Select the country where you live"
+      },
       "fields": {
         "country": {
           "title": "Where do you live?",
-          "northanIreland": "Northan Ireland",
+          "northernIreland": "Northern Ireland",
           "scotland": "Scotland",
           "england": "England",
           "wales": "Wales",
-          "hint": "Some advice about the question",
-          "joi": {
-            "language": {
-              "key": " ",
-              "any": {
-                "empty": "Select the country where you live"
-              }
-            }
-          }
+          "hint": "Some advice about the question"
         }
       }
 

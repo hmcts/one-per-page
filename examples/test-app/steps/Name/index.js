@@ -1,5 +1,5 @@
 const { Question, field, form, goTo } = require('@hmcts/one-per-page');
-const { isString } = require('../../utils/validators');
+const Joi = require('joi');
 const content = require('./content');
 
 class Name extends Question {
@@ -14,11 +14,9 @@ class Name extends Question {
   get form() {
     return form(
       field('firstName')
-        .validate(isString({ language: this.content.fields.firstName.joi }))
-        .content(this.content.fields.firstName),
+        .joi(this.content.fields.firstName.required, Joi.string().required()),
       field('lastName')
-        .validate(isString({ language: this.content.fields.lastName.joi }))
-        .content(this.content.fields.lastName)
+        .joi(this.content.fields.lastName.required, Joi.string().required())
     );
   }
 

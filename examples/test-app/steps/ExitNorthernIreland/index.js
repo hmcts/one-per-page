@@ -6,7 +6,7 @@ class ExitNorthernIreland extends Page {
     return '/exit/northern-ireland';
   }
 
-  get _content() {
+  get i18NextContent() {
     return content;
   }
 }
