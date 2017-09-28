@@ -79,37 +79,35 @@ describe('forms/field', () => {
       });
     });
 
+    describe('#validations', () => {
+      it('is an empty array on init', () => {
+        const _field = new FieldDesriptor('name');
+        expect(_field.validations).to.eql([]);
+      });
+    });
+
     describe('#validate', () => {
       const errorMessage = 'Error message';
 
-      it('sets a validator function', () => {
-        const validValidator = sinon.stub().returns();
-        const foo = new FieldDesriptor('foo');
-        // set validator functon
-        foo.validate(validValidator);
-        foo.validate();
-        expect(validValidator).to.have.been.calledOnce;
+      describe('if given a validator', () => {
+        it('adds it to the validations array', () => {
+          const validValidator = sinon.stub();
+          const foo = new FieldDesriptor('foo');
+          foo.validate(validValidator);
+          expect(foo.validations).to.contain(validValidator);
+        });
       });
 
-      it('uses a default validator function if not set', () => {
-        const defaultValidator = sinon.stub().returns();
+      describe('if not given a validator', () => {
+        it('returns true if no validator set', () => {
+          const foo = new FieldDesriptor('foo');
+          const isValid = foo.validate();
+          expect(isValid).to.be.true;
+        });
 
-        const foo = new class extends FieldDesriptor {
-          constructor(name, id, value) {
-            super(name, id, value);
-            this.validator = defaultValidator;
-          }
-        }('foo');
-
-        foo.validate();
-        expect(defaultValidator).to.have.been.calledOnce;
-      });
-
-      it('returns true if field is valid and validator returns undefined',
-        () => {
+        it('returns true if the validator returns undefined', () => {
           const validValidator = sinon.stub().returns();
-          const foo = new FieldDesriptor('foo')
-            .validate(validValidator);
+          const foo = new FieldDesriptor('foo').validate(validValidator);
 
           const isValid = foo.validate();
 
@@ -117,38 +115,36 @@ describe('forms/field', () => {
           expect(isValid).to.eql(true);
         });
 
-      it('returns true if field is validator returns null', () => {
-        const validValidator = sinon.stub().returns(null);
-        const foo = new FieldDesriptor('foo')
-          .validate(validValidator);
+        it('returns true if the validator returns null', () => {
+          const validValidator = sinon.stub().returns(null);
+          const foo = new FieldDesriptor('foo').validate(validValidator);
 
-        const isValid = foo.validate();
+          const isValid = foo.validate();
 
-        expect(validValidator).to.have.been.calledOnce;
-        expect(isValid).to.eql(true);
-      });
+          expect(validValidator).to.have.been.calledOnce;
+          expect(isValid).to.eql(true);
+        });
 
-      it('returns false if field is valid', () => {
-        const invalidValidator = sinon.stub().returns(errorMessage);
-        const foo = new FieldDesriptor('foo')
-          .validate(invalidValidator);
+        it('returns false if field is valid', () => {
+          const invalidValidator = sinon.stub().returns(errorMessage);
+          const foo = new FieldDesriptor('foo').validate(invalidValidator);
 
-        const isValid = foo.validate();
+          const isValid = foo.validate();
 
-        expect(isValid).to.eql(false);
-        expect(invalidValidator).to.have.been.calledOnce;
-      });
+          expect(isValid).to.eql(false);
+          expect(invalidValidator).to.have.been.calledOnce;
+        });
 
-      it('sets error to context if field is invalid', () => {
-        const invalidValidator = sinon.stub().returns(errorMessage);
-        const foo = new FieldDesriptor('foo')
-          .validate(invalidValidator);
+        it('sets errors to if a validator fails', () => {
+          const invalidValidator = sinon.stub().returns(errorMessage);
+          const foo = new FieldDesriptor('foo').validate(invalidValidator);
 
-        const isValid = foo.validate();
+          const isValid = foo.validate();
 
-        expect(isValid).to.eql(false);
-        expect(foo.error).to.eql(errorMessage);
-        expect(invalidValidator).to.have.been.calledOnce;
+          expect(isValid).to.eql(false);
+          expect(foo.errors).to.contain(errorMessage);
+          expect(invalidValidator).to.have.been.calledOnce;
+        });
       });
     });
 
