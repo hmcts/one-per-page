@@ -26,7 +26,7 @@ class Country extends Question {
 
   next() {
     const livesInNI = () =>
-      this.fields.get('country').value === 'northern-ireland';
+      this.fields.country.value === 'northern-ireland';
 
     return branch(
       goTo(this.journey.ExitNorthernIreland).if(livesInNI),
