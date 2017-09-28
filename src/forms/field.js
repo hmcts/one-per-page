@@ -1,7 +1,6 @@
 const option = require('option');
 const Joi = require('joi');
 
-const defaultValidator = () => null;
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
 
@@ -27,12 +26,20 @@ const failOnFirstFailure = (field, validations) => {
   return { result: false, errors: [maybeError] };
 };
 
+
+const makeId = (field, step) => {
+  if (typeof step === 'undefined' || typeof step.name === 'undefined') {
+    return field.name;
+  }
+  return `${step.name}_${field.name}`;
+};
+
+
 class FieldDesriptor {
   constructor(name, id, value) {
     this.name = name;
     this.id = id;
     this.value = value;
-    this.validator = defaultValidator;
     this.validations = [];
   }
 
@@ -44,7 +51,7 @@ class FieldDesriptor {
    * @return {FieldDescriptor} field - the parsed field filled with it's value
    */
   parse(req) {
-    const id = this.makeId(req.currentStep);
+    const id = makeId(this, req.currentStep);
 
     const value = option
       .fromNullable(req.body)
@@ -63,7 +70,7 @@ class FieldDesriptor {
    * @return {FieldDescriptor} field - the loaded field filled with it's value
    */
   deserialize(req) {
-    const id = this.makeId(req.currentStep);
+    const id = makeId(this, req.currentStep);
 
     const value = option
       .fromNullable(req.session)
@@ -85,13 +92,6 @@ class FieldDesriptor {
     if (typeof this.id === 'undefined') return {};
     if (typeof this.value === 'undefined') return {};
     return { [this.id]: this.value };
-  }
-
-  makeId(step) {
-    if (typeof step === 'undefined' || typeof step.name === 'undefined') {
-      return this.name;
-    }
-    return `${step.name}_${this.name}`;
   }
 
   get errors() {
@@ -118,12 +118,6 @@ class FieldDesriptor {
     this._errors = errors;
     this._valid = result;
     return result;
-  }
-
-  // one time setter, used once to set the content of the field
-  content(content) {
-    this.content = content;
-    return this;
   }
 
   joi(...args) {
