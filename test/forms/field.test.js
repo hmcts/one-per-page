@@ -190,11 +190,12 @@ describe('forms/field', () => {
       {
         const nameField = new FieldDesriptor('name');
         nameField
+          .joi('Should pass', Joi.any())
           .joi('Required', Joi.string().required())
           .joi('Is Foo', Joi.valid('Foo'));
 
         it('adds a validator to field.validations', () => {
-          expect(nameField.validations).to.have.lengthOf(2);
+          expect(nameField.validations).to.have.lengthOf(3);
         });
 
         it('executes the joi schema against the fields value', () => {

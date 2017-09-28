@@ -3,10 +3,6 @@ class Form {
     this.fields = fields;
   }
 
-  get(name) {
-    return this.fields.find(field => field.name === name);
-  }
-
   /**
    * Parses the fields described in the form from the request body
    * Used on POST requests.
