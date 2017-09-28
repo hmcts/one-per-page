@@ -2,9 +2,9 @@
 
 <div>
 
-  {% if fields.name.error %}
+  {% if fields.name.errors %}
     <span class="error-message">
-      {{ fields.name.error | safe}}
+      {{ fields.name.errors | safe}}
     </span>
   {% endif %}
 

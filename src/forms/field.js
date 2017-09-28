@@ -4,12 +4,26 @@ const defaultValidator = () => null;
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
 
+const failOnFirstFailure = (field, validations) => {
+  if (!(validations && validations.length)) {
+    return { result: true, errors: [] };
+  }
+  const [currentValidation, ...rest] = validations;
+  const maybeError = currentValidation(field);
+
+  if (isNullOrUndefined(maybeError)) {
+    return failOnFirstFailure(field, rest);
+  }
+  return { result: false, errors: [maybeError] };
+};
+
 class FieldDesriptor {
   constructor(name, id, value) {
     this.name = name;
     this.id = id;
     this.value = value;
     this.validator = defaultValidator;
+    this.validations = [];
   }
 
   /**
@@ -72,14 +86,13 @@ class FieldDesriptor {
 
   validate(validator) {
     if (validator) {
-      this.validator = validator;
+      this.validations.push(validator);
       return this;
     }
-    const error = this.validator(this);
-    if (!isNullOrUndefined(error)) {
-      this.error = error;
-    }
-    return isNullOrUndefined(error);
+
+    const { result, errors } = failOnFirstFailure(this, this.validations);
+    this.errors = errors;
+    return result;
   }
 
   // one time setter, used once to set the content of the field
