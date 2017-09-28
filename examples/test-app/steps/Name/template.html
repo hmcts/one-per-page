@@ -15,8 +15,14 @@
 {% block fields %}
 
   {% call formSection() %}
-    {{ textbox(fields.get('firstName'), fields.get('firstName').content.title, hint=fields.get('firstName').content.hint) }}
-    {{ textbox(fields.get('lastName'), fields.get('lastName').content.title) }}
+    {{
+      textbox(
+        fields.firstName,
+        content.fields.firstName.title,
+        hint=content.fields.firstName.hint
+      )
+    }}
+    {{ textbox(fields.lastName, content.fields.lastName.title) }}
   {% endcall %}
 
 {% endblock %}

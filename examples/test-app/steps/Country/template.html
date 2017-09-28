@@ -14,13 +14,13 @@
 {% block fields %}
 
   {% call formSection() %}
-    {{ selectionButtons(fields.get('country'), fields.get('country').content.title,
-      hint = fields.get('country').content.hint,
+    {{ selectionButtons(fields.country, content.fields.country.title,
+      hint = content.fields.country.hint,
       options = [
-        { label: fields.get('country').content.northanIreland, value: "northern-ireland" },
-        { label: fields.get('country').content.scotland, value: "scotland" },
-        { label: fields.get('country').content.england, value: "england" },
-        { label: fields.get('country').content.wales, value: "wales" }
+        { label: content.fields.country.northanIreland, value: "northern-ireland" },
+        { label: content.fields.country.scotland, value: "scotland" },
+        { label: content.fields.country.england, value: "england" },
+        { label: content.fields.country.wales, value: "wales" }
       ]
     ) }}
   {% endcall %}
