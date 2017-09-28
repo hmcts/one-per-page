@@ -1,8 +1,18 @@
 const option = require('option');
+const Joi = require('joi');
 
 const defaultValidator = () => null;
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
+
+const parseJoiArgs = (field, args) => {
+  if (args.length === 1) { // eslint-disable-line no-magic-numbers
+    const [joiSchema] = args;
+    return { message: `No error content for ${field.name}`, joiSchema };
+  }
+  const [message, joiSchema] = args;
+  return { message, joiSchema };
+};
 
 const failOnFirstFailure = (field, validations) => {
   if (!(validations && validations.length)) {
@@ -84,6 +94,20 @@ class FieldDesriptor {
     return `${step.name}_${this.name}`;
   }
 
+  get errors() {
+    if (typeof this._errors === 'undefined') {
+      this.validate();
+    }
+    return this._errors;
+  }
+
+  get valid() {
+    if (typeof this._valid === 'undefined') {
+      return this.validate();
+    }
+    return this._valid;
+  }
+
   validate(validator) {
     if (validator) {
       this.validations.push(validator);
@@ -91,13 +115,23 @@ class FieldDesriptor {
     }
 
     const { result, errors } = failOnFirstFailure(this, this.validations);
-    this.errors = errors;
+    this._errors = errors;
+    this._valid = result;
     return result;
   }
 
   // one time setter, used once to set the content of the field
   content(content) {
     this.content = content;
+    return this;
+  }
+
+  joi(...args) {
+    this.validations.push(field => {
+      const { message, joiSchema } = parseJoiArgs(field, args);
+      const { error } = Joi.validate(field.value, joiSchema);
+      return error ? message : error;
+    });
     return this;
   }
 }

@@ -1,4 +1,5 @@
 const { expect, sinon } = require('../util/chai');
+const Joi = require('joi');
 const { field, FieldDesriptor } = require('../../src/forms');
 
 describe('forms/field', () => {
@@ -135,7 +136,7 @@ describe('forms/field', () => {
           expect(invalidValidator).to.have.been.calledOnce;
         });
 
-        it('sets errors to if a validator fails', () => {
+        it('overrides #errors to if a validator fails', () => {
           const invalidValidator = sinon.stub().returns(errorMessage);
           const foo = new FieldDesriptor('foo').validate(invalidValidator);
 
@@ -155,6 +156,88 @@ describe('forms/field', () => {
         const foo = new FieldDesriptor('foo');
         foo.content(content);
         expect(foo.content).to.eql(content);
+      });
+    });
+
+    describe('#errors', () => {
+      it('returns [] if validations passed', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        nameField.validate();
+        expect(nameField.errors).to.eql([]);
+      });
+
+      it('executes the validations if they haven\'t yet run', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        expect(nameField.errors).to.eql([]);
+      });
+
+      it('doesn\'t run the validations multiple times', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        sinon.spy(nameField, 'validate');
+        nameField.errors;
+        nameField.errors;
+        nameField.errors;
+        expect(nameField.validate).to.be.calledOnce;
+      });
+    });
+
+    describe('#valid', () => {
+      it('returns true if validations passed', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        nameField.validate();
+        expect(nameField.valid).to.be.true;
+      });
+
+      it('executes the validations if they haven\'t yet run', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        expect(nameField.valid).to.be.true;
+      });
+
+      it('doesn\'t run the validations multiple times', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        sinon.spy(nameField, 'validate');
+        nameField.valid;
+        nameField.valid;
+        nameField.valid;
+        expect(nameField.validate).to.be.calledOnce;
+      });
+    });
+
+    describe('#joi', () => {
+      {
+        const nameField = new FieldDesriptor('name');
+        nameField
+          .joi('Required', Joi.string().required())
+          .joi('Is Foo', Joi.valid('Foo'));
+
+        it('adds a validator to field.validations', () => {
+          expect(nameField.validations).to.have.lengthOf(2);
+        });
+
+        it('executes the joi schema against the fields value', () => {
+          expect(nameField.validate()).to.be.false;
+        });
+
+        it('adds errors to #errors', () => {
+          expect(nameField.errors).to.contain('Required');
+        });
+
+        it('skips validations after the first fails', () => {
+          expect(nameField.errors).to.not.contain('Is Foo');
+        });
+      }
+
+      it('renders a default error message if no content give', () => {
+        const nameField = new FieldDesriptor('name');
+        nameField.joi(Joi.string().required());
+        nameField.validate();
+        expect(nameField.errors).to.contain('No error content for name');
       });
     });
   });

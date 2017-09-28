@@ -1266,6 +1266,10 @@ hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
 
+hoek@4.x.x:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.0.tgz#72d9d0754f7fe25ca2d01ad8f8f9a9449a89526d"
+
 hosted-git-info@^2.1.4:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.5.0.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
@@ -1493,6 +1497,12 @@ isemail@1.x.x:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/isemail/-/isemail-1.2.0.tgz#be03df8cc3e29de4d2c5df6501263f1fa4595e9a"
 
+isemail@3.x.x:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/isemail/-/isemail-3.0.0.tgz#c89a46bb7a3361e1759f8028f9082488ecce3dff"
+  dependencies:
+    punycode "2.x.x"
+
 isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
@@ -1553,6 +1563,14 @@ istanbul-reports@^1.1.1:
   resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-1.1.1.tgz#042be5c89e175bc3f86523caab29c014e77fee4e"
   dependencies:
     handlebars "^4.0.3"
+
+joi@^11.1.1:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-11.1.1.tgz#08194537d3b9c796bac8666deb3a825c1a5d83c1"
+  dependencies:
+    hoek "4.x.x"
+    isemail "3.x.x"
+    topo "2.x.x"
 
 joi@^6.4.x:
   version "6.10.1"
@@ -1726,6 +1744,10 @@ lodash.create@3.1.1:
     lodash._baseassign "^3.0.0"
     lodash._basecreate "^3.0.0"
     lodash._isiterateecall "^3.0.0"
+
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
 lodash.isarguments@^3.0.0:
   version "3.1.0"
@@ -1922,14 +1944,15 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-nise@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/nise/-/nise-1.0.1.tgz#0da92b10a854e97c0f496f6c2845a301280b3eef"
+nise@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/nise/-/nise-1.1.0.tgz#37e41b9bf0041ccb83d1bf03e79440bbc0db10ad"
   dependencies:
     formatio "^1.2.0"
     just-extend "^1.1.22"
     lolex "^1.6.0"
     path-to-regexp "^1.7.0"
+    text-encoding "^0.6.4"
 
 node-pre-gyp@^0.6.36:
   version "0.6.36"
@@ -2274,6 +2297,10 @@ pseudomap@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
+punycode@2.x.x:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.0.tgz#5f863edc89b96db09074bad7947bf09056ca4e7d"
+
 punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
@@ -2601,15 +2628,16 @@ sinon-chai@^2.13.0:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-2.13.0.tgz#b9a42e801c20234bfc2f43b29e6f4f61b60990c4"
 
-sinon@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-3.2.1.tgz#d8adabd900730fd497788a027049c64b08be91c2"
+sinon@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-4.0.0.tgz#a54a5f0237aa1dd2215e5e81c89b42b50c4fdb6b"
   dependencies:
     diff "^3.1.0"
     formatio "1.2.0"
+    lodash.get "^4.4.2"
     lolex "^2.1.2"
     native-promise-only "^0.8.1"
-    nise "^1.0.1"
+    nise "^1.1.0"
     path-to-regexp "^1.7.0"
     samsam "^1.1.3"
     text-encoding "0.6.4"
@@ -2821,7 +2849,7 @@ test-exclude@^4.1.1:
     read-pkg-up "^1.0.1"
     require-main-filename "^1.0.1"
 
-text-encoding@0.6.4:
+text-encoding@0.6.4, text-encoding@^0.6.4:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
 
@@ -2848,6 +2876,12 @@ topo@1.x.x:
   resolved "https://registry.yarnpkg.com/topo/-/topo-1.1.0.tgz#e9d751615d1bb87dc865db182fa1ca0a5ef536d5"
   dependencies:
     hoek "2.x.x"
+
+topo@2.x.x:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/topo/-/topo-2.0.2.tgz#cd5615752539057c0dc0491a621c3bc6fbe1d182"
+  dependencies:
+    hoek "4.x.x"
 
 tough-cookie@~2.3.0:
   version "2.3.2"
