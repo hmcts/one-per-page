@@ -1,14 +1,15 @@
+const formProxyHandler = require('../forms/formProxyHandler');
+
 const parseRequest = (req, res, next) => {
   req.fields = req.fields || {};
   res.locals = res.locals || {};
   res.locals.fields = req.fields;
 
-  if (typeof req.currentStep.form === 'undefined') {
+  const form = req.currentStep.form;
+  if (typeof form === 'undefined') {
     next();
     return;
   }
-
-  const form = req.currentStep.form;
 
   if (req.method === 'POST') {
     form.parse(req);
@@ -18,9 +19,10 @@ const parseRequest = (req, res, next) => {
   }
 
   // set accessors for fields
-  req.fields = form;
-  res.locals.fields = form;
-  req.currentStep.fields = form;
+  req.form = form;
+  req.fields = new Proxy(form, formProxyHandler);
+  res.locals.fields = req.fields;
+  req.currentStep.fields = req.fields;
 
   next();
 };

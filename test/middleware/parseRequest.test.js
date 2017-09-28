@@ -43,8 +43,8 @@ describe('middleware/parseRequest', () => {
     const bar = field('bar');
     return handlerTest(form(foo, bar), {
       assertions(req) {
-        expect(req.fields.get('foo')).to.be.an.instanceof(FieldDesriptor);
-        expect(req.fields.get('bar')).to.be.an.instanceof(FieldDesriptor);
+        expect(req.fields.foo).to.be.an.instanceof(FieldDesriptor);
+        expect(req.fields.bar).to.be.an.instanceof(FieldDesriptor);
       }
     });
   });
@@ -82,8 +82,8 @@ describe('middleware/parseRequest', () => {
       const bar = field('bar');
       return handlerTest(form(foo, bar), {
         assertions(req) {
-          expect(req.fields.get('foo')).to.equal(foo);
-          expect(req.fields.get('bar')).to.equal(bar);
+          expect(req.fields.foo).to.equal(foo);
+          expect(req.fields.bar).to.equal(bar);
         }
       });
     });
@@ -94,8 +94,8 @@ describe('middleware/parseRequest', () => {
         sinon.spy(fakeField, 'deserialize');
         return handlerTest(form(fakeField), {
           assertions(req) {
-            expect(req.fields.get('fake')).to.equal(fakeField);
-            expect(req.fields.get('fake')).to.have.property('name', 'fake');
+            expect(req.fields.fake).to.equal(fakeField);
+            expect(req.fields.fake).to.have.property('name', 'fake');
           }
         }).then(() => expect(fakeField.deserialize).calledOnce);
       });
@@ -108,8 +108,8 @@ describe('middleware/parseRequest', () => {
         return handlerTest(form(fakeField), {
           method: 'post',
           assertions(req) {
-            expect(req.fields.get('fake')).to.equal(fakeField);
-            expect(req.fields.get('fake')).to.have.property('name', 'fake');
+            expect(req.fields.fake).to.equal(fakeField);
+            expect(req.fields.fake).to.have.property('name', 'fake');
           }
         }).then(() => expect(fakeField.parse).calledOnce);
       });
