@@ -1,5 +1,5 @@
 const { Question, form, field, goTo, branch } = require('@hmcts/one-per-page');
-const { isOneOf } = require('../../utils/validators');
+const Joi = require('joi');
 const content = require('./content');
 
 class Country extends Question {
@@ -12,15 +12,11 @@ class Country extends Question {
   }
 
   get form() {
-    const validAnswers = ['northern-ireland', 'scotland', 'england', 'wales'];
+    const ukCountries = ['northern-ireland', 'scotland', 'england', 'wales'];
 
     return form(
       field('country')
-        .validate(isOneOf({
-          validValues: validAnswers,
-          language: this.content.fields.country.joi
-        }))
-        .content(this.content.fields.country)
+        .joi(this.content.errors.required, Joi.string().valid(ukCountries))
     );
   }
 

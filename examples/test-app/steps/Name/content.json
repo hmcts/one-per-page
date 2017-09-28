@@ -8,22 +8,11 @@
         "firstName": {
           "title": "First name(s)",
           "hint": "Include all middle names here",
-          "joi": {
-            "language": {
-              "key": "First name "
-            }
-          }
+          "required": "Provide your first name"
         },
         "lastName": {
           "title": "Last name(s)",
-          "joi": {
-            "language": {
-              "key": "Your name ",
-              "any": {
-                "empty": "can only contain the letters a to z, spaces, hyphens and apostrophes"
-              }
-            }
-          }
+          "required": "Provide your last name"
         }
       }
     }
