@@ -24,8 +24,8 @@ class Question extends Page {
     if (req.method === 'GET') {
       super.handler(req, res);
     } else if (req.method === 'POST') {
-      if (this.fields.valid) {
-        this.fields.store(req);
+      if (req.form.valid) {
+        req.form.store(req);
         this.next().redirect(req, res);
       } else {
         res.render(this.template);

@@ -2,15 +2,15 @@
 
 <div>
 
-  {% if fields.get('name').error %}
+  {% if fields.name.error %}
     <span class="error-message">
-      {{ fields.get('name').error | safe}}
+      {{ fields.name.error | safe}}
     </span>
   {% endif %}
 
-  {{ fields.get('name') }}
-  <input name="{{ fields.get('name').id }}"
-         value="{{ fields.get('name').value }}"
-         id="{{ fields.get('name').id }}"
+  {{ fields.name }}
+  <input name="{{ fields.name.id }}"
+         value="{{ fields.name.value }}"
+         id="{{ fields.name.id }}"
          type="text">
 </div>
