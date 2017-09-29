@@ -1,13 +1,9 @@
 const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Page = require('../../src/steps/Page');
-const parseRequest = require('../../src/middleware/parseRequest');
-const {
-  field,
-  form
-} = require('../../src/forms');
-const { Form } = require('../../src/forms/form');
-const { FieldDesriptor } = require('../../src/forms/field');
+const parseRequest = require('../../src/forms/parseRequest');
+const { form, Form } = require('../../src/forms/form');
+const { field, FieldDesriptor } = require('../../src/forms/field');
 
 const handlerTest = (_form, { method = 'get', assertions }) => {
   const _step = new class extends Page {
