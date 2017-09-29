@@ -1,5 +1,6 @@
 const { expect, sinon } = require('../util/chai');
 const { form, Form, field, FieldDesriptor } = require('../../src/forms');
+const FieldError = require('../../src/forms/fieldError');
 
 describe('forms/form', () => {
   describe('#form', () => {
@@ -121,17 +122,18 @@ describe('forms/form', () => {
       });
     });
 
-    describe('#invalidFields', () => {
+    describe('#errors', () => {
       const errorMessage = 'Error message';
-      const returnIsValid = sinon.stub().returns();
-      const returnIsInvalid = sinon.stub().returns(errorMessage);
+      const returnIsValid = () => null;
+      const returnIsInvalid = () => errorMessage;
+      const error = f => new FieldError(f, errorMessage);
 
       it('returns invalid fields', () => {
         const invalidField = new FieldDesriptor('name')
           .validate(returnIsInvalid);
         const f = new Form([invalidField]);
-        expect(f.invalidFields).to.eql([invalidField]);
-        expect(f.invalidFields[0]).to.be.an.instanceof(FieldDesriptor);
+        f.validate();
+        expect(f.errors).to.eql([error(invalidField)]);
       });
 
       it('only returns invalid fields', () => {
@@ -143,8 +145,50 @@ describe('forms/form', () => {
           .validate(returnIsInvalid);
 
         const f = new Form([validField1, validField2, invalidField]);
-        expect(f.invalidFields).to.eql([invalidField]);
-        expect(f.invalidFields[0]).to.be.an.instanceof(FieldDesriptor);
+        f.validate();
+        expect(f.errors).to.eql([error(invalidField)]);
+      });
+
+      it('returns [] if all fields are valid', () => {
+        const validField = new FieldDesriptor('name')
+          .validate(returnIsValid);
+
+        const f = new Form([validField]);
+        f.validate();
+        expect(f.errors).to.eql([]);
+      });
+    });
+
+    describe('#validate', () => {
+      {
+        const returnIsValid = sinon.stub().returns();
+
+        const validField1 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const validField2 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+        const validField3 = new FieldDesriptor('name')
+          .validate(returnIsValid);
+
+        const f = new Form([validField1, validField2, validField3]);
+        const result = f.validate();
+
+        it('executes field validations', () => {
+          expect(returnIsValid).to.have.callCount(3);
+        });
+        it('returns true if validations pass', () => {
+          expect(result).to.be.true;
+        });
+      }
+
+      it('returns false if a validation fails', () => {
+        const errorMessage = 'Error message';
+        const returnIsInvalid = sinon.stub().returns(errorMessage);
+        const invalidField = new FieldDesriptor('name')
+          .validate(returnIsInvalid);
+        const f = new Form([invalidField]);
+
+        expect(f.validate()).to.be.false;
       });
     });
 
@@ -162,6 +206,7 @@ describe('forms/form', () => {
           .validate(returnIsValid);
 
         const f = new Form([validField1, validField2, validField3]);
+        f.validate();
         expect(f.valid).to.eql(true);
       });
 
@@ -174,6 +219,7 @@ describe('forms/form', () => {
           .validate(returnIsInvalid);
 
         const f = new Form([validField1, validField2, invalidField1]);
+        f.validate();
         expect(f.valid).to.eql(false);
       });
     });
