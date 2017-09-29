@@ -13,7 +13,7 @@ const parseRequest = (req, res, next) => {
 
   if (req.method === 'POST') {
     form.parse(req);
-    res.locals.invalidFields = form.invalidFields;
+    form.validate();
   } else if (req.method === 'GET') {
     form.retrieve(req);
   }
