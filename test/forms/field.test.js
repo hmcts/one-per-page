@@ -1,6 +1,6 @@
 const { expect, sinon } = require('../util/chai');
 const Joi = require('joi');
-const { field, FieldDesriptor } = require('../../src/forms');
+const { field, FieldDesriptor } = require('../../src/forms/field');
 
 describe('forms/field', () => {
   describe('#field', () => {
