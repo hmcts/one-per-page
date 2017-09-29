@@ -144,20 +144,11 @@ describe('forms/field', () => {
         expect(nameField.errors).to.eql([]);
       });
 
-      it('executes the validations if they haven\'t yet run', () => {
+      it('returns errors of failed validations', () => {
         const nameField = new FieldDesriptor('name')
-          .joi('Will Pass', Joi.any());
-        expect(nameField.errors).to.eql([]);
-      });
-
-      it('doesn\'t run the validations multiple times', () => {
-        const nameField = new FieldDesriptor('name')
-          .joi('Will Pass', Joi.any());
-        sinon.spy(nameField, 'validate');
-        nameField.errors;
-        nameField.errors;
-        nameField.errors;
-        expect(nameField.validate).to.be.calledOnce;
+          .joi('Will Fail', Joi.string().required());
+        nameField.validate();
+        expect(nameField.errors).to.eql(['Will Fail']);
       });
     });
 
@@ -169,20 +160,11 @@ describe('forms/field', () => {
         expect(nameField.valid).to.be.true;
       });
 
-      it('executes the validations if they haven\'t yet run', () => {
+      it('returns false if validations failed', () => {
         const nameField = new FieldDesriptor('name')
-          .joi('Will Pass', Joi.any());
-        expect(nameField.valid).to.be.true;
-      });
-
-      it('doesn\'t run the validations multiple times', () => {
-        const nameField = new FieldDesriptor('name')
-          .joi('Will Pass', Joi.any());
-        sinon.spy(nameField, 'validate');
-        nameField.valid;
-        nameField.valid;
-        nameField.valid;
-        expect(nameField.validate).to.be.calledOnce;
+          .joi('Will Fail', Joi.string().required());
+        nameField.validate();
+        expect(nameField.valid).to.be.false;
       });
     });
 
