@@ -1,4 +1,4 @@
-const formProxyHandler = require('../forms/formProxyHandler');
+const formProxyHandler = require('./formProxyHandler');
 
 const parseRequest = (req, res, next) => {
   req.fields = req.fields || {};

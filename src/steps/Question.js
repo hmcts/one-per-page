@@ -1,6 +1,6 @@
 const Page = require('./Page');
 const requireSession = require('./../session/requireSession');
-const parseRequest = require('../middleware/parseRequest');
+const parseRequest = require('../forms/parseRequest');
 const bodyParser = require('body-parser');
 const { expectImplemented } = require('../errors/expectImplemented');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
