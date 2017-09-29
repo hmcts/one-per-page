@@ -1,3 +1,5 @@
+const FieldError = require('../../src/forms/fieldError');
+
 class Form {
   constructor(fields = []) {
     this.fields = fields;
@@ -43,21 +45,32 @@ class Form {
     return this;
   }
 
-  errors(/* parsedFields */) {
-    // placeholder for now
-    return [];
-  }
-
   get invalidFields() {
     return this.fields.filter(field => !field.validate());
   }
 
   get valid() {
-    const validLength = 0;
-    return this.invalidFields.length === validLength;
+    const aFieldIsInvalid = this.fields.some(field => !field.valid);
+    return !aFieldIsInvalid;
+  }
+
+  validate() {
+    return this.fields
+      .map(field => field.validate())
+      .reduce((result, fieldResult) => result && fieldResult, true);
+  }
+
+  get errors() {
+    const fieldErrors = this.fields
+      .map(field => {
+        const errors = field.errors.map(error => new FieldError(field, error));
+        return errors;
+      })
+      .reduce((accum, errorsArr) => [...accum, ...errorsArr], []);
+    return fieldErrors;
   }
 }
 
 const form = (...fields) => new Form(fields);
 
-module.exports = { form, Form };
+module.exports = { form, Form, FieldError };
