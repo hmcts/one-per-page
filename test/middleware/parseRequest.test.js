@@ -4,10 +4,10 @@ const Page = require('../../src/steps/Page');
 const parseRequest = require('../../src/middleware/parseRequest');
 const {
   field,
-  form,
-  Form,
-  FieldDesriptor
+  form
 } = require('../../src/forms');
+const { Form } = require('../../src/forms/form');
+const { FieldDesriptor } = require('../../src/forms/field');
 
 const handlerTest = (_form, { method = 'get', assertions }) => {
   const _step = new class extends Page {
