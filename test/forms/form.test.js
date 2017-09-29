@@ -192,6 +192,21 @@ describe('forms/form', () => {
       });
     });
 
+    describe('#validated', () => {
+      it('returns false when a form hasn\'t been validated yet', () => {
+        const nameField = new FieldDesriptor('name');
+        const f = new Form([nameField]);
+        expect(f.validated).to.be.false;
+      });
+      it('returns true if the any validation has been run', () => {
+        const nameField = new FieldDesriptor('name');
+        const f = new Form([nameField, new FieldDesriptor('other')]);
+        nameField.validate();
+        expect(f.validated).to.be.true;
+      });
+    });
+
+
     describe('#valid', () => {
       const errorMessage = 'Error message';
       const returnIsValid = sinon.stub().returns();

@@ -136,6 +136,18 @@ describe('forms/field', () => {
       });
     });
 
+    describe('#validated', () => {
+      it('returns false when a field hasn\'t been validated yet', () => {
+        const nameField = new FieldDesriptor('name');
+        expect(nameField.validated).to.be.false;
+      });
+      it('returns true if the validations have been run', () => {
+        const nameField = new FieldDesriptor('name');
+        nameField.validate();
+        expect(nameField.validated).to.be.true;
+      });
+    });
+
     describe('#errors', () => {
       it('returns [] if validations passed', () => {
         const nameField = new FieldDesriptor('name')
