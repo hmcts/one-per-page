@@ -95,16 +95,10 @@ class FieldDesriptor {
   }
 
   get errors() {
-    if (typeof this._errors === 'undefined') {
-      this.validate();
-    }
     return this._errors;
   }
 
   get valid() {
-    if (typeof this._valid === 'undefined') {
-      return this.validate();
-    }
     return this._valid;
   }
 
