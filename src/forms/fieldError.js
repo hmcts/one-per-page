@@ -1,7 +1,11 @@
 class FieldError {
   constructor(field, errorMessage) {
     this.field = field;
-    this.errorMessage = errorMessage;
+    this.message = errorMessage;
+  }
+
+  get id() {
+    return this.field.id;
   }
 }
 

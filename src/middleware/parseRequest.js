@@ -21,6 +21,7 @@ const parseRequest = (req, res, next) => {
   // set accessors for fields
   req.form = form;
   req.fields = new Proxy(form, formProxyHandler);
+  res.locals.form = req.form;
   res.locals.fields = req.fields;
   req.currentStep.fields = req.fields;
 

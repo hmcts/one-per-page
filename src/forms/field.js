@@ -41,6 +41,7 @@ class FieldDesriptor {
     this.id = id;
     this.value = value;
     this.validations = [];
+    this._validated = false;
   }
 
   /**
@@ -102,6 +103,10 @@ class FieldDesriptor {
     return this._valid;
   }
 
+  get validated() {
+    return this._validated;
+  }
+
   validate(validator) {
     if (validator) {
       this.validations.push(validator);
@@ -111,6 +116,7 @@ class FieldDesriptor {
     const { result, errors } = failOnFirstFailure(this, this.validations);
     this._errors = errors;
     this._valid = result;
+    this._validated = true;
     return result;
   }
 

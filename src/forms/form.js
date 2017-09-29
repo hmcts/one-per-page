@@ -60,6 +60,14 @@ class Form {
       .reduce((result, fieldResult) => result && fieldResult, true);
   }
 
+  get validated() {
+    const fieldsValidated = this.fields
+      .map(field => field.validated)
+      .reduce((result, fieldResult) => result || fieldResult, false);
+
+    return fieldsValidated;
+  }
+
   get errors() {
     const fieldErrors = this.fields
       .map(field => {
