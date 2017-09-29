@@ -1,3 +1,34 @@
+<a name="1.0.0-0"></a>
+# 1.0.0-0 (2017-09-29)
+
+* Add basic field level joi validation ([c4752b1](https://github.com/hmcts/one-per-page/commit/c4752b1))
+* Add validate and errors functions to form ([e6cd404](https://github.com/hmcts/one-per-page/commit/e6cd404))
+* Create new flow module to provide consistent interface ([9ad9fe6](https://github.com/hmcts/one-per-page/commit/9ad9fe6))
+* Enable multiple validations in fields ([878f1c7](https://github.com/hmcts/one-per-page/commit/878f1c7))
+* Expose form and provide #validated for deciding whether to display errors ([d726346](https://github.com/hmcts/one-per-page/commit/d726346))
+* Fix broken requireSession import ([cac6851](https://github.com/hmcts/one-per-page/commit/cac6851))
+* Increase code coverage in forms package ([d9e0aef](https://github.com/hmcts/one-per-page/commit/d9e0aef))
+* Move field in to the new forms module ([8ec2556](https://github.com/hmcts/one-per-page/commit/8ec2556))
+* Move form in to it's own file ([b2ee033](https://github.com/hmcts/one-per-page/commit/b2ee033))
+* Move session middleware in to session package ([0fe4cf7](https://github.com/hmcts/one-per-page/commit/0fe4cf7))
+* Move session shims to it's own file ([faff544](https://github.com/hmcts/one-per-page/commit/faff544))
+* Move sessionStore shims in to it's own file ([60656d0](https://github.com/hmcts/one-per-page/commit/60656d0))
+* Proxy over the form to make accessing fields cleaner ([1d0c11e](https://github.com/hmcts/one-per-page/commit/1d0c11e))
+* Remove unnecessary #invalidFields function ([7bb3b99](https://github.com/hmcts/one-per-page/commit/7bb3b99))
+* Remove unnecessary setting of res.locals.fields ([575cfe5](https://github.com/hmcts/one-per-page/commit/575cfe5))
+* Remove unused functions in field ([e86350c](https://github.com/hmcts/one-per-page/commit/e86350c))
+* Reorgansise session in to session module ([23f2c2c](https://github.com/hmcts/one-per-page/commit/23f2c2c))
+* Replace repository name in links ([04b5862](https://github.com/hmcts/one-per-page/commit/04b5862))
+* Shorter coverage summary during local test runs ([9174987](https://github.com/hmcts/one-per-page/commit/9174987))
+* Simplify the setting of options for session ([664934b](https://github.com/hmcts/one-per-page/commit/664934b))
+* Split flow classes into their own files ([7cf5016](https://github.com/hmcts/one-per-page/commit/7cf5016))
+* Switch the example app to use the new joi validation ([f31f94a](https://github.com/hmcts/one-per-page/commit/f31f94a))
+* Fix: field.errors and .valid shouldn't run validations ([98584ab](https://github.com/hmcts/one-per-page/commit/98584ab))
+* Fix: update example app to use fields proxy ([416890c](https://github.com/hmcts/one-per-page/commit/416890c))
+* chore(package): update sinon to version 4.0.0 ([e507c33](https://github.com/hmcts/one-per-page/commit/e507c33))
+
+
+
 <a name="0.5.0"></a>
 # 0.5.0 (2017-09-26)
 
