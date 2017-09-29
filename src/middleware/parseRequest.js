@@ -3,7 +3,6 @@ const formProxyHandler = require('../forms/formProxyHandler');
 const parseRequest = (req, res, next) => {
   req.fields = req.fields || {};
   res.locals = res.locals || {};
-  res.locals.fields = req.fields;
 
   const form = req.currentStep.form;
   if (typeof form === 'undefined') {
