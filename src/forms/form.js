@@ -45,10 +45,6 @@ class Form {
     return this;
   }
 
-  get invalidFields() {
-    return this.fields.filter(field => !field.validate());
-  }
-
   get valid() {
     const aFieldIsInvalid = this.fields.some(field => !field.valid);
     return !aFieldIsInvalid;
