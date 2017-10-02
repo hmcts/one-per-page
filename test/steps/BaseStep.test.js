@@ -112,4 +112,16 @@ describe('steps/BaseStep', () => {
         .expect(OK, { url: '/step' });
     });
   });
+
+  describe('#dirname', () => {
+    it('returns the path to the file containing the step', () => {
+      const step = new class Foo extends BaseStep {
+        get url() {
+          return '/foo';
+        }
+        handler() { /* intentionally blank */ }
+      }();
+      expect(step.dirname).to.eql(__dirname);
+    });
+  });
 });

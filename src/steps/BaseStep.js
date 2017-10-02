@@ -1,5 +1,7 @@
 const { Router: expressRouter } = require('express');
 const { expectImplemented } = require('../errors/expectImplemented');
+const callsites = require('callsites');
+const path = require('path');
 
 const bindStepToReq = step => (req, res, next) => {
   req.currentStep = step;
@@ -8,9 +10,19 @@ const bindStepToReq = step => (req, res, next) => {
   next();
 };
 
+const findChildClassFilePath = step => {
+  const callsite = callsites();
+  return callsite
+    .filter(site => site.getFunctionName() === step.name)
+    .map(site => site.getFileName())
+    .map(file => path.dirname(file))
+    .pop();
+};
+
 class BaseStep {
   constructor() {
     expectImplemented(this, 'url', 'handler');
+    this.dirname = findChildClassFilePath(this);
   }
 
   get middleware() {
