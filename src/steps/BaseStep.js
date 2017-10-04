@@ -2,6 +2,7 @@ const { Router: expressRouter } = require('express');
 const { expectImplemented } = require('../errors/expectImplemented');
 const callsites = require('callsites');
 const path = require('path');
+const { notDefined } = require('../util/checks');
 
 const bindStepToReq = step => (req, res, next) => {
   req.currentStep = step;
@@ -22,7 +23,9 @@ const findChildClassFilePath = step => {
 class BaseStep {
   constructor() {
     expectImplemented(this, 'url', 'handler');
-    this.dirname = findChildClassFilePath(this);
+    if (notDefined(this.dirname)) {
+      this.dirname = findChildClassFilePath(this);
+    }
   }
 
   get middleware() {

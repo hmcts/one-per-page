@@ -131,7 +131,7 @@ describe('Page', () => {
   });
 
   it('looks for a template named [Step.name] by default', () => {
-    const page = new class extends Page {
+    const page = new class TestPage extends Page {
       get url() {
         return '/page';
       }

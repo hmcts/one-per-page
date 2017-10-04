@@ -11,9 +11,6 @@ class TestPage extends Page {
   get url() {
     return testUrl;
   }
-  get template() {
-    return 'Page';
-  }
 }
 const defaultOptions = {
   session: { secret: 'foo' },
@@ -28,7 +25,7 @@ const options = (...overrides) => {
   return foo;
 };
 const handlerTest = ({ test, options: extraOptions }) => {
-  const testPage = new class extends Page {
+  const testPage = new class extends TestPage {
     get url() {
       return '/test';
     }
