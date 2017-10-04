@@ -4,6 +4,7 @@ const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const i18next = require('i18next');
 const walkMap = require('../util/walkMap');
 const applyContent = require('../middleware/applyContent');
+const resolveTemplate = require('../middleware/resolveTemplate');
 
 class Page extends BaseStep {
   constructor() {
@@ -28,15 +29,11 @@ class Page extends BaseStep {
   }
 
   get middleware() {
-    return [addLocals];
+    return [resolveTemplate, addLocals];
   }
 
   get afterMiddleware() {
     return [applyContent];
-  }
-
-  get template() {
-    return `${this.name}/template`;
   }
 
   handler(req, res) {

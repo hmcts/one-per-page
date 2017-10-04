@@ -39,24 +39,6 @@ describe('steps/Question', () => {
     });
   }
 
-  describe('#template', () => {
-    it('returns the step name by default', () => {
-      const foo = new class Foo extends Question {
-        get url() {
-          return '/foo';
-        }
-        get form() {
-          // intentionally blank
-          return '';
-        }
-        next() {
-          // intentionally blank
-        }
-      }();
-      expect(foo.template).to.eql(`${foo.name}/template`);
-    });
-  });
-
   {
     const SimpleQuestion = class extends Question {
       get form() {
