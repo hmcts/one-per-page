@@ -5,7 +5,7 @@ const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
 
 const parseJoiArgs = (field, args) => {
-  if (args.length === 1) { // eslint-disable-line no-magic-numbers
+  if (args.length === 1) {
     const [joiSchema] = args;
     return { message: `No error content for ${field.name}`, joiSchema };
   }
