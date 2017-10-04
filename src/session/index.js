@@ -1,7 +1,7 @@
 const expressSession = require('express-session');
 const RedisStore = require('connect-redis')(expressSession);
 const config = require('config');
-const { isTest } = require('../util/isTest');
+const { isTest } = require('../util/nodeEnv');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { shimSession } = require('../session/sessionShims');
 const { shimSessionStore } = require('../session/sessionStoreShims');
