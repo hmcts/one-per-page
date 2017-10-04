@@ -4,7 +4,7 @@ class Branch {
   constructor(...redirectors) {
     const branches = Array.from(redirectors);
     const last = branches.pop();
-    if (branches.length === 0) { // eslint-disable-line no-magic-numbers
+    if (branches.length === 0) {
       throw new Error('Branch needs atleast two paths');
     }
     if (!branches.every(b => b instanceof Conditional)) {
@@ -19,7 +19,7 @@ class Branch {
 
   redirect(req, res) {
     const findBranchThatPasses = branches => {
-      if (branches.length === 0) { // eslint-disable-line no-magic-numbers
+      if (branches.length === 0) {
         return this.fallback;
       }
       const [current, ...rest] = branches;

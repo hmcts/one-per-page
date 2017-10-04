@@ -3,8 +3,8 @@
 
 
 "@hmcts/eslint-config@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@hmcts/eslint-config/-/eslint-config-1.0.5.tgz#f992a6f51373d3897847b0c121978e2f136aea83"
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/eslint-config/-/eslint-config-1.2.0.tgz#7f7064cbbd45a4bbc258fd3d910731d527900146"
 
 a-sync-waterfall@^1.0.0:
   version "1.0.0"
