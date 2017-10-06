@@ -1,7 +1,7 @@
 {
   "name": "@hmcts/one-per-page",
   "description": "One question per page apps made easy",
-  "version": "1.0.0-0",
+  "version": "1.0.0-1",
   "main": "./src/main.js",
   "dependencies": {
     "body-parser": "^1.17.2",
