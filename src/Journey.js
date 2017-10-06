@@ -1,4 +1,5 @@
 const session = require('./session');
+const { contentProxy } = require('./i18n/contentProxy');
 const urlParse = require('url-parse');
 const defaultIfUndefined = require('./util/defaultIfUndefined');
 
@@ -47,6 +48,7 @@ const journey = (app, userOpts) => {
 
   app.use(setupMiddleware);
   app.use(opts.session);
+  app.use(contentProxy);
 
   opts.steps.forEach(step => {
     app.use(step.router);
