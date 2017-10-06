@@ -3,7 +3,7 @@ const addLocals = require('../middleware/addLocals');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const i18next = require('i18next');
 const walkMap = require('../util/walkMap');
-const applyContent = require('../middleware/applyContent');
+const loadStepContent = require('../i18n/loadStepContent');
 const resolveTemplate = require('../middleware/resolveTemplate');
 
 class Page extends BaseStep {
@@ -29,11 +29,7 @@ class Page extends BaseStep {
   }
 
   get middleware() {
-    return [resolveTemplate, addLocals];
-  }
-
-  get afterMiddleware() {
-    return [applyContent];
+    return [resolveTemplate, addLocals, loadStepContent];
   }
 
   handler(req, res) {
