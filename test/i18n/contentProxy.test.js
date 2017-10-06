@@ -1,6 +1,7 @@
 const util = require('util');
 const { expect, sinon } = require('../util/chai');
 const { contentProxy, proxyHandler } = require('../../src/i18n/contentProxy');
+const i18Next = require('../../src/i18n/i18Next');
 
 describe('i18n/contentProxy', () => {
   describe('contentProxy', () => {
@@ -23,9 +24,9 @@ describe('i18n/contentProxy', () => {
       contentProxy(req, res, next);
     });
 
-    it('does nothing if req.content exists', () => {
+    it('does nothing if req.content and req.i18Next exists', () => {
       const content = {};
-      return executeMiddleware({ req: { content } })
+      return executeMiddleware({ req: { content, i18Next } })
         .then(({ req }) => expect(req.content).to.eql(content));
     });
 
@@ -38,6 +39,11 @@ describe('i18n/contentProxy', () => {
       return executeMiddleware().then(
         ({ res }) => expect(res.locals.content.inspect()).to.match(/Proxy/)
       );
+    });
+
+    it('attaches i18Next to req.i18Next', () => {
+      return executeMiddleware()
+        .then(({ req }) => expect(req.i18Next).to.eql(i18Next));
     });
   });
 
