@@ -59,7 +59,10 @@ const applyContent = (req, res, next) => {
   const promises = [
     glob(`${step.dirname}/content.json`).then(loadContents),
     glob(`${step.dirname}/content.@(*).json`).then(loadContents),
-    glob(`${step.dirname}/${step.name}.json`).then(loadContents)
+    glob(`${step.dirname}/${step.name}.json`).then(loadContents),
+    glob(`${step.dirname}/${step.name}.@(*).json`).then(loadContents),
+    glob(`${step.dirname}/${step.name}.content.json`).then(loadContents),
+    glob(`${step.dirname}/${step.name}.content.@(*).json`).then(loadContents)
   ];
 
   Promise.all(promises).then(
