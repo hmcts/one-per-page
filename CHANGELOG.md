@@ -1,3 +1,11 @@
+<a name="1.0.0-3"></a>
+# 1.0.0-3 (2017-10-09)
+
+* Remove Page.content so pages now resolve from content files ([22c5602](https://github.com/hmcts/one-per-page/commit/22c5602))
+* Remove unused walkMap ([605e8cf](https://github.com/hmcts/one-per-page/commit/605e8cf))
+
+
+
 <a name="1.0.0-2"></a>
 # 1.0.0-2 (2017-10-06)
 
