@@ -1,3 +1,10 @@
+<a name="1.0.0-4"></a>
+# 1.0.0-4 (2017-10-09)
+
+* wip: declare step.content in constructor ([4407e15](https://github.com/hmcts/one-per-page/commit/4407e15))
+
+
+
 <a name="1.0.0-3"></a>
 # 1.0.0-3 (2017-10-09)
 
