@@ -31,16 +31,12 @@ const prefixedGetHandler = prefix => (target, name) => {
 const proxyHandler = { get: prefixedGetHandler() };
 
 const contentProxy = (req, res, next) => {
-  if (defined(req.content) && defined(req.i18Next)) {
+  if (defined(req.i18Next)) {
     next();
     return;
   }
 
-  req.content = new Proxy(i18Next, proxyHandler);
   req.i18Next = i18Next;
-
-  res.locals = res.locals || {};
-  res.locals.content = req.content;
 
   next();
 };
