@@ -24,21 +24,10 @@ describe('i18n/contentProxy', () => {
       contentProxy(req, res, next);
     });
 
-    it('does nothing if req.content and req.i18Next exists', () => {
+    it('does nothing if req.i18Next exists', () => {
       const content = {};
       return executeMiddleware({ req: { content, i18Next } })
         .then(({ req }) => expect(req.content).to.eql(content));
-    });
-
-    it('attaches the contentProxy to req.content', () => {
-      return executeMiddleware()
-        .then(({ req }) => expect(req.content.inspect()).to.match(/Proxy/));
-    });
-
-    it('attaches the contentProxy to res.locals.content', () => {
-      return executeMiddleware().then(
-        ({ res }) => expect(res.locals.content.inspect()).to.match(/Proxy/)
-      );
     });
 
     it('attaches i18Next to req.i18Next', () => {

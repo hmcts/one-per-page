@@ -3,6 +3,7 @@ const { testStep } = require('../util/supertest');
 const { OK, METHOD_NOT_ALLOWED } = require('http-status-codes');
 const { expect } = require('../util/chai');
 const { NotImplemented } = require('../../src/errors/expectImplemented');
+const path = require('path');
 
 describe('Page', () => {
   {
@@ -45,75 +46,6 @@ describe('Page', () => {
     });
   }
 
-  describe('content', () => {
-    const content = { title: 'some title' };
-
-    it('creates i18next if i18NextContent exsists', () => {
-      const page = new class extends Page {
-        get url() {
-          return '/my/page';
-        }
-        get template() {
-          return 'page_views/simplePage';
-        }
-        get i18NextContent() {
-          return content;
-        }
-      }();
-      expect(page.i18next).to.not.undefined;
-    });
-
-    it('does not create i18next if i18NextContent does not exsists', () => {
-      const page = new class extends Page {
-        get url() {
-          return '/my/page';
-        }
-        get template() {
-          return 'page_views/simplePage';
-        }
-      }();
-      expect(page.i18next).to.be.undefined;
-    });
-
-    it('transforms session items in content', () => {
-      const contentWithSessionData = {
-        en: {
-          translation: {
-            title: 'some title {{ session.foo }}',
-            subTitle: 'some subtitle {{ session.bar }}'
-          }
-        }
-      };
-      const session = { foo: 'some value', bar: 'some other value' };
-      const page = new class extends Page {
-        get url() {
-          return '/my/page';
-        }
-        get template() {
-          return 'page_views/simplePage';
-        }
-        get i18NextContent() {
-          return contentWithSessionData;
-        }
-      }();
-      page.locals = { session };
-      expect(page.content.title).to.eql('some title some value');
-      expect(page.content.subTitle).to.eql('some subtitle some other value');
-    });
-
-    it('returns empty content if no i18NextContent exsists', () => {
-      const page = new class extends Page {
-        get url() {
-          return '/my/page';
-        }
-        get template() {
-          return 'page_views/simplePage';
-        }
-      }();
-      expect(page.content).to.eql({});
-    });
-  });
-
   it('has access to the session', () => {
     const page = new class extends Page {
       get url() {
@@ -130,7 +62,82 @@ describe('Page', () => {
       .expect(OK, 'Foo Bar\n');
   });
 
-  it('looks for a template named [Step.name] by default', () => {
+  const testRoot = path.resolve(__dirname, '../views/Page/content_tests');
+  const testDir = fp => path.join(testRoot, fp);
+  const schemes = [
+    {
+      dir: testDir('1'),
+      template: '[Step].html',
+      content: '[Step].json'
+    }, {
+      dir: testDir('2'),
+      template: '[Step].template.html',
+      content: 'content.json'
+    }, {
+      dir: testDir('3'),
+      template: 'template.html',
+      content: 'content.en.json'
+    }
+  ];
+
+  describe('Template rendering', () => {
+    schemes.forEach(({ dir, template }) => {
+      const page = new class ContentTest extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get dirname() {
+          return dir;
+        }
+      }();
+
+      const request = testStep(page).get();
+
+      it(`renders a template named ${template}`, () => {
+        return request.html($ => expect($('h1')).$text('Hello, World!'));
+      });
+    });
+  });
+
+  describe('Content rendering', () => {
+    schemes.forEach(({ dir, content }) => {
+      const page = new class ContentTest extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get dirname() {
+          return dir;
+        }
+      }();
+
+      const request = testStep(page).get();
+
+      it(`renders content from ${content}`, () => {
+        return request.html($ => expect($('#singleKey')).$text('Single Key'));
+      });
+    });
+
+    {
+      const page = new class ContentTest extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get dirname() {
+          return testDir('1');
+        }
+      }();
+      const request = testStep(page).get();
+
+      it('supports nested keys', () => {
+        return request.html($ => expect($('#nestedKey')).$text('Nested Key'));
+      });
+
+      it('has access to the session');
+      it('has access to the step');
+    }
+  });
+
+  it('looks for a template named [Step.name] in views', () => {
     const page = new class TestPage extends Page {
       get url() {
         return '/page';
