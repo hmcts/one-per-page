@@ -1,6 +1,5 @@
-const i18Next = require('./i18Next');
 const util = require('util');
-const { notDefined, defined } = require('../util/checks');
+const { notDefined } = require('../util/checks');
 
 const prefixKey = (prefix, key) => {
   if (notDefined(prefix) || prefix === '') {
@@ -28,17 +27,6 @@ const prefixedGetHandler = prefix => (target, name) => {
   return new Proxy(target, { get: prefixedGetHandler(key) });
 };
 
-const proxyHandler = { get: prefixedGetHandler() };
+const contentProxy = { get: prefixedGetHandler() };
 
-const contentProxy = (req, res, next) => {
-  if (defined(req.i18Next)) {
-    next();
-    return;
-  }
-
-  req.i18Next = i18Next;
-
-  next();
-};
-
-module.exports = { contentProxy, proxyHandler };
+module.exports = { contentProxy };

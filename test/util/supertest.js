@@ -5,7 +5,7 @@ const nunjucks = require('express-nunjucks');
 const zepto = require('zepto-node');
 const domino = require('domino');
 const { expect } = require('../util/chai');
-const { contentProxy } = require('../../src/i18n/contentProxy');
+const { i18nMiddleware } = require('../../src/i18n/i18Next');
 
 function testApp() {
   const app = express();
@@ -42,7 +42,7 @@ const supertestInstance = stepDSL => {
   });
 
   app.use(session({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
-  app.use(contentProxy);
+  app.use(i18nMiddleware);
 
   app.get('/supertest-check-session', (req, res) => {
     const currentSession = Object.assign(

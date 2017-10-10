@@ -1,50 +1,17 @@
 const util = require('util');
 const { expect, sinon } = require('../util/chai');
-const { contentProxy, proxyHandler } = require('../../src/i18n/contentProxy');
-const i18Next = require('../../src/i18n/i18Next');
+const { contentProxy } = require('../../src/i18n/contentProxy');
 
 describe('i18n/contentProxy', () => {
   describe('contentProxy', () => {
-    it('exposes an express middleware', () => {
-      expect(contentProxy).to.be.a('function');
-      expect(contentProxy.toString()).to.match(/req,res,next/);
-    });
-
-    const executeMiddleware = ({
-      req = {},
-      res = {}
-    } = {}) => new Promise((resolve, reject) => {
-      const next = error => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve({ req, res });
-        }
-      };
-      contentProxy(req, res, next);
-    });
-
-    it('does nothing if req.i18Next exists', () => {
-      const content = {};
-      return executeMiddleware({ req: { content, i18Next } })
-        .then(({ req }) => expect(req.content).to.eql(content));
-    });
-
-    it('attaches i18Next to req.i18Next', () => {
-      return executeMiddleware()
-        .then(({ req }) => expect(req.i18Next).to.eql(i18Next));
-    });
-  });
-
-  describe('proxyHandler', () => {
     it('exposes an es6 proxy handler', () => {
-      expect(proxyHandler).to.be.an('object');
-      expect(proxyHandler).to.have.property('get').that.is.a('function');
+      expect(contentProxy).to.be.an('object');
+      expect(contentProxy).to.have.property('get').that.is.a('function');
     });
 
     const t = sinon.stub();
     const exists = sinon.stub();
-    const proxy = new Proxy({ t, exists }, proxyHandler);
+    const proxy = new Proxy({ t, exists }, contentProxy);
 
     beforeEach(() => {
       t.reset();
