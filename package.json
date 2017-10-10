@@ -13,7 +13,7 @@
     "express-session": "^1.15.4",
     "glob": "^7.1.2",
     "http-status-codes": "^1.2.0",
-    "i18next": "^9.0.0",
+    "i18next": "^10.0.1",
     "joi": "^11.1.1",
     "js-yaml": "^3.9.0",
     "nunjucks": "^3.0.1",
