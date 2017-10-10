@@ -1,7 +1,7 @@
 const { expect } = require('../util/chai');
 const i18Next = require('i18next');
 const loadStepContent = require('../../src/i18n/loadStepContent');
-const { proxyHandler } = require('../../src/i18n/contentProxy');
+const { contentProxy } = require('../../src/i18n/contentProxy');
 const path = require('path');
 const { middlewareTest } = require('../util/middlewareTest');
 
@@ -30,7 +30,7 @@ describe('i18n/loadStepContent', () => {
     const currentStep = {
       dirname: '',
       name: '',
-      content: new Proxy({}, proxyHandler)
+      content: new Proxy({}, contentProxy)
     };
     const shouldFail = middlewareTest({ currentStep })
       .use(loadStepContent)
@@ -55,7 +55,7 @@ describe('i18n/loadStepContent', () => {
     currentStep: {
       dirname: testRoot,
       name: 'StepName',
-      content: new Proxy(i18N, proxyHandler)
+      content: new Proxy(i18N, contentProxy)
     }
   };
   const loadContentTest = middlewareTest(request)
