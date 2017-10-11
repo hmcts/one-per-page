@@ -9,16 +9,20 @@ const { contentProxy } = require('../i18n/contentProxy');
 class Page extends BaseStep {
   constructor() {
     super();
-    this.content = new Proxy(i18NextInstance, contentProxy);
+    this.content = new Proxy(i18NextInstance, contentProxy(this));
   }
 
   get middleware() {
     return [resolveTemplate, addLocals, loadStepContent];
   }
 
+  get locals() {
+    return this.res.locals;
+  }
+
   handler(req, res) {
     if (req.method === 'GET') {
-      res.render(this.template);
+      res.render(this.template, this.locals);
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
     }

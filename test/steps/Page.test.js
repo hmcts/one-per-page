@@ -46,22 +46,6 @@ describe('Page', () => {
     });
   }
 
-  it('has access to the session', () => {
-    const page = new class extends Page {
-      get url() {
-        return '/my/page';
-      }
-      get template() {
-        return 'page_views/session';
-      }
-    }();
-
-    return testStep(page)
-      .withSession({ foo: 'Foo', bar: 'Bar' })
-      .get()
-      .expect(OK, 'Foo Bar\n');
-  });
-
   const testRoot = path.resolve(__dirname, '../views/Page/content_tests');
   const testDir = fp => path.join(testRoot, fp);
   const schemes = [
@@ -97,6 +81,22 @@ describe('Page', () => {
         return request.html($ => expect($('h1')).$text('Hello, World!'));
       });
     });
+
+    it('has access to the session', () => {
+      const page = new class extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get template() {
+          return 'page_views/session';
+        }
+      }();
+
+      return testStep(page)
+        .withSession({ foo: 'Foo', bar: 'Bar' })
+        .get()
+        .expect(OK, 'Foo Bar\n');
+    });
   });
 
   describe('Content rendering', () => {
@@ -126,14 +126,17 @@ describe('Page', () => {
           return testDir('1');
         }
       }();
-      const request = testStep(page).get();
+      const request = testStep(page)
+        .withSession({ foo: 'Foo' })
+        .get();
 
       it('supports nested keys', () => {
         return request.html($ => expect($('#nestedKey')).$text('Nested Key'));
       });
 
-      it('has access to the session');
-      it('has access to the step');
+      it('has access to the session', () => {
+        return request.html($ => expect($('#sessionKey')).$text('Foo is Foo'));
+      });
     }
   });
 

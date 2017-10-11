@@ -5,13 +5,16 @@ const { contentProxy } = require('../../src/i18n/contentProxy');
 describe('i18n/contentProxy', () => {
   describe('contentProxy', () => {
     it('exposes an es6 proxy handler', () => {
-      expect(contentProxy).to.be.an('object');
-      expect(contentProxy).to.have.property('get').that.is.a('function');
+      const fakeStep = {};
+      const handler = contentProxy(fakeStep);
+      expect(handler).to.be.an('object');
+      expect(handler).to.have.property('get').that.is.a('function');
     });
 
     const t = sinon.stub();
     const exists = sinon.stub();
-    const proxy = new Proxy({ t, exists }, contentProxy);
+    const fakeStep = {};
+    const proxy = new Proxy({ t, exists }, contentProxy(fakeStep));
 
     beforeEach(() => {
       t.reset();
