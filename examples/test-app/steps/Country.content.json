@@ -1,0 +1,19 @@
+{
+  "en": {
+    "title": "Where do you live?",
+    "errors": {
+      "required": "Select the country where you live"
+    },
+    "fields": {
+      "country": {
+        "title": "Where do you live?",
+        "northernIreland": "Northern Ireland",
+        "scotland": "Scotland",
+        "england": "England",
+        "wales": "Wales",
+        "hint": "Some advice about the question"
+      }
+    }
+
+  }
+}

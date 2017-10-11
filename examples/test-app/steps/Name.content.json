@@ -1,0 +1,18 @@
+{
+  "en": {
+    "title": "What is your name?",
+    "test": "test",
+
+    "fields": {
+      "firstName": {
+        "title": "First name(s)",
+        "hint": "Include all middle names here",
+        "required": "Provide your first name"
+      },
+      "lastName": {
+        "title": "Last name(s)",
+        "required": "Provide your last name"
+      }
+    }
+  }
+}
