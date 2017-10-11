@@ -1,14 +1,9 @@
 const { Question, field, form, goTo } = require('@hmcts/one-per-page');
 const Joi = require('joi');
-const content = require('./content');
 
 class Name extends Question {
   get url() {
     return '/name';
-  }
-
-  get i18NextContent() {
-    return content;
   }
 
   get form() {
