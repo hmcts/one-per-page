@@ -69,4 +69,16 @@ describe('i18n/loadStepContent', () => {
         .then(req => expect(req.i18Next.t(key)).to.eql('Expected Value'));
     });
   });
+
+  it('expects [stepname].json to have lang codes as top level keys', () => {
+    const currentStep = {
+      dirname: path.resolve(__dirname, './fixtures/loadStepContent'),
+      name: 'WillThrow',
+      content: new Proxy({}, contentProxy)
+    };
+    const shouldFail = middlewareTest({ currentStep, i18Next: i18N })
+      .use(loadStepContent)
+      .run();
+    return expect(shouldFail).rejectedWith(/not a country code/);
+  });
 });

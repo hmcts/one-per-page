@@ -23,9 +23,8 @@ describe('i18n/i18Next', () => {
     });
 
     it('does nothing if req.i18Next exists', () => {
-      const content = {};
-      return executeMiddleware({ req: { content, i18NextInstance } })
-        .then(({ req }) => expect(req.content).to.eql(content));
+      return executeMiddleware({ req: { i18Next: {} } })
+        .then(({ req }) => expect(req.i18Next).to.not.eql(i18NextInstance));
     });
 
     it('attaches i18Next to req.i18Next', () => {
