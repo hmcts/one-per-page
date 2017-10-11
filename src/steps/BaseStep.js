@@ -6,8 +6,9 @@ const { notDefined } = require('../util/checks');
 
 const bindStepToReq = step => (req, res, next) => {
   req.currentStep = step;
-  step.locals = res.locals;
   step.journey = req.journey;
+  step.req = req;
+  step.res = res;
   next();
 };
 

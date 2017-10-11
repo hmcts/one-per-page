@@ -3,6 +3,7 @@
     "singleKey": "Single Key",
     "nested": {
       "key": "Nested Key"
-    }
+    },
+    "sessionKey": "Foo is {{ session.foo }}"
   }
 }

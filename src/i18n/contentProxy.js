@@ -11,22 +11,24 @@ const prefixKey = (prefix, key) => {
 const toStringKeys = ['toString', Symbol.toStringTag];
 const inspectKeys = ['inspect', util.inspect.custom];
 
-const prefixedGetHandler = prefix => (target, name) => {
-  if (toStringKeys.includes(name)) {
-    if (target.exists(prefix)) {
-      return () => target.t(prefix);
+const contentProxy = step => {
+  const prefixedGetHandler = prefix => (target, name) => {
+    if (toStringKeys.includes(name)) {
+      if (target.exists(prefix)) {
+        return () => target.t(prefix, step.locals);
+      }
+      return () => {
+        throw new Error(`No translation for ${prefix}`);
+      };
     }
-    return () => {
-      throw new Error(`No translation for ${prefix}`);
-    };
-  }
-  if (inspectKeys.includes(name)) {
-    return () => `Proxy { key: ${prefix}, value: ${target.t(prefix)} }`;
-  }
-  const key = prefixKey(prefix, name);
-  return new Proxy(target, { get: prefixedGetHandler(key) });
-};
+    if (inspectKeys.includes(name)) {
+      return () => `Proxy { key: ${prefix}, value: ${target.t(prefix)} }`;
+    }
+    const key = prefixKey(prefix, name);
+    return new Proxy(target, { get: prefixedGetHandler(key) });
+  };
 
-const contentProxy = { get: prefixedGetHandler() };
+  return { get: prefixedGetHandler() };
+};
 
 module.exports = { contentProxy };
