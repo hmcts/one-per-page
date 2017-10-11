@@ -2,33 +2,25 @@ const fs = require('fs');
 const callbackGlob = require('glob');
 
 const fileExists = filepath => new Promise((resolve, reject) => {
-  try {
-    fs.stat(filepath, (error, stats) => {
-      if (error) {
-        reject(error);
-      } else if (stats.isFile()) {
-        resolve(filepath);
-      } else {
-        reject(new Error(`${filepath} is not a file`));
-      }
-    });
-  } catch (error) {
-    reject(error);
-  }
+  fs.stat(filepath, (error, stats) => {
+    if (error) {
+      reject(error);
+    } else if (stats.isFile()) {
+      resolve(filepath);
+    } else {
+      reject(new Error(`${filepath} is not a file`));
+    }
+  });
 });
 
 const readFile = filepath => new Promise((resolve, reject) => {
-  try {
-    fs.readFile(filepath, (error, contents) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(contents);
-      }
-    });
-  } catch (error) {
-    reject(error);
-  }
+  fs.readFile(filepath, (error, contents) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(contents);
+    }
+  });
 });
 
 const readJson = filepath => readFile(filepath).then(JSON.parse);
