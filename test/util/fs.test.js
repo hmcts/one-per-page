@@ -1,6 +1,6 @@
 const { expect } = require('./chai');
 const path = require('path');
-const { fileExists, glob } = require('../../src/util/fs');
+const { fileExists, glob, readFile, readJson } = require('../../src/util/fs');
 
 describe('util/fs', () => {
   describe('#fileExists', () => {
@@ -45,6 +45,39 @@ describe('util/fs', () => {
 
     it('rejects if no path provided', () => {
       return expect(glob()).rejectedWith(/pattern string required/);
+    });
+  });
+
+  describe('#readJson', () => {
+    const fixturesDir = path.resolve(__dirname, 'fixtures/readJson/');
+    it('resolves with the content of a file', () => {
+      const file = path.resolve(fixturesDir, 'file1.json');
+      return expect(readJson(file)).to.eventually.eql({ foo: 'Foo' });
+    });
+
+    it('rejects if path is not a file', () => {
+      return expect(readJson(fixturesDir)).rejectedWith(/illegal operation/);
+    });
+
+    it('rejects if a file doesn\'t exist', () => {
+      return expect(readJson('/non-existent')).rejectedWith(/no such file/);
+    });
+  });
+
+  describe('#readFile', () => {
+    const fixturesDir = path.resolve(__dirname, 'fixtures/readFile/');
+    it('resolves with the content of a file', () => {
+      const file = path.resolve(fixturesDir, 'file1.txt');
+      const contentsBuffer = Buffer.from('Contents of file 1\n');
+      return expect(readFile(file)).to.eventually.eql(contentsBuffer);
+    });
+
+    it('rejects if path is not a file', () => {
+      return expect(readFile(fixturesDir)).rejectedWith(/illegal operation/);
+    });
+
+    it('rejects if a file doesn\'t exist', () => {
+      return expect(readFile('/non-existent')).rejectedWith(/no such file/);
     });
   });
 });
