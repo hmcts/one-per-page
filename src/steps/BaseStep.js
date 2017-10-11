@@ -43,11 +43,6 @@ class BaseStep {
     this.middleware.forEach(middleware => {
       this._router.all(this.url, middleware.bind(this));
     });
-    if (this.afterMiddleware) {
-      this.afterMiddleware.forEach(middleware => {
-        this._router.all(this.url, middleware.bind(this));
-      });
-    }
     this._router.all(this.url, this.handler.bind(this));
     return this._router;
   }
