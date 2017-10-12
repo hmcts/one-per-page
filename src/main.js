@@ -10,7 +10,7 @@ const journey = require('./Journey');
 const requireSession = require('./session/requireSession');
 const parseRequest = require('./forms/parseRequest');
 
-const { field, form } = require('./forms');
+const { field, form, checkboxField } = require('./forms');
 
 const { goTo, branch } = require('./flow');
 
@@ -24,6 +24,7 @@ module.exports = {
   journey,
   middleware: { requireSession, parseRequest },
   field,
+  checkboxField,
   form,
   goTo,
   branch
