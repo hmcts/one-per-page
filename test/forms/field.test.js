@@ -18,17 +18,21 @@ describe('forms/field', () => {
 
     describe('#serialize', () => {
       it('returns an object representing the field', () => {
-        const f = new FieldDesriptor('name', 'Prefs_colour', 'Green');
+        const f = new FieldDesriptor('name');
+        f.id = 'Prefs_colour';
+        f.value = 'Green';
         expect(f.serialize()).to.eql({ [f.id]: f.value });
       });
 
       it('returns an empty object if no ID', () => {
-        const f = new FieldDesriptor('name', undefined, 'Green');
+        const f = new FieldDesriptor('name');
+        f.value = 'Green';
         expect(f.serialize()).to.eql({});
       });
 
       it('returns an empty object if no value', () => {
-        const f = new FieldDesriptor('name', 'Prefs_colour');
+        const f = new FieldDesriptor('name');
+        f.id = 'Prefs_colour';
         expect(f.serialize()).to.eql({});
       });
     });

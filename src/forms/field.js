@@ -1,5 +1,6 @@
 const option = require('option');
 const Joi = require('joi');
+const { textField } = require('./fieldType');
 
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
@@ -36,10 +37,11 @@ const makeId = (field, step) => {
 
 
 class FieldDesriptor {
-  constructor(name, id, value) {
+  constructor(name, fieldType = textField) {
+    this.type = fieldType;
     this.name = name;
-    this.id = id;
-    this.value = value;
+    this.id = undefined; // eslint-disable-line no-undefined
+    this.value = undefined; // eslint-disable-line no-undefined
     this.validations = [];
     this._validated = false;
   }
@@ -57,7 +59,8 @@ class FieldDesriptor {
     const value = option
       .fromNullable(req.body)
       .flatMap(body => option.fromNullable(body[id]))
-      .valueOrElse('');
+      .map(content => this.type.parse(content))
+      .valueOrElse(this.type.nullValue);
 
     this.id = id;
     this.value = value;
@@ -76,7 +79,7 @@ class FieldDesriptor {
     const value = option
       .fromNullable(req.session)
       .flatMap(session => option.fromNullable(session[id]))
-      .valueOrElse('');
+      .valueOrElse(this.type.nullValue);
 
     this.id = id;
     this.value = value;
