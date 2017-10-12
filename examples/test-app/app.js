@@ -7,6 +7,7 @@ const Sessions = require('./steps/admin/Session.step');
 const Start = require('./steps/Start.step');
 const Name = require('./steps/Name.step');
 const Country = require('./steps/Country.step');
+const Contact = require('./steps/Contact.step');
 const Entry = require('./steps/Entry.step');
 const ExitNorthernIreland = require('./steps/exits/ExitNorthernIreland.step');
 const Exit = require('./steps/exits/Done.step');
@@ -29,6 +30,7 @@ journey(app, {
     new Sessions(),
     new Name(),
     new Country(),
+    new Contact(),
     new ExitNorthernIreland(),
     new Exit()
   ],

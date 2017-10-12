@@ -8,22 +8,22 @@
 {% set phase="ALPHA" %}
 {% set feedbackLink="https://github.com/hmcts/one-per-page/issues/new" %}
 {% set title %}
-  {{ content.title | safe }}
+  {{ content.title }}
 {% endset %}
 
 {% block fields %}
 
   {% call formSection() %}
-    {{ selectionButtons(fields.country, content.fields.country.title,
-      hint = content.fields.country.hint,
+    {{ selectionButtons(fields.contactMethod, content.title,
+      type = 'checkbox',
       options = [
-        { label: content.fields.country.northernIreland, value: "northern-ireland" },
-        { label: content.fields.country.scotland, value: "scotland" },
-        { label: content.fields.country.england, value: "scot" },
-        { label: content.fields.country.wales, value: "wales" }
+        { label: content.options.phone, value: "phone" },
+        { label: content.options.email, value: "email" },
+        { label: content.options.post, value: "post" }
       ]
     ) }}
   {% endcall %}
 
 {% endblock %}
+
 
