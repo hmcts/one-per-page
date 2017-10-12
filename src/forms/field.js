@@ -132,4 +132,4 @@ class FieldDesriptor {
 
 const field = name => new FieldDesriptor(name);
 
-module.exports = { field, FieldDesriptor };
+module.exports = { field, FieldDesriptor, makeId };
