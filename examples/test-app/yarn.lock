@@ -3,7 +3,7 @@
 
 
 "@hmcts/look-and-feel@./../../../look-and-feel":
-  version "1.0.0-0"
+  version "1.0.0-3"
   dependencies:
     check-types "^7.3.0"
     config "^1.26.1"
@@ -33,8 +33,9 @@
     express "^4.15.3"
     express-nunjucks "^2.2.3"
     express-session "^1.15.4"
+    glob "^7.1.2"
     http-status-codes "^1.2.0"
-    i18next "^9.0.0"
+    i18next "^10.0.1"
     joi "^11.1.1"
     js-yaml "^3.9.0"
     nunjucks "^3.0.1"
@@ -1441,7 +1442,7 @@ glob@^6.0.4:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@~7.1.1:
+glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.2, glob@~7.1.1:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -1587,6 +1588,10 @@ http-status-codes@^1.2.0:
 https-browserify@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-0.0.1.tgz#3f91365cabe60b77ed0ebba24b454e3e09d95a82"
+
+i18next@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-10.0.1.tgz#ce682ef7c43590d015b0cc5cef31f226475d0a3f"
 
 i18next@^9.0.0:
   version "9.0.0"

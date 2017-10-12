@@ -1,0 +1,11 @@
+{
+  "title": "How should we contact you?",
+  "errors": {
+    "noOptionSelected": "At least 1 contact method is required"
+  },
+  "options": {
+    "phone": "Phone",
+    "email": "Email",
+    "post": "Post"
+  }
+}

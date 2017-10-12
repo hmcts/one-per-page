@@ -16,7 +16,7 @@ class Name extends Question {
   }
 
   next() {
-    return goTo(this.journey.Sessions);
+    return goTo(this.journey.Contact);
   }
 }
 
