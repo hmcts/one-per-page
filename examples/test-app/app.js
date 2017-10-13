@@ -21,7 +21,12 @@ const baseUrl = `http://localhost:${config.port}`;
 lookAndFeel.configure(app, {
   baseUrl,
   express: { views: [path.resolve(__dirname, 'steps')] },
-  webpack: { entry: [path.resolve(__dirname, 'assets/scss/main.scss')] }
+  webpack: {
+    entry: [
+      path.resolve(__dirname, 'assets/js/main.js'),
+      path.resolve(__dirname, 'assets/scss/main.scss')
+    ]
+  }
 });
 
 journey(app, {

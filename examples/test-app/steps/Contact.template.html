@@ -3,6 +3,7 @@
 
 {% block head -%}
 <link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="{{ asset_path }}main.js"></script>
 {% endblock %}
 
 {% set phase="ALPHA" %}
@@ -14,14 +15,25 @@
 {% block fields %}
 
   {% call formSection() %}
-    {{ selectionButtons(fields.contactMethod, content.title,
-      type = 'checkbox',
+    {{ selectionButtons(fields.contactMe, content.title,
+      inline = true,
       options = [
-        { label: content.options.phone, value: "phone" },
-        { label: content.options.email, value: "email" },
-        { label: content.options.post, value: "post" }
+        { label: 'Yes', value: 'yes', target: 'contact-methods' },
+        { label: 'No', value: 'no' }
       ]
     ) }}
+
+    <div class="panel panel-border-narrow js-hidden" id="contact-methods">
+      {{ selectionButtons(fields.contactMethod, content.contactMethod,
+        hideQuestion = false,
+        type = 'checkbox',
+        options = [
+          { label: content.options.phone, value: "phone" },
+          { label: content.options.email, value: "email" },
+          { label: content.options.post, value: "post" }
+        ]
+      ) }}
+    </div>
   {% endcall %}
 
 {% endblock %}

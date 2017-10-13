@@ -13,7 +13,6 @@
   "dependencies": {
     "@hmcts/look-and-feel": "./../../../look-and-feel",
     "@hmcts/one-per-page": "./../../",
-    "copy-webpack-plugin": "^4.0.1",
     "express": "^4.15.3",
     "i18next": "^9.0.0",
     "joi": "^10.6.0"

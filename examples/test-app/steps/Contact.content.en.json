@@ -1,11 +1,17 @@
 {
-  "title": "How should we contact you?",
+  "title": "Should we contact you about your application?",
+  "contactMethod": "How should we contact you?",
   "errors": {
-    "noOptionSelected": "At least 1 contact method is required"
+    "noOptionSelected": "At least 2 contact methods are required"
   },
   "options": {
     "phone": "Phone",
     "email": "Email",
     "post": "Post"
+  },
+  "cya": {
+    "question": "Contact",
+    "dontContactMe": "Don't contact me",
+    "answer": "By {{- contactMethods }}"
   }
 }
