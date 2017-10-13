@@ -1,3 +1,16 @@
+<a name="1.1.0"></a>
+# 1.1.0 (2017-10-13)
+
+* Add new field type to handle checkboxes ([39acf03](https://github.com/hmcts/one-per-page/commit/39acf03))
+* Demo the checkbox field in the example app ([db21810](https://github.com/hmcts/one-per-page/commit/db21810))
+* Expose new checkboxField ([0248857](https://github.com/hmcts/one-per-page/commit/0248857))
+* Expose the forms package ([52c299e](https://github.com/hmcts/one-per-page/commit/52c299e))
+* Simplify checkbox type ([cc9ffa4](https://github.com/hmcts/one-per-page/commit/cc9ffa4))
+* Switch example app to use textField and arrayField ([dbf7e54](https://github.com/hmcts/one-per-page/commit/dbf7e54))
+* Switch field types to describe the js value, not the html control ([032736e](https://github.com/hmcts/one-per-page/commit/032736e))
+
+
+
 <a name="1.0.0"></a>
 # 1.0.0 (2017-10-12)
 
