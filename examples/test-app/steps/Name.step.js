@@ -1,4 +1,5 @@
-const { Question, field, form, goTo } = require('@hmcts/one-per-page');
+const { Question, goTo } = require('@hmcts/one-per-page');
+const { form, textField } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 
 class Name extends Question {
@@ -8,9 +9,9 @@ class Name extends Question {
 
   get form() {
     return form(
-      field('firstName')
+      textField('firstName')
         .joi(this.content.fields.firstName.required, Joi.string().required()),
-      field('lastName')
+      textField('lastName')
         .joi(this.content.fields.lastName.required, Joi.string().required())
     );
   }
