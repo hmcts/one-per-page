@@ -1,12 +1,18 @@
 const { expect, sinon } = require('../util/chai');
 const Joi = require('joi');
 const { field, FieldDesriptor } = require('../../src/forms/field');
+const { nonEmptyTextParser } = require('../../src/forms/fieldParsers');
 
 describe('forms/field', () => {
   describe('#field', () => {
     it('returns a FieldDesriptor', () => {
       const foo = field('foo');
       expect(foo).to.be.an.instanceof(FieldDesriptor);
+    });
+
+    it('defaults to nonEmptyTextParser', () => {
+      const foo = field('foo');
+      expect(foo.parser).to.eql(nonEmptyTextParser);
     });
   });
 

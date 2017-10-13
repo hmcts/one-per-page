@@ -1,6 +1,6 @@
 const option = require('option');
 const Joi = require('joi');
-const { textField } = require('./fieldType');
+const { nonEmptyTextParser } = require('./fieldParsers');
 
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
@@ -37,8 +37,8 @@ const makeId = (field, step) => {
 
 
 class FieldDesriptor {
-  constructor(name, fieldType = textField) {
-    this.type = fieldType;
+  constructor(name, fieldParser = nonEmptyTextParser) {
+    this.parser = fieldParser;
     this.name = name;
     this.id = undefined; // eslint-disable-line no-undefined
     this.value = undefined; // eslint-disable-line no-undefined
@@ -59,8 +59,8 @@ class FieldDesriptor {
     const value = option
       .fromNullable(req.body)
       .flatMap(body => option.fromNullable(body[id]))
-      .map(content => this.type.parse(content))
-      .valueOrElse(this.type.nullValue);
+      .map(content => this.parser.parse(content))
+      .valueOrElse(this.parser.nullValue);
 
     this.id = id;
     this.value = value;
@@ -79,7 +79,7 @@ class FieldDesriptor {
     const value = option
       .fromNullable(req.session)
       .flatMap(session => option.fromNullable(session[id]))
-      .valueOrElse(this.type.nullValue);
+      .valueOrElse(this.parser.nullValue);
 
     this.id = id;
     this.value = value;
@@ -133,6 +133,6 @@ class FieldDesriptor {
   }
 }
 
-const field = name => new FieldDesriptor(name);
+const field = (name, parser) => new FieldDesriptor(name, parser);
 
 module.exports = { field, FieldDesriptor, makeId };
