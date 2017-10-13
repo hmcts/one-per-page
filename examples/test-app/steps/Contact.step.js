@@ -1,4 +1,5 @@
-const { Question, form, checkboxField, goTo } = require('@hmcts/one-per-page');
+const { Question, goTo } = require('@hmcts/one-per-page');
+const { form, arrayField } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 
 class Contact extends Question {
@@ -10,7 +11,7 @@ class Contact extends Question {
     const validAnswers = Joi.string().valid(['phone', 'email', 'post']);
 
     return form(
-      checkboxField('contactMethod').joi(
+      arrayField('contactMethod').joi(
         this.content.errors.noOptionSelected,
         Joi.array()
           .items(validAnswers)
