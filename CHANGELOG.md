@@ -1,3 +1,14 @@
+<a name="1.2.0"></a>
+# 1.2.0 (2017-10-19)
+
+* Add new Reference type that is a readonly field ([0e97fa2](https://github.com/hmcts/one-per-page/commit/0e97fa2))
+* Allow steps to define functions that are scoped local ([c6f4d9a](https://github.com/hmcts/one-per-page/commit/c6f4d9a))
+* Expose new ref fields and demo them in the example app ([138b846](https://github.com/hmcts/one-per-page/commit/138b846))
+* Fix bad value on country page (hang over from a test) ([38fd008](https://github.com/hmcts/one-per-page/commit/38fd008))
+* Test the @hmcts/one-per-page/forms interface ([69987ca](https://github.com/hmcts/one-per-page/commit/69987ca))
+
+
+
 <a name="1.1.0"></a>
 # 1.1.0 (2017-10-13)
 
