@@ -97,6 +97,27 @@ describe('Page', () => {
         .get()
         .expect(OK, 'Foo Bar\n');
     });
+
+    it('has access to arbitrary functions on the step', () => {
+      const page = new class extends Page {
+        get url() {
+          return '/my/page';
+        }
+        get template() {
+          return 'page_views/class_locals';
+        }
+        get foo() {
+          return 'Foo';
+        }
+        get bar() {
+          return 'Bar';
+        }
+      }();
+
+      return testStep(page)
+        .get()
+        .expect(OK, 'Foo Bar\n');
+    });
   });
 
   describe('Content rendering', () => {
@@ -125,6 +146,9 @@ describe('Page', () => {
         get dirname() {
           return testDir('1');
         }
+        get foo() {
+          return 'Foo';
+        }
       }();
       const request = testStep(page)
         .withSession({ foo: 'Foo' })
@@ -136,6 +160,10 @@ describe('Page', () => {
 
       it('has access to the session', () => {
         return request.html($ => expect($('#sessionKey')).$text('Foo is Foo'));
+      });
+
+      it('has access to arbitrary functions on the step', () => {
+        return request.html($ => expect($('#funcKey')).$text('Foo is Foo'));
       });
     }
   });

@@ -4,6 +4,7 @@
     "nested": {
       "key": "Nested Key"
     },
-    "sessionKey": "Foo is {{ session.foo }}"
+    "sessionKey": "Foo is {{ session.foo }}",
+    "funcKey": "Foo is {{ foo }}"
   }
 }
