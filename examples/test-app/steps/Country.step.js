@@ -22,7 +22,7 @@ class Country extends Question {
 
     return branch(
       goTo(this.journey.ExitNorthernIreland).if(livesInNI),
-      goTo(this.journey.Name)
+      goTo(this.journey.RespondentTitle)
     );
   }
 }

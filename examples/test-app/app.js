@@ -9,6 +9,8 @@ const Name = require('./steps/Name.step');
 const Country = require('./steps/Country.step');
 const Contact = require('./steps/Contact.step');
 const Entry = require('./steps/Entry.step');
+const RespondentTitle = require('./steps/respondent/RespondentTitle.step');
+const RespondentName = require('./steps/respondent/RespondentName.step');
 const ExitNorthernIreland = require('./steps/exits/ExitNorthernIreland.step');
 const Exit = require('./steps/exits/Done.step');
 
@@ -27,6 +29,8 @@ journey(app, {
   steps: [
     new Start(),
     new Entry(),
+    new RespondentTitle(),
+    new RespondentName(),
     new Sessions(),
     new Name(),
     new Country(),
