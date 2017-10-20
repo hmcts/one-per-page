@@ -107,12 +107,13 @@ describe('Page', () => {
           return 'page_views/class_locals';
         }
         get foo() {
+          return this.scopedFoo();
+        }
+        scopedFoo() {
           return 'Foo';
         }
-        get bar() {
-          return 'Bar';
-        }
       }();
+      page.bar = 'Bar';
 
       return testStep(page)
         .get()

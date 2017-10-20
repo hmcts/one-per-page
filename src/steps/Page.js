@@ -5,6 +5,7 @@ const loadStepContent = require('../i18n/loadStepContent');
 const resolveTemplate = require('../middleware/resolveTemplate');
 const { i18NextInstance } = require('../i18n/i18Next');
 const { contentProxy } = require('../i18n/contentProxy');
+const { defined } = require('../util/checks');
 
 const notLocals = [
   '_router',
@@ -14,7 +15,9 @@ const notLocals = [
   'next',
   'locals',
   'middleware',
-  'handler'
+  'handler',
+  'req',
+  'res'
 ];
 
 class Page extends BaseStep {
@@ -28,15 +31,35 @@ class Page extends BaseStep {
   }
 
   get locals() {
+    const proto = Object.getPrototypeOf(this);
+    const myDescriptors = Object.getOwnPropertyDescriptors(this);
+    const protoDescriptors = Object.getOwnPropertyDescriptors(proto);
+
     const myKeys = [
-      ...Reflect.ownKeys(this),
-      ...Reflect.ownKeys(Object.getPrototypeOf(this))
+      ...Object.keys(myDescriptors).map(key => {
+        return { key, descriptor: myDescriptors[key] };
+      }),
+      ...Object.keys(protoDescriptors).map(key => {
+        return { key, descriptor: protoDescriptors[key] };
+      })
     ];
 
     const classLocals = myKeys
-      .filter(key => !(notLocals.includes(key)))
-      .reduce((obj, key) => {
-        obj[key] = this[key];
+      .filter(({ key }) => !(notLocals.includes(key)))
+      .reduce((obj, { key, descriptor }) => {
+        if (typeof descriptor.value === 'function') {
+          obj[key] = descriptor.value.bind(this);
+        } else if (defined(descriptor.value)) {
+          obj[key] = this[key];
+        } else if (defined(descriptor.get)) {
+          const step = this;
+          Object.assign(obj, {
+            get [key]() {
+              return descriptor.get.call(step);
+            }
+          });
+        }
+
         return obj;
       }, {});
 
