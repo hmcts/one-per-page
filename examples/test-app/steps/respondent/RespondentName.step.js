@@ -18,11 +18,11 @@ class RespondentName extends Question {
     return form(
       textField.ref(this.journey.RespondentTitle, 'husbandOrWife'),
       textField('firstName').joi(
-        'Enter your {{ husbandOrWifes }} first name',
+        this.content.error.firstName,
         Joi.string().required()
       ),
       textField('lastName').joi(
-        'Enter your {{ husbandOrWifes }} last name',
+        this.content.error.lastName,
         Joi.string().required()
       )
     );
