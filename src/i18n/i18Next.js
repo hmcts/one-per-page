@@ -9,7 +9,7 @@ const i18nMiddleware = (req, res, next) => {
     return;
   }
 
-  req.i18Next = i18Next;
+  req.i18Next = i18NextInstance;
 
   next();
 };
