@@ -64,7 +64,7 @@ describe('i18n/loadStepContent', () => {
 
   tests.forEach(filename => {
     it(`loads content from ${filename}`, () => {
-      const key = filename.replace(/\./g, '_dot_');
+      const key = `StepName:${filename.replace(/\./g, '_dot_')}`;
       return loadContentTest
         .then(req => expect(req.i18Next.t(key)).to.eql('Expected Value'));
     });

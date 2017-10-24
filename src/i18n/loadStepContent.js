@@ -72,10 +72,7 @@ const applyContent = (req, res, next) => {
   ];
 
   Promise.all(promises).then(
-    () => {
-      req.i18Next.setDefaultNamespace(step.name);
-      next();
-    },
+    () => next(),
     error => next(error)
   );
 };

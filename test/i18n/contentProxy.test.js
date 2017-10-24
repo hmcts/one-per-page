@@ -5,7 +5,7 @@ const { contentProxy } = require('../../src/i18n/contentProxy');
 describe('i18n/contentProxy', () => {
   describe('contentProxy', () => {
     it('exposes an es6 proxy handler', () => {
-      const fakeStep = {};
+      const fakeStep = { name: 'FakeStep' };
       const handler = contentProxy(fakeStep);
       expect(handler).to.be.an('object');
       expect(handler).to.have.property('get').that.is.a('function');
@@ -13,7 +13,7 @@ describe('i18n/contentProxy', () => {
 
     const t = sinon.stub();
     const exists = sinon.stub();
-    const fakeStep = {};
+    const fakeStep = { name: 'FakeStep' };
     const proxy = new Proxy({ t, exists }, contentProxy(fakeStep));
 
     beforeEach(() => {
@@ -22,43 +22,44 @@ describe('i18n/contentProxy', () => {
     });
 
     it('proxies proxy.[key] to a new proxy', () => {
-      exists.withArgs('key').returns(true);
-      t.withArgs('key').returns('Content');
+      exists.withArgs('FakeStep:key').returns(true);
+      t.withArgs('FakeStep:key').returns('Content');
       const key = proxy.key;
       expect(key.inspect()).to.match(/Proxy/);
     });
 
     describe('#toString', () => {
       it('returns i18n.t("[key]") if key exists', () => {
-        exists.withArgs('key').returns(true);
-        t.withArgs('key').returns('Content');
+        exists.withArgs('FakeStep:key').returns(true);
+        t.withArgs('FakeStep:key').returns('Content');
         const key = proxy.key;
         expect(key.toString()).to.eql('Content');
       });
 
       it('returns i18n.t("[key]") if key exists (Symbol)', () => {
-        exists.withArgs('key').returns(true);
-        t.withArgs('key').returns('Content');
+        exists.withArgs('FakeStep:key').returns(true);
+        t.withArgs('FakeStep:key').returns('Content');
         const key = proxy.key;
         expect(key[Symbol.toStringTag]()).to.eql('Content');
       });
 
       it('throws if key doesn\'t exist', () => {
-        exists.withArgs('key').returns(false);
+        exists.withArgs('FakeStep:key').returns(false);
         const key = proxy.key;
-        expect(() => key.toString()).to.throw(/No translation for key/);
+        expect(() => key.toString())
+          .to.throw(/No translation for FakeStep:key/);
       });
 
       it('proxies nested keys i18n.t("key.key")', () => {
-        exists.withArgs('foo.bar').returns(true);
-        t.withArgs('foo.bar').returns('Content');
+        exists.withArgs('FakeStep:foo.bar').returns(true);
+        t.withArgs('FakeStep:foo.bar').returns('Content');
 
         expect(proxy.foo.bar.toString()).to.eql('Content');
       });
     });
 
     describe('#inspect', () => {
-      const key = 'foo';
+      const key = 'FakeStep:foo';
       const msg = 'Foo is fine';
       const description = `Proxy { key: ${key}, value: ${msg} }`;
 
