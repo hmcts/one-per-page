@@ -63,7 +63,7 @@ class Page extends BaseStep {
         return obj;
       }, {});
 
-    return Object.assign({}, classLocals, this.res.locals);
+    return classLocals;
   }
 
   handler(req, res) {

@@ -159,10 +159,6 @@ describe('Page', () => {
         return request.html($ => expect($('#nestedKey')).$text('Nested Key'));
       });
 
-      it('has access to the session', () => {
-        return request.html($ => expect($('#sessionKey')).$text('Foo is Foo'));
-      });
-
       it('has access to arbitrary functions on the step', () => {
         return request.html($ => expect($('#funcKey')).$text('Foo is Foo'));
       });
