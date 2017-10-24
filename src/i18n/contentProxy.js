@@ -20,19 +20,20 @@ const contentProxy = (step, prefix) => {
         return isToString || isInspect;
       };
     }
+    const key = `${step.name}:${prefix}`;
     if (toStringKeys.includes(name)) {
-      if (target.exists(prefix)) {
-        return () => target.t(prefix, step.locals);
+      if (target.exists(key)) {
+        return () => target.t(key, step.locals);
       }
       return () => {
-        throw new Error(`No translation for ${prefix}`);
+        throw new Error(`No translation for ${key}`);
       };
     }
     if (inspectKeys.includes(name)) {
-      return () => `Proxy { key: ${prefix}, value: ${target.t(prefix)} }`;
+      return () => `Proxy { key: ${key}, value: ${target.t(key)} }`;
     }
-    const key = prefixKey(prefix, name);
-    return new Proxy(target, contentProxy(step, key));
+    const newPrefix = prefixKey(prefix, name);
+    return new Proxy(target, contentProxy(step, newPrefix));
   };
 
   return { get };
