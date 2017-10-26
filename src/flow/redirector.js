@@ -9,7 +9,7 @@ class Redirector {
   }
 
   redirect(req, res) {
-    res.redirect(this.nextStep.url);
+    res.redirect(this.nextStep.path);
   }
 
   if(condition) {

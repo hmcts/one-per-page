@@ -5,39 +5,29 @@ const { goTo } = require('../../src/flow');
 
 describe('steps/Redirect', () => {
   it('expects #next to be implemented', () => {
-    const noNextDefined = () => new class extends Redirect {
-      get url() {
-        return '/foo';
-      }
-    }();
+    const noNextDefined = () => new class extends Redirect {}();
     expect(noNextDefined).to.throw(/Redirect must implement next/);
   });
 
   describe('GET', () => {
     it('redirects to the step defined in #next', () => {
-      const fakeStep = { url: '/bar' };
+      const fakeStep = { path: '/bar' };
       const redirect = new class extends Redirect {
-        get url() {
-          return '/foo';
-        }
         next() {
           return goTo(fakeStep);
         }
       }();
       return testStep(redirect)
         .get()
-        .expect('Location', fakeStep.url)
+        .expect('Location', fakeStep.path)
         .expect(302);
     });
   });
 
   describe('POST', () => {
     it('returns 405 (Method not allowed)', () => {
-      const fakeStep = { url: '/bar' };
+      const fakeStep = { path: '/bar' };
       const redirect = new class extends Redirect {
-        get url() {
-          return '/foo';
-        }
         next() {
           return goTo(fakeStep);
         }

@@ -36,7 +36,7 @@ describe('flow/Branch', () => {
   describe('#redirect', () => {
     const willFail = new Conditional({ redirect: sinon.stub() }, () => false);
     const willPass = new Conditional({ redirect: sinon.stub() }, () => true);
-    const fallback = new Redirector({ url: '/foo' });
+    const fallback = new Redirector({ path: '/foo' });
     sinon.stub(fallback, 'redirect');
 
     beforeEach(() => {

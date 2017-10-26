@@ -6,12 +6,7 @@ const { expect, sinon } = require('./util/chai');
 const Page = require('./../src/steps/Page');
 const session = require('./../src/session');
 
-const testUrl = '/test/page';
-class TestPage extends Page {
-  get url() {
-    return testUrl;
-  }
-}
+class TestPage extends Page {}
 const defaultOptions = {
   session: { secret: 'foo' },
   baseUrl: 'http://localhost'
@@ -25,18 +20,18 @@ const options = (...overrides) => {
   return foo;
 };
 const handlerTest = ({ test, options: extraOptions }) => {
-  const testPage = new class extends TestPage {
-    get url() {
-      return '/test';
+  const testPage = class extends TestPage {
+    get name() {
+      return 'TestPage';
     }
     handler(req, res) {
       test(req, res);
       res.end();
     }
-  }();
+  };
   const opts = options({ steps: [testPage] }, extraOptions);
   const app = journey(testApp(), opts);
-  return () => supertest(app).get('/test').expect(200);
+  return () => supertest(app).get(testPage.path).expect(200);
 };
 
 
@@ -51,8 +46,8 @@ describe('Journey', () => {
   });
 
   it('binds steps to the router', () => {
-    const app = journey(testApp(), options({ steps: [new TestPage()] }));
-    return supertest(app).get(testUrl).expect(OK);
+    const app = journey(testApp(), options({ steps: [TestPage] }));
+    return supertest(app).get(TestPage.path).expect(OK);
   });
 
   describe('req.journey', () => {
@@ -70,16 +65,8 @@ describe('Journey', () => {
     }));
 
     it('binds all steps to req.journey.[step name]', () => {
-      const foo = new class Foo extends TestPage {
-        get url() {
-          return '/foo';
-        }
-      }();
-      const bar = new class Bar extends TestPage {
-        get url() {
-          return '/bar';
-        }
-      }();
+      const foo = class Foo extends TestPage {};
+      const bar = class Bar extends TestPage {};
       return handlerTest({
         options: { steps: [foo, bar] },
         test(req) {

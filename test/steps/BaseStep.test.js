@@ -9,11 +9,6 @@ describe('steps/BaseStep', () => {
   {
     const unimplementedStep = () => new class extends BaseStep {}();
 
-    it('expects url to be implemented', () => {
-      return expect(unimplementedStep)
-        .to.throw(NotImplemented)
-        .that.has.property('unimplemented').which.contains('url');
-    });
     it('expects handler to be implemented', () => {
       return expect(unimplementedStep)
         .to.throw(NotImplemented)
@@ -24,9 +19,6 @@ describe('steps/BaseStep', () => {
   describe('#router', () => {
     {
       const step = new class extends BaseStep {
-        get url() {
-          return '/step';
-        }
         handler() { /* intentionally empty */ }
       }();
 
@@ -42,24 +34,18 @@ describe('steps/BaseStep', () => {
       });
     }
 
-    it('binds the handler function to the current url', () => {
+    it('binds the handler function to the current path', () => {
       const step = new class extends BaseStep {
-        get url() {
-          return '/step';
-        }
         handler(req, res) {
-          res.status(OK).json({ status: 'ok', url: this.url });
+          res.status(OK).json({ status: 'ok', path: this.path });
         }
       }();
       return testStep(step).get()
-        .expect(OK, { status: 'ok', url: step.url });
+        .expect(OK, { status: 'ok', path: step.path });
     });
 
     it('binds the current step to req.currentStep', () => {
       const test = new class extends BaseStep {
-        get url() {
-          return '/test';
-        }
         handler(req, res) {
           expect(req.currentStep).to.eql(this);
           res.end();
@@ -80,9 +66,6 @@ describe('steps/BaseStep', () => {
         get middleware() {
           return [fooAdder];
         }
-        get url() {
-          return '/step';
-        }
         handler(req, res) {
           res.status(OK).json({ foo: req.foo });
         }
@@ -92,36 +75,58 @@ describe('steps/BaseStep', () => {
     });
 
     it('are bound to the current step', () => {
-      const step = new class extends BaseStep {
+      const step = new class Step extends BaseStep {
         scopedMiddleware(req, res, next) {
-          req.stepUrl = this.url;
+          req.stepUrl = this.path;
           next();
         }
         get middleware() {
           return [this.scopedMiddleware];
         }
-        get url() {
-          return '/step';
-        }
         handler(req, res) {
-          res.status(OK).json({ url: req.stepUrl });
+          res.status(OK).json({ path: req.stepUrl });
         }
       }();
 
       return testStep(step).get()
-        .expect(OK, { url: '/step' });
+        .expect(OK, { path: '/step' });
     });
   });
 
   describe('#dirname', () => {
     it('returns the path to the file containing the step', () => {
       const step = new class Foo extends BaseStep {
-        get url() {
-          return '/foo';
-        }
         handler() { /* intentionally blank */ }
       }();
       expect(step.dirname).to.eql(__dirname);
+    });
+  });
+
+  describe('#path', () => {
+    it('defaults to a slugged class name', () => {
+      const foo = new class Foo extends BaseStep {
+        handler() { /* intentionally blank */ }
+      }();
+      expect(foo.path).to.eql('/foo');
+
+      const fooBar = new class FooBar extends BaseStep {
+        handler() { /* intentionally blank */ }
+      }();
+      expect(fooBar.path).to.eql('/foo-bar');
+      const base = new class extends BaseStep {
+        handler() { /* intentionally blank */ }
+      }();
+      expect(base.path).to.eql('/base-step');
+    });
+
+    it('is backwards compatible to old #url', () => {
+      const step = new class extends BaseStep {
+        get url() {
+          return '/test-step';
+        }
+        handler() { /* intentionally blank */ }
+      }
+      expect(step.path).to.eql('/test-step');
     });
   });
 });

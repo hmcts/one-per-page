@@ -7,23 +7,9 @@ const { goTo } = require('../../src/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 
 describe('steps/Question', () => {
-  it('expects url to be implemented', () => {
-    const unimplementedQuestion = () => {
-      return new class extends Question {}();
-    };
-
-    return expect(unimplementedQuestion)
-      .to.throw(NotImplemented)
-      .that.has.property('unimplemented').which.contains('url');
-  });
-
   {
     const unimplementedQuestion = () => {
-      return new class extends Question {
-        get url() {
-          return '/foo';
-        }
-      }();
+      return new class extends Question {}();
     };
 
     it('expects form to be implemented', () => {
@@ -44,15 +30,12 @@ describe('steps/Question', () => {
       get form() {
         return form(field('name'));
       }
-      get url() {
-        return '/question-1';
-      }
       get template() {
         return 'question_views/simpleQuestion';
       }
 
       next() {
-        return goTo({ url: '/next-step' });
+        return goTo({ path: '/next-step' });
       }
     };
 
@@ -101,9 +84,6 @@ describe('steps/Question', () => {
         const errorMessage = 'Error message';
         const returnIsInvalid = sinon.stub().returns(errorMessage);
         const InvalidQuestion = class extends SimpleQuestion {
-          get url() {
-            return '/question-1';
-          }
           get form() {
             return form(
               field('name').validate(returnIsInvalid)
@@ -126,7 +106,7 @@ describe('steps/Question', () => {
       describe('is valid', () => {
         const returnIsValid = sinon.stub().returns();
         const ValidQuestion = class extends SimpleQuestion {
-          get url() {
+          static get path() {
             return '/next-step';
           }
           get form() {

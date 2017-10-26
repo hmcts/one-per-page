@@ -3,11 +3,7 @@ const ExitPoint = require('../../src/steps/ExitPoint');
 
 describe('steps/ExitPoint', () => {
   describe('GET', () => {
-    const exit = new class extends ExitPoint {
-      get url() {
-        return '/foo';
-      }
-    }();
+    const exit = new class extends ExitPoint {}();
 
     it.skip('destroys a session and cookie is not set', () => {
       return testStep(exit)
@@ -19,11 +15,7 @@ describe('steps/ExitPoint', () => {
 
   describe('POST', () => {
     it('returns 405 (Method not allowed)', () => {
-      const exit = new class extends ExitPoint {
-        get url() {
-          return '/foo';
-        }
-      }();
+      const exit = new class extends ExitPoint {}();
       return testStep(exit)
         .post()
         .expect(405);

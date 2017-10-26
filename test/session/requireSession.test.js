@@ -8,9 +8,6 @@ describe('session/requireSession', () => {
     get middleware() {
       return [requireSession, ...super.middleware];
     }
-    get url() {
-      return '/page';
-    }
     get template() {
       return 'page_views/simplePage';
     }
