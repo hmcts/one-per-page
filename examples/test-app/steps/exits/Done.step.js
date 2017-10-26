@@ -1,7 +1,7 @@
 const { ExitPoint } = require('@hmcts/one-per-page');
 
 class Done extends ExitPoint {
-  get url() {
+  static get path() {
     return '/done';
   }
 }

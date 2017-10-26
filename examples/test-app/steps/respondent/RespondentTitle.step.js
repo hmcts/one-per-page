@@ -3,7 +3,7 @@ const { form, textField } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 
 class RespondentTitle extends Question {
-  get url() {
+  static get path() {
     return '/who-are-you-divorcing';
   }
 

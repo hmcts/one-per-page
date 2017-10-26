@@ -3,10 +3,6 @@ const { form, arrayField } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 
 class Contact extends Question {
-  get url() {
-    return '/contact';
-  }
-
   get form() {
     const validAnswers = Joi.string().valid(['phone', 'email', 'post']);
 
