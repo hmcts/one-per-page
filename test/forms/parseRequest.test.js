@@ -10,7 +10,7 @@ const handlerTest = (_form, { method = 'get', assertions }) => {
     get middleware() {
       return [parseRequest];
     }
-    get url() {
+    static get path() {
       return '/test';
     }
     get form() {
@@ -59,7 +59,7 @@ describe('middleware/parseRequest', () => {
         get middleware() {
           return [parseRequest];
         }
-        get url() {
+        static get path() {
           return '/test';
         }
         handler(req, res) {

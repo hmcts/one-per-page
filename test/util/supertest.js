@@ -134,7 +134,7 @@ class TestStepDSL {
   }
 
   execute(method) {
-    const testExecution = supertestInstance(this)[method](this.step.url);
+    const testExecution = supertestInstance(this)[method](this.step.path);
     return wrapWithResponseAssertions(testExecution);
   }
 

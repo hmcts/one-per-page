@@ -5,20 +5,13 @@ const { goTo } = require('../../src/flow');
 
 describe('steps/EntryPoint', () => {
   it('expects #next to be implemented', () => {
-    const noNextDefined = () => new class extends EntryPoint {
-      get url() {
-        return '/foo';
-      }
-    }();
+    const noNextDefined = () => new class extends EntryPoint {}();
     expect(noNextDefined).to.throw(/EntryPoint must implement next/);
   });
 
   describe('GET', () => {
-    const fakeStep = { url: '/bar' };
+    const fakeStep = { path: '/bar' };
     const redirect = new class extends EntryPoint {
-      get url() {
-        return '/foo';
-      }
       next() {
         return goTo(fakeStep);
       }
@@ -27,7 +20,7 @@ describe('steps/EntryPoint', () => {
     it('redirects to the step defined in #next', () => {
       return testStep(redirect)
         .get()
-        .expect('Location', fakeStep.url)
+        .expect('Location', fakeStep.path)
         .expect(302);
     });
 
@@ -42,11 +35,8 @@ describe('steps/EntryPoint', () => {
 
   describe('POST', () => {
     it('returns 405 (Method not allowed)', () => {
-      const fakeStep = { url: '/bar' };
+      const fakeStep = { path: '/bar' };
       const redirect = new class extends EntryPoint {
-        get url() {
-          return '/foo';
-        }
         next() {
           return goTo(fakeStep);
         }

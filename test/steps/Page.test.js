@@ -2,27 +2,11 @@ const Page = require('./../../src/steps/Page');
 const { testStep } = require('../util/supertest');
 const { OK, METHOD_NOT_ALLOWED } = require('http-status-codes');
 const { expect } = require('../util/chai');
-const { NotImplemented } = require('../../src/errors/expectImplemented');
 const path = require('path');
 
 describe('Page', () => {
   {
-    const unimplementedPage = () => {
-      return new class extends Page {}();
-    };
-
-    it('expects url to be implemented', () => {
-      return expect(unimplementedPage)
-        .to.throw(NotImplemented)
-        .that.has.property('unimplemented').which.contains('url');
-    });
-  }
-
-  {
     const page = testStep(new class extends Page {
-      get url() {
-        return '/my/page';
-      }
       get template() {
         return 'page_views/simplePage';
       }
@@ -67,9 +51,6 @@ describe('Page', () => {
   describe('Template rendering', () => {
     schemes.forEach(({ dir, template }) => {
       const page = new class ContentTest extends Page {
-        get url() {
-          return '/my/page';
-        }
         get dirname() {
           return dir;
         }
@@ -84,9 +65,6 @@ describe('Page', () => {
 
     it('has access to the session', () => {
       const page = new class extends Page {
-        get url() {
-          return '/my/page';
-        }
         get template() {
           return 'page_views/session';
         }
@@ -100,9 +78,6 @@ describe('Page', () => {
 
     it('has access to arbitrary functions on the step', () => {
       const page = new class extends Page {
-        get url() {
-          return '/my/page';
-        }
         get template() {
           return 'page_views/class_locals';
         }
@@ -124,9 +99,6 @@ describe('Page', () => {
   describe('Content rendering', () => {
     schemes.forEach(({ dir, content }) => {
       const page = new class ContentTest extends Page {
-        get url() {
-          return '/my/page';
-        }
         get dirname() {
           return dir;
         }
@@ -141,9 +113,6 @@ describe('Page', () => {
 
     {
       const page = new class ContentTest extends Page {
-        get url() {
-          return '/my/page';
-        }
         get dirname() {
           return testDir('1');
         }
@@ -166,11 +135,7 @@ describe('Page', () => {
   });
 
   it('looks for a template named [Step.name] in views', () => {
-    const page = new class TestPage extends Page {
-      get url() {
-        return '/page';
-      }
-    }();
+    const page = new class TestPage extends Page {}();
     return testStep(page)
       .get()
       .expect(OK, 'Default Page template\n');
