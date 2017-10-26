@@ -11,11 +11,8 @@ class NotImplemented extends Error {
 }
 
 const expectImplemented = (obj, ...keys) => {
-  const prototype = Object.getPrototypeOf(obj);
-  const properties = Object.getOwnPropertyNames(prototype);
-
   const unimplemented = keys.reduce((arr, key) => {
-    if (properties.includes(key) || typeof prototype[key] === 'function') {
+    if (key in obj) {
       return arr;
     }
     return [...arr, key];

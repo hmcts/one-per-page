@@ -20,6 +20,20 @@ const notLocals = [
   'res'
 ];
 
+const allProperties = (obj, arr = []) => {
+  const descriptors = Object.getOwnPropertyDescriptors(obj);
+  const props = [
+    ...arr,
+    ...Object.keys(descriptors).map(key => {
+      return { key, descriptor: descriptors[key] };
+    })
+  ];
+  if (obj.name === 'BaseStep') {
+    return props;
+  }
+  return allProperties(Object.getPrototypeOf(obj), props);
+};
+
 class Page extends BaseStep {
   constructor() {
     super();
@@ -31,20 +45,7 @@ class Page extends BaseStep {
   }
 
   get locals() {
-    const proto = Object.getPrototypeOf(this);
-    const myDescriptors = Object.getOwnPropertyDescriptors(this);
-    const protoDescriptors = Object.getOwnPropertyDescriptors(proto);
-
-    const myKeys = [
-      ...Object.keys(myDescriptors).map(key => {
-        return { key, descriptor: myDescriptors[key] };
-      }),
-      ...Object.keys(protoDescriptors).map(key => {
-        return { key, descriptor: protoDescriptors[key] };
-      })
-    ];
-
-    const classLocals = myKeys
+    return allProperties(this)
       .filter(({ key }) => !(notLocals.includes(key)))
       .reduce((obj, { key, descriptor }) => {
         if (typeof descriptor.value === 'function') {
@@ -62,8 +63,6 @@ class Page extends BaseStep {
 
         return obj;
       }, {});
-
-    return classLocals;
   }
 
   handler(req, res) {
