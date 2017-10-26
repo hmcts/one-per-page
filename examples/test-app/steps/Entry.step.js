@@ -1,7 +1,7 @@
 const { goTo, EntryPoint } = require('@hmcts/one-per-page');
 
 class Entry extends EntryPoint {
-  get url() {
+  static get path() {
     return '/start';
   }
 

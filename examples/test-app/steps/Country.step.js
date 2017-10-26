@@ -3,10 +3,6 @@ const { form, textField } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 
 class Country extends Question {
-  get url() {
-    return '/country';
-  }
-
   get form() {
     const ukCountries = ['northern-ireland', 'scotland', 'england', 'wales'];
 

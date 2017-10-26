@@ -3,10 +3,6 @@ const { form, textField } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 
 class Name extends Question {
-  get url() {
-    return '/name';
-  }
-
   get form() {
     return form(
       textField('firstName')

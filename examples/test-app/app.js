@@ -27,16 +27,16 @@ lookAndFeel.configure(app, {
 journey(app, {
   baseUrl,
   steps: [
-    new Start(),
-    new Entry(),
-    new RespondentTitle(),
-    new RespondentName(),
-    new Sessions(),
-    new Name(),
-    new Country(),
-    new Contact(),
-    new ExitNorthernIreland(),
-    new Exit()
+    Start,
+    Entry,
+    RespondentTitle,
+    RespondentName,
+    Sessions,
+    Name,
+    Country,
+    Contact,
+    ExitNorthernIreland,
+    Exit
   ],
   session: {
     redis: { url: config.redisUrl },

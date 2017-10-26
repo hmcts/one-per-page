@@ -1,7 +1,7 @@
 const { Page } = require('@hmcts/one-per-page');
 
 class ExitNorthernIreland extends Page {
-  get url() {
+  static get path() {
     return '/exit/northern-ireland';
   }
 }

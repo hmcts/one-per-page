@@ -1,7 +1,7 @@
 const { BaseStep } = require('@hmcts/one-per-page');
 
 class Sessions extends BaseStep {
-  get url() {
+  static get path() {
     return '/sessions';
   }
 
