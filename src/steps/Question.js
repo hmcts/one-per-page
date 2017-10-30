@@ -4,6 +4,7 @@ const parseRequest = require('../forms/parseRequest');
 const bodyParser = require('body-parser');
 const { expectImplemented } = require('../errors/expectImplemented');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
+const answer = require('./check-your-answers/answer');
 
 class Question extends Page {
   constructor() {
@@ -33,6 +34,10 @@ class Question extends Page {
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
     }
+  }
+
+  answers() {
+    return answer(this);
   }
 }
 
