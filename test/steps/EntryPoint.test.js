@@ -11,7 +11,7 @@ describe('steps/EntryPoint', () => {
 
   describe('GET', () => {
     const fakeStep = { path: '/bar' };
-    const redirect = new class extends EntryPoint {
+    const redirect = new class MyEntryPoint extends EntryPoint {
       next() {
         return goTo(fakeStep);
       }
@@ -29,6 +29,14 @@ describe('steps/EntryPoint', () => {
         .get()
         .session(session => {
           expect(session.active).to.be.true;
+        });
+    });
+
+    it('stores it\'s name as the entryPoint in the session', () => {
+      return testStep(redirect)
+        .get()
+        .session(session => {
+          expect(session.entryPoint).to.eql('MyEntryPoint');
         });
     });
   });
