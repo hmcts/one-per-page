@@ -5,6 +5,11 @@ class EntryPoint extends Redirect {
   get middleware() {
     return [...super.middleware, createSession];
   }
+
+  handler(req, res) {
+    req.session.entryPoint = this.name;
+    super.handler(req, res);
+  }
 }
 
 module.exports = EntryPoint;
