@@ -47,4 +47,50 @@ describe('forms/formProxyHandler', () => {
       });
     }
   });
+
+  describe('#ownKeys', () => {
+    it('returns all field names (Reflect.ownKeys)', () => {
+      const _form = form(field('name'), field('dob'));
+      const proxy = new Proxy(_form, formProxyHandler);
+      expect(Reflect.ownKeys(proxy)).to.eql(['name', 'dob']);
+    });
+
+    it('returns all field names (Object.keys)', () => {
+      const _form = form(field('name'), field('dob'));
+      const proxy = new Proxy(_form, formProxyHandler);
+      expect(Object.keys(proxy)).to.eql(['name', 'dob']);
+    });
+
+    it('respects ordering of fields', () => {
+      const form1 = form(field('dob'), field('name'));
+      const keys1 = Object.keys(new Proxy(form1, formProxyHandler));
+
+      const form2 = form(field('name'), field('dob'));
+      const keys2 = Object.keys(new Proxy(form2, formProxyHandler));
+
+      expect(keys1).to.eql(['dob', 'name']);
+      expect(keys2).to.eql(['name', 'dob']);
+    });
+  });
+
+  describe('#getOwnPropertyDescriptor', () => {
+    const _form = form(field('name'));
+    const proxy = new Proxy(_form, formProxyHandler);
+
+    const descriptor = Object.getOwnPropertyDescriptor(proxy, 'name');
+
+    it('is enumerable', () => {
+      expect(descriptor.enumerable).to.be.true;
+    });
+    it('has the field as it\'s value', () => {
+      expect(descriptor.value).to.eql(_form.fields[0]);
+    });
+  });
+
+  it('responds to Object.values', () => {
+    const _form = form(field('name'));
+    const proxy = new Proxy(_form, formProxyHandler);
+
+    expect(Object.values(proxy)).to.eql(_form.fields);
+  });
 });
