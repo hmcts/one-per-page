@@ -1,6 +1,7 @@
 const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
+const formProxyHandler = require('../../src/forms/formProxyHandler');
 const { NotImplemented } = require('../../src/errors/expectImplemented');
 const { field, form } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
@@ -138,6 +139,38 @@ describe('steps/Question', () => {
             .execute(method)
             .expect(METHOD_NOT_ALLOWED);
         });
+      });
+    });
+
+    describe('#answers', () => {
+      it('returns a default answer', () => {
+        const NameStep = class extends SimpleQuestion {
+          static get path() {
+            return '/next-step';
+          }
+          get form() {
+            return form(
+              field('name')
+            );
+          }
+        };
+        const step = new NameStep();
+        const _form = step.form;
+        _form.retrieve({
+          currentStep: step,
+          session: { NameStep_name: 'John' }
+        });
+        _form.validate();
+        step.fields = new Proxy(_form, formProxyHandler);
+
+        const _answers = step.answers();
+        expect(_answers).to.be.an('object');
+        expect(_answers).to.have.property('url', '/next-step');
+        expect(_answers).to.have.property('question', 'Name step');
+        expect(_answers).to.have.property('value').that.eql({ name: 'John' });
+        expect(_answers).to.have.property('answer', 'John');
+        expect(_answers).to.have.property('section', 'any');
+        expect(_answers).to.have.property('complete', true);
       });
     });
   }
