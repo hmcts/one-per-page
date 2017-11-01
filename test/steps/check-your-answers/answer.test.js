@@ -1,5 +1,6 @@
 const { expect } = require('../../util/chai');
 const answer = require('../../../src/steps/check-your-answers/answer');
+const { section } = require('../../../src/steps/check-your-answers/section');
 const { textField } = require('../../../src/forms');
 
 describe('steps/check-your-answers/answer', () => {
@@ -23,8 +24,8 @@ describe('steps/check-your-answers/answer', () => {
       expect(answer(fakeStep, { section: 'foo' }).section).to.eql('foo');
     });
 
-    it('defaults to "any"', () => {
-      expect(answer(fakeStep, {}).section).to.eql('any');
+    it('defaults to the default section id', () => {
+      expect(answer(fakeStep, {}).section).to.eql(section.default.id);
     });
   });
 

@@ -3,22 +3,8 @@ const {
   section,
   Section
 } = require('../../../src/steps/check-your-answers/section');
-const Question = require('../../../src/steps/Question');
-const { form } = require('../../../src/forms');
 const answer = require('../../../src/steps/check-your-answers/answer');
 
-class TestStep extends Question {
-  static get path() {
-    return '/test/step';
-  }
-  get form() {
-    return form();
-  }
-  next() { /* intentionally blank */ }
-  answers() {
-    return answer(this, { question: 'A test step', answer: 'A test answer' });
-  }
-}
 const completeAnswer = answer({ fields: { valid: true, url: '/good' } });
 const incompleteAnswer = answer({ fields: { valid: false, url: '/bad' } });
 
@@ -27,29 +13,20 @@ describe('steps/check-your-answers/section', () => {
     expect(section('foo')).to.be.an.instanceof(Section);
   });
 
-  it('instaniates the step classes given to it', () => {
-    const s = section('foo', { steps: [TestStep] });
-    expect(s.steps[0]).to.be.an.instanceof(TestStep);
-  });
+  describe('#filterAnswers', () => {
+    const s = section('foo');
+    const fooAnswer = answer({}, { section: 'foo' });
+    const barAnswer = answer({}, { section: 'bar' });
 
-  describe('#loadFromSession', () => {
-    it('sets this.answers to the answers from the listed steps', () => {
-      const s = section('foo', { steps: [TestStep] });
-      expect(s.answers).to.eql([]);
-      s.loadFromSession({ journey: { TestStep } }, {});
-      expect(s.answers).to.have.length(1);
-      expect(s.answers[0].question).to.eql('A test step');
-      expect(s.answers[0].answer).to.eql('A test answer');
+    it('sets this.answers to answers with the correct section id', () => {
+      s.answers = [];
+      s.filterAnswers([ fooAnswer ]);
+      expect(s.answers).to.eql([fooAnswer]);
     });
 
     it('filters out answers that are declared for other sections', () => {
-      const notThisSection = class extends TestStep {
-        answers() {
-          return answer(this, { section: 'bar' });
-        }
-      };
-      const s = section('foo', { steps: [notThisSection] });
-      s.loadFromSession({ journey: { notThisSection } }, {});
+      s.answers = [];
+      s.filterAnswers([ barAnswer ]);
       expect(s.answers).to.eql([]);
     });
   });

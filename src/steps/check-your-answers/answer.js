@@ -1,5 +1,6 @@
 const { defined } = require('../../util/checks');
 const { Reference } = require('../../forms/ref');
+const { section } = require('./section');
 
 const getAnswer = (step, { value, answer }) => {
   if (defined(answer)) {
@@ -44,11 +45,11 @@ const getQuestion = (step, { question }) => {
   return defined(step.name) ? titleise(step.name) : 'No question defined';
 };
 
-const getSection = ({ section }) => {
-  if (defined(section)) {
-    return section;
+const getSection = args => {
+  if (defined(args.section)) {
+    return args.section;
   }
-  return 'any';
+  return section.default.id;
 };
 
 const getValue = (step, { value }) => {

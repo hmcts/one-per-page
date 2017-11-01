@@ -125,7 +125,7 @@ describe('steps/BaseStep', () => {
           return '/test-step';
         }
         handler() { /* intentionally blank */ }
-      }
+      }();
       expect(step.path).to.eql('/test-step');
     });
   });

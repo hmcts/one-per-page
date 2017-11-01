@@ -1,6 +1,7 @@
 const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
+const { section } = require('../../src/steps/check-your-answers/section');
 const formProxyHandler = require('../../src/forms/formProxyHandler');
 const { NotImplemented } = require('../../src/errors/expectImplemented');
 const { field, form } = require('../../src/forms');
@@ -169,7 +170,7 @@ describe('steps/Question', () => {
         expect(_answers).to.have.property('question', 'Name step');
         expect(_answers).to.have.property('value').that.eql({ name: 'John' });
         expect(_answers).to.have.property('answer', 'John');
-        expect(_answers).to.have.property('section', 'any');
+        expect(_answers).to.have.property('section', section.default.id);
         expect(_answers).to.have.property('complete', true);
       });
     });
