@@ -1,15 +1,11 @@
-const { shimSession, activeProperty } = require('./sessionShims');
-
 const _set = Symbol('set');
 const set = req => {
   if (req.sessionStore[_set]) return req.sessionStore.set;
 
   req.sessionStore[_set] = req.sessionStore.set;
   return (sessionId, session, onSet) => {
-    const metadata = { active: session[activeProperty] };
-    const modified = Object.assign({}, session, { metadata });
-
-    return req.sessionStore[_set](sessionId, modified, onSet);
+    const json = session.dehydrate();
+    return req.sessionStore[_set](sessionId, json, onSet);
   };
 };
 
@@ -27,12 +23,8 @@ const createSession = req => {
 
   req.sessionStore[_create] = req.sessionStore.createSession;
   return (request, json) => {
-    const { metadata } = json;
-    const sessionData = Object.assign({}, json);
-    delete sessionData.metadata;
-    request.sessionStore[_create](request, sessionData);
-
-    return shimSession(request, metadata);
+    request.sessionStore[_create](request, json);
+    return request.session;
   };
 };
 

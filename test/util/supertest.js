@@ -110,6 +110,7 @@ class TestStepDSL {
 
   withSession(sessionData) {
     return this.withMiddleware((req, res, next) => {
+      req.session.generate();
       req.session = Object.assign(req.session, sessionData);
       next();
     });
