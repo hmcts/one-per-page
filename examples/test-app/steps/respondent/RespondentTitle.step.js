@@ -17,6 +17,10 @@ class RespondentTitle extends Question {
     );
   }
 
+  answers() {
+    return [];
+  }
+
   next() {
     return goTo(this.journey.Name);
   }
