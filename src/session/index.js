@@ -40,7 +40,7 @@ const overrides = (req, res, next) => error => {
   res.locals.session = req.session;
 
   if (req.session && req.sessionStore) {
-    shimSession(req);
+    shimSession(req, res);
     shimSessionStore(req);
     next();
   } else {
