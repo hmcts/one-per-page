@@ -31,6 +31,6 @@ class Section {
 }
 
 const section = (...args) => new Section(...args);
-section.default = section('default');
+section.default = section('default', { title: 'Other details' });
 
 module.exports = { Section, section };
