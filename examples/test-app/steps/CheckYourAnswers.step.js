@@ -1,5 +1,7 @@
-const CYA = require('../../../src/steps/check-your-answers/CheckYourAnswers');
-const { section } = require('../../../src/steps/check-your-answers/section');
+const {
+  CheckYourAnswers: CYA,
+  section
+} = require('@hmcts/one-per-page/checkYourAnswers');
 
 class CheckYourAnswers extends CYA {
   sections() {

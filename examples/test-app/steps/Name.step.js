@@ -1,7 +1,7 @@
 const { Question, goTo } = require('@hmcts/one-per-page');
 const { form, textField } = require('@hmcts/one-per-page/forms');
+const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 const Joi = require('joi');
-const answer = require('../../../src/steps/check-your-answers/answer');
 
 class Name extends Question {
   get form() {
