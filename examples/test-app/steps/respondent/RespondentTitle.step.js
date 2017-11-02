@@ -18,7 +18,7 @@ class RespondentTitle extends Question {
   }
 
   next() {
-    return goTo(this.journey.RespondentName);
+    return goTo(this.journey.Name);
   }
 }
 

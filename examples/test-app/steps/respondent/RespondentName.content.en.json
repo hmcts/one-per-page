@@ -1,8 +1,0 @@
-{
-  "title": "Enter your {{- husbandOrWife }}'s current names",
-  "cya_question": "Your {{- husbandOrWife }}'s name",
-  "error": {
-    "firstName": "Enter your {{- husbandOrWife }}'s first name",
-    "lastName": "Enter your {{- husbandOrWife }}'s last name"
-  }
-}
