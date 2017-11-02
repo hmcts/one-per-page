@@ -5,13 +5,30 @@
 
     "fields": {
       "firstName": {
-        "title": "First name(s)",
+        "title": "Your first name(s)",
         "hint": "Include all middle names here",
-        "required": "Provide your first name"
+        "required": "Provide your first name(s)"
       },
       "lastName": {
-        "title": "Last name(s)",
-        "required": "Provide your last name"
+        "title": "Your last name(s)",
+        "required": "Provide your last name(s)"
+      },
+      "respondentFirstName": {
+        "title": "Your {{ husbandOrWife }}'s first name(s)",
+        "hint": "Include all middle names here",
+        "required": "Provide your {{ husbandOrWife }}'s first name(s)"
+      },
+      "respondentLastName": {
+        "title": "Your {{ husbandOrWife }}'s last name(s)",
+        "required": "Provide your {{ husbandOrWife }}'s last name(s)"
+      }
+    },
+    "cya": {
+      "petitioner": {
+        "question": "Your name"
+      },
+      "respondent": {
+        "question": "Your {{ husbandOrWife }}'s name"
       }
     }
   }

@@ -23,6 +23,16 @@
       )
     }}
     {{ textbox(fields.lastName, content.fields.lastName.title) }}
+
+    {{
+      textbox(
+        fields.respondentFirstName,
+        content.fields.respondentFirstName.title,
+        hint=content.fields.respondentFirstName.hint
+      )
+    }}
+    {{ textbox(fields.respondentLastName, content.fields.respondentLastName.title) }}
+
   {% endcall %}
 
 {% endblock %}
