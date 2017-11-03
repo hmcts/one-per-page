@@ -5,10 +5,12 @@ const Joi = require('joi');
 class Country extends Question {
   get form() {
     const ukCountries = ['northern-ireland', 'scotland', 'england', 'wales'];
+    const validCountry = Joi.string()
+      .required()
+      .valid(ukCountries);
 
     return form(
-      textField('country')
-        .joi(this.content.errors.required, Joi.string().valid(ukCountries))
+      textField('country').joi(this.content.errors.required, validCountry)
     );
   }
 
