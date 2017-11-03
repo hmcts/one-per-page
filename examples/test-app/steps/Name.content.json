@@ -14,13 +14,13 @@
         "required": "Provide your last name(s)"
       },
       "respondentFirstName": {
-        "title": "Your {{ husbandOrWife }}'s first name(s)",
+        "title": "Your {{- husbandOrWife }}'s first name(s)",
         "hint": "Include all middle names here",
-        "required": "Provide your {{ husbandOrWife }}'s first name(s)"
+        "required": "Provide your {{- husbandOrWife }}'s first name(s)"
       },
       "respondentLastName": {
-        "title": "Your {{ husbandOrWife }}'s last name(s)",
-        "required": "Provide your {{ husbandOrWife }}'s last name(s)"
+        "title": "Your {{- husbandOrWife }}'s last name(s)",
+        "required": "Provide your {{- husbandOrWife }}'s last name(s)"
       }
     },
     "cya": {
@@ -28,7 +28,7 @@
         "question": "Your name"
       },
       "respondent": {
-        "question": "Your {{ husbandOrWife }}'s name"
+        "question": "Your {{- husbandOrWife }}'s name"
       }
     }
   }
