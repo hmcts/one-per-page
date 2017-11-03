@@ -31,16 +31,28 @@ const stepTargets = step => {
   ];
 };
 
-const noTemplateErrorMessage = attempts => {
+const noTemplateError = attempts => {
   const attemptLines = attempts.map(s => `   ${s}`);
-  return [
-    'No templates found',
-    '',
-    ...attemptLines
-  ].join('\n');
+  return new Error(
+    [
+      'No templates found',
+      '',
+      ...attemptLines
+    ].join('\n')
+  );
 };
 
-const resolveTemplate = (req, res, next) => {
+const resolveTemplate = (step, viewsFolders) => {
+  const templatePaths = [
+    ...stepTargets(step),
+    ...viewTargets(step, viewsFolders)
+  ];
+
+  return fallback(templatePaths.map(fileExists))
+    .catch(() => Promise.reject(noTemplateError(templatePaths)));
+};
+
+const resolveTemplateMiddleware = (req, res, next) => {
   const step = req.currentStep;
 
   if (defined(step.template) && !isDev) {
@@ -48,21 +60,14 @@ const resolveTemplate = (req, res, next) => {
   } else if (notDefined(step.name) && notDefined(step.dirname)) {
     next(new Error('req.currentStep is not a Step'));
   } else {
-    const templatePaths = [
-      ...stepTargets(step),
-      ...viewTargets(step, req.app.get('views'))
-    ];
-
-    const foundTemplate = fallback(templatePaths.map(fileExists));
-
-    foundTemplate.then(
+    resolveTemplate(step, req.app.get('views')).then(
       filepath => {
         step.template = filepath;
         next();
       },
-      () => next(noTemplateErrorMessage(templatePaths))
+      error => next(error)
     );
   }
 };
 
-module.exports = resolveTemplate;
+module.exports = resolveTemplateMiddleware;
