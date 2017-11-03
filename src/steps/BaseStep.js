@@ -42,7 +42,8 @@ class BaseStep {
   }
 
   ready() {
-    return timeout(MAX_WAIT_MS, Promise.all(this.promises));
+    return timeout(MAX_WAIT_MS, Promise.all(this.promises))
+      .then(() => this);
   }
 
   static get path() {
