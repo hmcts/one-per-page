@@ -24,27 +24,13 @@ const parseI18N = (filepath, contents) => {
     .reduce((acc, arr) => [...acc, ...arr], []);
 };
 
-const applyContent = (req, res, next) => {
-  const step = req.currentStep;
-  if (notDefined(step) || notDefined(step.name) || notDefined(step.dirname)) {
-    next(new Error('req.currentStep is not a Step'));
-    return;
-  }
-  if (notDefined(step.content)) {
-    next(new Error('req.currentStep has no content proxy set up'));
-    return;
-  }
-  if (notDefined(req.i18Next)) {
-    next(new Error('i18Next not configured'));
-    return;
-  }
-
+const loadStepContent = (step, i18Next) => {
   const addResourceBundles = filepath => contents => {
     const bundles = parseI18N(filepath, contents);
     bundles.forEach(({ lang, translations }) => {
       const deep = true;
       const overwrite = true;
-      req.i18Next.addResourceBundle(
+      i18Next.addResourceBundle(
         lang,
         step.name,
         translations,
@@ -71,10 +57,30 @@ const applyContent = (req, res, next) => {
     glob(`${step.dirname}/${step.name}.content.@(*).json`).then(loadContents)
   ];
 
-  Promise.all(promises).then(
+  return Promise.all(promises);
+};
+
+const applyContent = (req, res, next) => {
+  const step = req.currentStep;
+  if (notDefined(step) || notDefined(step.name) || notDefined(step.dirname)) {
+    next(new Error('req.currentStep is not a Step'));
+    return;
+  }
+  if (notDefined(step.content)) {
+    next(new Error('req.currentStep has no content proxy set up'));
+    return;
+  }
+  if (notDefined(req.i18Next)) {
+    next(new Error('i18Next not configured'));
+    return;
+  }
+
+  loadStepContent(step, req.i18Next).then(
     () => next(),
     error => next(error)
   );
 };
+
+applyContent.loadStepContent = loadStepContent;
 
 module.exports = applyContent;
