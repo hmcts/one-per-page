@@ -3,6 +3,7 @@ const { section } = require('./section');
 const { defined } = require('../../../src/util/checks');
 const Question = require('../Question');
 const formProxyHandler = require('../../forms/formProxyHandler');
+const { INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
 class CheckYourAnswers extends Page {
   constructor() {
@@ -11,31 +12,42 @@ class CheckYourAnswers extends Page {
   }
 
   handler(req, res) {
-    this.answers = Object.values(this.journey)
+    const questions = Object.values(this.journey)
       .map(Step => new Step())
-      .filter(step => step instanceof Question)
-      .map(step => {
-        const fakeReq = Object.assign({}, req, { currentStep: step });
-        step.req = fakeReq;
-        step.res = res;
-        step.journey = req.journey;
+      .filter(step => step instanceof Question);
 
-        const form = step.form;
-        form.retrieve(fakeReq);
-        form.validate();
-        step.fields = new Proxy(form, formProxyHandler);
+    Promise.all(
+      questions.map(question => {
+        return question.ready().then(step => {
+          const fakeReq = Object.assign({}, req, { currentStep: step });
+          step.req = fakeReq;
+          step.res = res;
+          step.journey = req.journey;
 
-        const answerOrArr = step.answers();
-        return Array.isArray(answerOrArr) ? answerOrArr : [answerOrArr];
+          const form = step.form;
+          form.retrieve(fakeReq);
+          form.validate();
+          step.fields = new Proxy(form, formProxyHandler);
+
+          const answerOrArr = step.answers();
+          return Array.isArray(answerOrArr) ? answerOrArr : [answerOrArr];
+        });
       })
-      .reduceRight((left, right) => [...left, ...right], []);
+    )
+      .then(answers => {
+        this.answers = answers
+          .reduceRight((left, right) => [...left, ...right], []);
 
-    this._sections = [
-      ...this.sections().map(s => s.filterAnswers(this.answers)),
-      section.default.filterAnswers(this.answers)
-    ];
+        this._sections = [
+          ...this.sections().map(s => s.filterAnswers(this.answers)),
+          section.default.filterAnswers(this.answers)
+        ];
 
-    super.handler(req, res);
+        super.handler(req, res);
+      })
+      .catch(error => {
+        res.status(INTERNAL_SERVER_ERROR).send(error);
+      });
   }
 
   sections() {
