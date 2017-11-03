@@ -1,5 +1,5 @@
 const { expect } = require('./chai');
-const { fallback, Defer } = require('../../src/util/promises');
+const { fallback, Defer, timeout } = require('../../src/util/promises');
 
 describe('util/promises', () => {
   describe('Defer', () => {
@@ -86,6 +86,27 @@ describe('util/promises', () => {
     it('rejects if all promises reject', () => {
       const result = fallback([Promise.reject(new Error('fail'))]);
       return expect(result).to.eventually.rejectedWith('All promises rejected');
+    });
+  });
+
+  describe('#timeout', () => {
+    it('rejects if the given promise doesn\'t resolve in time', () => {
+      const result = timeout(10, new Promise(() => {
+        /* intentionally blank */
+      }));
+      return expect(result).rejectedWith('Timed out in 10 ms.');
+    });
+
+    it('rejects if the promise rejects in time', () => {
+      const result = timeout(10, new Promise((resolve, reject) =>
+        reject(new Error('Failed'))
+      ));
+      return expect(result).rejectedWith('Failed');
+    });
+
+    it('resolves if the promise resolves in time', () => {
+      const result = timeout(10, new Promise(resolve => resolve('Done')));
+      return expect(result).eventually.eql('Done');
     });
   });
 });

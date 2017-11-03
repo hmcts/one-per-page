@@ -1,5 +1,5 @@
 const BaseStep = require('./../../src/steps/BaseStep');
-const { OK } = require('http-status-codes');
+const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const { testStep } = require('../util/supertest');
 const { expect } = require('../util/chai');
 
@@ -13,6 +13,31 @@ describe('steps/BaseStep', () => {
       return expect(unimplementedStep)
         .to.throw(NotImplemented)
         .that.has.property('unimplemented').which.contains('handler');
+    });
+  }
+
+  {
+    const Step = class extends BaseStep {
+      handler(req, res) {
+        res.status(OK);
+        res.end();
+      }
+    };
+
+    it('executes the handler when ready', () => {
+      const step = new Step();
+      const willResolve = new Promise(resolve => resolve('Done'));
+      step.waitFor(willResolve);
+      return testStep(step).get()
+        .expect(OK);
+    });
+
+    it('returns 500 if not ready', () => {
+      const step = new Step();
+      const tooLong = new Promise(() => { /* intentionally blank */ });
+      step.waitFor(tooLong);
+      return testStep(step).get()
+        .expect(INTERNAL_SERVER_ERROR, /Step not ready/);
     });
   }
 
@@ -127,6 +152,41 @@ describe('steps/BaseStep', () => {
         handler() { /* intentionally blank */ }
       }();
       expect(step.path).to.eql('/test-step');
+    });
+  });
+
+  describe('#waitFor', () => {
+    it('adds the given promise to the steps list of promises', () => {
+      const step = new class extends BaseStep {
+        handler() { /* intentionally blank */ }
+      }();
+      const promise = new Promise(resolve => resolve('Done'));
+      step.waitFor(promise);
+      expect(step.promises).to.eql([promise]);
+    });
+  });
+
+  describe('#ready', () => {
+    const step = new class extends BaseStep {
+      handler() { /* intentionally blank */ }
+    }();
+
+    it('resolves when the steps promises resolve', () => {
+      const willResolve = new Promise(resolve => resolve('Done'));
+      step.promises = [willResolve];
+      return expect(step.ready()).to.be.fulfilled;
+    });
+
+    it('rejects if one of the promises rejects', () => {
+      const willReject = new Promise((resolve, reject) => reject(new Error()));
+      step.promises = [willReject];
+      return expect(step.ready()).to.be.rejected;
+    });
+
+    it('rejects if promises timeout', () => {
+      const tooLong = new Promise(() => { /* intentionally blank */ });
+      step.promises = [tooLong];
+      return expect(step.ready()).to.be.rejected;
     });
   });
 });

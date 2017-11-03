@@ -28,4 +28,18 @@ const fallback = promises => {
   return deferred.promise;
 };
 
-module.exports = { fallback, Defer };
+const timeout = (ms, promise) => {
+  const timeoutPromise = new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id);
+      reject(new Error(`Timed out in ${ms} ms.`));
+    }, ms);
+  });
+
+  return Promise.race([
+    promise,
+    timeoutPromise
+  ]);
+};
+
+module.exports = { fallback, Defer, timeout };
