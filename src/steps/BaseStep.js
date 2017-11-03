@@ -5,6 +5,8 @@ const path = require('path');
 const slug = require('slug');
 const { defined, notDefined } = require('../util/checks');
 const logging = require('@log4js-node/log4js-api');
+const { timeout } = require('../util/promises');
+const errorIfNotReady = require('../middleware/errorIfNotReady');
 
 const bindStepToReq = step => (req, res, next) => {
   req.currentStep = step;
@@ -13,6 +15,8 @@ const bindStepToReq = step => (req, res, next) => {
   step.res = res;
   next();
 };
+
+const MAX_WAIT_MS = 50;
 
 const findChildClassFilePath = step => {
   const callsite = callsites();
@@ -29,6 +33,16 @@ class BaseStep {
     if (notDefined(this.dirname)) {
       this.dirname = findChildClassFilePath(this);
     }
+
+    this.promises = [];
+  }
+
+  waitFor(promise) {
+    this.promises.push(promise);
+  }
+
+  ready() {
+    return timeout(MAX_WAIT_MS, Promise.all(this.promises));
   }
 
   static get path() {
@@ -50,7 +64,7 @@ class BaseStep {
   }
 
   get middleware() {
-    return [];
+    return [errorIfNotReady(this)];
   }
   get name() {
     return this.constructor.name;
