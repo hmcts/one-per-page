@@ -1,5 +1,5 @@
 const { fileExists, readJson, glob } = require('../util/fs');
-const { notDefined, defined } = require('../util/checks');
+const { defined } = require('../util/checks');
 
 const langInFilepathRegex = /^.*\.(\w{2}(?:-\w{2})?)\.json$/;
 const langRegex = /^\w{2}(?:-\w{2})?$/;
@@ -60,27 +60,4 @@ const loadStepContent = (step, i18Next) => {
   return Promise.all(promises);
 };
 
-const applyContent = (req, res, next) => {
-  const step = req.currentStep;
-  if (notDefined(step) || notDefined(step.name) || notDefined(step.dirname)) {
-    next(new Error('req.currentStep is not a Step'));
-    return;
-  }
-  if (notDefined(step.content)) {
-    next(new Error('req.currentStep has no content proxy set up'));
-    return;
-  }
-  if (notDefined(req.i18Next)) {
-    next(new Error('i18Next not configured'));
-    return;
-  }
-
-  loadStepContent(step, req.i18Next).then(
-    () => next(),
-    error => next(error)
-  );
-};
-
-applyContent.loadStepContent = loadStepContent;
-
-module.exports = applyContent;
+module.exports = loadStepContent;
