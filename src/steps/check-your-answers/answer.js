@@ -81,8 +81,19 @@ const getComplete = step => {
   return false;
 };
 
+const getId = (step, { id }) => {
+  if (defined(id)) {
+    return id;
+  }
+  if (defined(step) && defined(step.name)) {
+    return step.name;
+  }
+  return 'no-id';
+};
+
 const answer = (step, args = {}) => {
   return {
+    id: getId(step, args),
     section: getSection(args),
     question: getQuestion(step, args),
     answer: getAnswer(step, args),
