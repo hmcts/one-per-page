@@ -6,11 +6,11 @@ const path = require('path');
 
 describe('Page', () => {
   {
-    const page = testStep(new class extends Page {
+    const page = testStep(class extends Page {
       get template() {
         return 'page_views/simplePage';
       }
-    }());
+    });
 
     it('renders the page on GET', () => {
       return page.get().expect(OK, '<h1>Hello, World!</h1>\n');
@@ -50,11 +50,11 @@ describe('Page', () => {
 
   describe('Template rendering', () => {
     schemes.forEach(({ dir, template }) => {
-      const page = new class ContentTest extends Page {
+      const page = class ContentTest extends Page {
         get dirname() {
           return dir;
         }
-      }();
+      };
 
       const request = testStep(page).get();
 
@@ -64,11 +64,11 @@ describe('Page', () => {
     });
 
     it('has access to the session', () => {
-      const page = new class extends Page {
+      const page = class extends Page {
         get template() {
           return 'page_views/session';
         }
-      }();
+      };
 
       return testStep(page)
         .withSession({ foo: 'Foo', bar: 'Bar' })
@@ -77,7 +77,7 @@ describe('Page', () => {
     });
 
     it('has access to arbitrary functions on the step', () => {
-      const page = new class extends Page {
+      const page = class extends Page {
         get template() {
           return 'page_views/class_locals';
         }
@@ -87,8 +87,10 @@ describe('Page', () => {
         scopedFoo() {
           return 'Foo';
         }
-      }();
-      page.bar = 'Bar';
+        get bar() {
+          return 'Bar';
+        }
+      };
 
       return testStep(page)
         .get()
@@ -98,11 +100,11 @@ describe('Page', () => {
 
   describe('Content rendering', () => {
     schemes.forEach(({ dir, content }) => {
-      const page = new class ContentTest extends Page {
+      const page = class ContentTest extends Page {
         get dirname() {
           return dir;
         }
-      }();
+      };
 
       const request = testStep(page).get();
 
@@ -112,14 +114,14 @@ describe('Page', () => {
     });
 
     {
-      const page = new class ContentTest extends Page {
+      const page = class ContentTest extends Page {
         get dirname() {
           return testDir('1');
         }
         get foo() {
           return 'Foo';
         }
-      }();
+      };
       const request = testStep(page)
         .withSession({ foo: 'Foo' })
         .get();
@@ -135,7 +137,7 @@ describe('Page', () => {
   });
 
   it('looks for a template named [Step.name] in views', () => {
-    const page = new class TestPage extends Page {}();
+    const page = class TestPage extends Page {};
     return testStep(page)
       .get()
       .expect(OK, 'Default Page template\n');

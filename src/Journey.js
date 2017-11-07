@@ -64,13 +64,7 @@ const journey = (app, userOpts) => {
   app.use(opts.session);
   app.use(i18nMiddleware);
 
-  opts.steps.forEach(Step => {
-    app.all(Step.path, (req, res, next) => {
-      const s = new Step();
-      s.router.handle(req, res, next);
-    });
-    logger.info(`${Step.name} registered to ${Step.path}`);
-  });
+  opts.steps.forEach(Step => Step.bind(app));
 
   return app;
 };
