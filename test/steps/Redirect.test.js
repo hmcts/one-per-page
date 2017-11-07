@@ -12,11 +12,11 @@ describe('steps/Redirect', () => {
   describe('GET', () => {
     it('redirects to the step defined in #next', () => {
       const fakeStep = { path: '/bar' };
-      const redirect = new class extends Redirect {
+      const redirect = class extends Redirect {
         next() {
           return goTo(fakeStep);
         }
-      }();
+      };
       return testStep(redirect)
         .get()
         .expect('Location', fakeStep.path)
@@ -27,11 +27,11 @@ describe('steps/Redirect', () => {
   describe('POST', () => {
     it('returns 405 (Method not allowed)', () => {
       const fakeStep = { path: '/bar' };
-      const redirect = new class extends Redirect {
+      const redirect = class extends Redirect {
         next() {
           return goTo(fakeStep);
         }
-      }();
+      };
       return testStep(redirect)
         .post()
         .expect(405);

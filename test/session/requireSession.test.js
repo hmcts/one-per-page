@@ -4,14 +4,14 @@ const Page = require('../../src/steps/Page');
 const requireSession = require('../../src/session/requireSession');
 
 describe('session/requireSession', () => {
-  const page = new class extends Page {
+  const page = class extends Page {
     get middleware() {
       return [requireSession, ...super.middleware];
     }
     get template() {
       return 'page_views/simplePage';
     }
-  }();
+  };
 
   describe('no session', () => {
     it('redirects to /', () => {

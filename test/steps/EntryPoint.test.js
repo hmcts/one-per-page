@@ -11,11 +11,11 @@ describe('steps/EntryPoint', () => {
 
   describe('GET', () => {
     const fakeStep = { path: '/bar' };
-    const redirect = new class MyEntryPoint extends EntryPoint {
+    const redirect = class MyEntryPoint extends EntryPoint {
       next() {
         return goTo(fakeStep);
       }
-    }();
+    };
 
     it('redirects to the step defined in #next', () => {
       return testStep(redirect)
@@ -44,11 +44,11 @@ describe('steps/EntryPoint', () => {
   describe('POST', () => {
     it('returns 405 (Method not allowed)', () => {
       const fakeStep = { path: '/bar' };
-      const redirect = new class extends EntryPoint {
+      const redirect = class extends EntryPoint {
         next() {
           return goTo(fakeStep);
         }
-      }();
+      };
       return testStep(redirect)
         .post()
         .expect(405);

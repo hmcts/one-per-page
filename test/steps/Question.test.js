@@ -41,11 +41,9 @@ describe('steps/Question', () => {
       }
     };
 
-    const question = new SimpleQuestion();
-
     describe('GET', () => {
       it('renders the page on GET', () => {
-        return testStep(question)
+        return testStep(SimpleQuestion)
           .withSetup(req => req.session.generate())
           .get()
           .html($ => {
@@ -54,7 +52,7 @@ describe('steps/Question', () => {
       });
 
       it('loads fields from the session', () => {
-        return testStep(question)
+        return testStep(SimpleQuestion)
           .withSetup(req => {
             req.session.generate();
             req.session.SimpleQuestion = { name: 'Michael Allen' };
@@ -67,7 +65,7 @@ describe('steps/Question', () => {
     });
 
     describe('POST', () => {
-      const postRequest = testStep(question)
+      const postRequest = testStep(SimpleQuestion)
         .withSetup(req => req.session.generate())
         .withField('name', 'Michael Allen')
         .post();
@@ -94,10 +92,8 @@ describe('steps/Question', () => {
             );
           }
         };
-        const invalidQuestion = new InvalidQuestion();
-
         it('renders step with error message', () => {
-          return testStep(invalidQuestion)
+          return testStep(InvalidQuestion)
             .withSetup(req => req.session.generate())
             .withField('name', 'Invalid Answer')
             .post()
@@ -119,10 +115,9 @@ describe('steps/Question', () => {
             );
           }
         };
-        const validQuestion = new ValidQuestion();
 
         it('redirects to the next step if valid', () => {
-          const response = testStep(validQuestion)
+          const response = testStep(ValidQuestion)
             .withSetup(req => req.session.generate())
             .withField('name', 'valid answer')
             .post();
@@ -136,7 +131,7 @@ describe('steps/Question', () => {
     notAllowedMethods.forEach(method => {
       describe(method.toUpperCase(), () => {
         it('returns 405 (METHOD_NOT_ALLOWED)', () => {
-          return testStep(question)
+          return testStep(SimpleQuestion)
             .withSetup(req => req.session.generate())
             .withField('name', 'Michael Allen')
             .execute(method)

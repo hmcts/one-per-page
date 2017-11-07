@@ -6,6 +6,7 @@ const zepto = require('zepto-node');
 const domino = require('domino');
 const { expect } = require('../util/chai');
 const { i18nMiddleware } = require('../../src/i18n/i18Next');
+const { defined } = require('../../src/util/checks');
 
 function testApp() {
   const app = express();
@@ -54,7 +55,7 @@ const supertestInstance = stepDSL => {
   });
 
   stepDSL[_middleware].forEach(_ => app.use(_));
-  app.use(stepDSL.step.router);
+  stepDSL.step.bind(app);
   stepDSL[_supertest] = supertest(app);
 
   return stepDSL[_supertest];
@@ -97,9 +98,16 @@ const shouldSetCookie = name => {
   ]).then(() => res);
 };
 
+const constructorFrom = step => {
+  if (defined(step.prototype)) {
+    return step;
+  }
+  throw new Error(`Pass ${step.name} to supertest as a class not an instance`);
+};
+
 class TestStepDSL {
   constructor(step, body = {}, middleware = []) {
-    this.step = step;
+    this.step = constructorFrom(step);
     this.body = body;
     this[_middleware] = middleware;
   }

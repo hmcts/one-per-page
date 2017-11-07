@@ -81,6 +81,15 @@ class BaseStep {
     this._router.all(this.path, this.handler.bind(this));
     return this._router;
   }
+
+  static bind(app) {
+    app.all(this.path, (req, res, next) => {
+      const instance = new this();
+      instance.router.handle(req, res, next);
+    });
+    const logger = logging.getLogger(this.name);
+    logger.info(`${this.name} registered to ${this.path}`);
+  }
 }
 
 module.exports = BaseStep;

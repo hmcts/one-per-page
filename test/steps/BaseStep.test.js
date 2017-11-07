@@ -25,19 +25,27 @@ describe('steps/BaseStep', () => {
     };
 
     it('executes the handler when ready', () => {
-      const step = new Step();
       const willResolve = new Promise(resolve => resolve('Done'));
-      step.waitFor(willResolve);
+      const step = class extends Step {
+        constructor(...args) {
+          super(...args);
+          this.waitFor(willResolve);
+        }
+      };
       return testStep(step).get()
         .expect(OK);
     });
 
     it('returns 500 if not ready', () => {
-      const step = new Step();
       const tooLong = new Promise(() => { /* intentionally blank */ });
-      step.waitFor(tooLong);
+      const step = class extends Step {
+        constructor(...args) {
+          super(...args);
+          this.waitFor(tooLong);
+        }
+      };
       return testStep(step).get()
-        .expect(INTERNAL_SERVER_ERROR, /Step not ready/);
+        .expect(INTERNAL_SERVER_ERROR, /step not ready/);
     });
   }
 
@@ -60,22 +68,22 @@ describe('steps/BaseStep', () => {
     }
 
     it('binds the handler function to the current path', () => {
-      const step = new class extends BaseStep {
+      const step = class extends BaseStep {
         handler(req, res) {
           res.status(OK).json({ status: 'ok', path: this.path });
         }
-      }();
+      };
       return testStep(step).get()
         .expect(OK, { status: 'ok', path: step.path });
     });
 
     it('binds the current step to req.currentStep', () => {
-      const test = new class extends BaseStep {
+      const test = class extends BaseStep {
         handler(req, res) {
           expect(req.currentStep).to.eql(this);
           res.end();
         }
-      }();
+      };
       return testStep(test).get().expect(OK);
     });
   });
@@ -87,20 +95,20 @@ describe('steps/BaseStep', () => {
         next();
       };
 
-      const step = new class extends BaseStep {
+      const step = class extends BaseStep {
         get middleware() {
           return [fooAdder];
         }
         handler(req, res) {
           res.status(OK).json({ foo: req.foo });
         }
-      }();
+      };
       return testStep(step).get()
         .expect(OK, { foo: 'Foo' });
     });
 
     it('are bound to the current step', () => {
-      const step = new class Step extends BaseStep {
+      const step = class extends BaseStep {
         scopedMiddleware(req, res, next) {
           req.stepUrl = this.path;
           next();
@@ -111,7 +119,7 @@ describe('steps/BaseStep', () => {
         handler(req, res) {
           res.status(OK).json({ path: req.stepUrl });
         }
-      }();
+      };
 
       return testStep(step).get()
         .expect(OK, { path: '/step' });

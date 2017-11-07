@@ -39,7 +39,7 @@ describe('steps/CheckYourAnswers', () => {
         Gender: { gender: 'Male' }
       };
 
-      return testStep(new CheckYourAnswers())
+      return testStep(CheckYourAnswers)
         .withSession(session)
         .withSetup(req => {
           req.journey = journey;

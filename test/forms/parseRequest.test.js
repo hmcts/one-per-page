@@ -6,7 +6,7 @@ const { form, Form } = require('../../src/forms/form');
 const { field, FieldDesriptor } = require('../../src/forms/field');
 
 const handlerTest = (_form, { method = 'get', assertions }) => {
-  const _step = new class extends Page {
+  const _step = class extends Page {
     get middleware() {
       return [parseRequest];
     }
@@ -20,7 +20,7 @@ const handlerTest = (_form, { method = 'get', assertions }) => {
       assertions(req, res);
       res.end();
     }
-  }();
+  };
   return testStep(_step).execute(method).expect(200);
 };
 
@@ -55,7 +55,7 @@ describe('forms/parseRequest', () => {
 
   describe('req.fields', () => {
     it('is empty if step.fields is not defined', () => {
-      const step = new class extends Page {
+      const step = class extends Page {
         get middleware() {
           return [parseRequest];
         }
@@ -67,7 +67,7 @@ describe('forms/parseRequest', () => {
           expect(req.fields).to.be.empty;
           res.end();
         }
-      }();
+      };
 
       return testStep(step).get().expect(200);
     });
