@@ -25,20 +25,19 @@ describe('forms/field', () => {
     describe('#serialize', () => {
       it('returns an object representing the field', () => {
         const f = new FieldDesriptor('name');
-        f.id = 'Prefs_colour';
         f.value = 'Green';
-        expect(f.serialize()).to.eql({ [f.id]: f.value });
+        expect(f.serialize()).to.eql({ [f.name]: f.value });
       });
 
-      it('returns an empty object if no ID', () => {
-        const f = new FieldDesriptor('name');
-        f.value = 'Green';
-        expect(f.serialize()).to.eql({});
+      it('returns it\'s parsers nullValue if no value', () => {
+        const fakeParser = { nullValue: 'foobar' };
+        const f = new FieldDesriptor('name', fakeParser);
+        expect(f.serialize()).to.eql({ [f.name]: fakeParser.nullValue });
       });
 
-      it('returns an empty object if no value', () => {
-        const f = new FieldDesriptor('name');
-        f.id = 'Prefs_colour';
+      it('returns empty object if its parsers nullValue is undefined', () => {
+        const nullParser = { nullValue: undefined };
+        const f = new FieldDesriptor('name', nullParser);
         expect(f.serialize()).to.eql({});
       });
     });
@@ -50,13 +49,10 @@ describe('forms/field', () => {
       });
 
       it('fills FieldDesriptor.value with answer from the session', () => {
-        const req = {
-          body: {},
-          session: { NameStep_firstName: 'Michael' },
-          currentStep: { name: 'NameStep' }
-        };
+        const sessionValues = { firstName: 'Michael' };
         const firstName = new FieldDesriptor('firstName');
-        expect(firstName.deserialize(req)).to.have.property('value', 'Michael');
+        firstName.deserialize(sessionValues);
+        expect(firstName).to.have.property('value', 'Michael');
       });
     });
 
@@ -67,11 +63,7 @@ describe('forms/field', () => {
       });
 
       it('fills FieldDesriptor.value with answer from request body', () => {
-        const req = {
-          body: { NameStep_firstName: 'Michael' },
-          session: {},
-          currentStep: { name: 'NameStep' }
-        };
+        const req = { firstName: 'Michael' };
         const firstName = new FieldDesriptor('firstName');
         expect(firstName.parse(req)).to.have.property('value', 'Michael');
       });

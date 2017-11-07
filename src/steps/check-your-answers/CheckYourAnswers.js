@@ -19,13 +19,13 @@ class CheckYourAnswers extends Page {
     Promise.all(
       questions.map(question => {
         return question.ready().then(step => {
-          const fakeReq = Object.assign({}, req, { currentStep: step });
-          step.req = fakeReq;
+          step.req = req;
           step.res = res;
           step.journey = req.journey;
 
           const form = step.form;
-          form.retrieve(fakeReq);
+          form.bind(step);
+          form.retrieve(req);
           form.validate();
           step.fields = new Proxy(form, formProxyHandler);
 

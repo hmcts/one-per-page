@@ -29,7 +29,7 @@ describe('forms/form', () => {
       it('calls field.parse on each field', () => {
         const fields = [field('foo'), field('bar')];
         const f = new Form(fields);
-        const req = { currentStep: {} };
+        const req = { body: {} };
 
         fields.forEach(_field => sinon.spy(_field, 'parse'));
         f.parse(req);
@@ -48,10 +48,24 @@ describe('forms/form', () => {
     });
 
     describe('#retrieve', () => {
+      it('throws if session not setup', () => {
+        const f = new Form([]);
+        const req = {};
+        expect(() => f.retrieve(req)).to.throw('Session not initialized');
+      });
+
+      it('throws if not bound to a step', () => {
+        const f = new Form([]);
+        const req = { session: {} };
+        expect(() => f.retrieve(req)).to.throw('Form is not bound to a step');
+      });
+
       it('calls field.deserialize on each field', () => {
         const fields = [field('foo'), field('bar')];
         const f = new Form(fields);
-        const req = { currentStep: {} };
+        const step = { name: 'MyStep' };
+        f.bind(step);
+        const req = { session: {} };
 
         fields.forEach(_field => sinon.spy(_field, 'deserialize'));
         f.retrieve(req);
@@ -60,18 +74,47 @@ describe('forms/form', () => {
 
       it('creates an array of FieldDesriptors', () => {
         const f = new Form([]);
-        const req = { currentStep: {} };
+        const req = { session: {} };
+        const step = { name: 'MyStep' };
+        f.bind(step);
         f.retrieve(req);
         expect(f.fields).to.be.an('array');
         f.fields.forEach(retrievedField => {
           expect(retrievedField).to.be.an.instanceof(FieldDesriptor);
         });
       });
+
+      it('loads values from the session', () => {
+        const f = new Form([field('firstName'), field('lastName')]);
+        const step = { name: 'MyStep' };
+        const req = {
+          session: {
+            MyStep: {
+              firstName: 'Michael',
+              lastName: 'Allen'
+            }
+          }
+        };
+        f.bind(step);
+        f.retrieve(req);
+        const values = f.fields.map(_field => _field.serialize());
+        expect(values).to.eql([
+          { firstName: 'Michael' },
+          { lastName: 'Allen' }
+        ]);
+      });
     });
 
     describe('#store', () => {
       const name = new FieldDesriptor('name', 'Details_name', 'Michael Allen');
       const colour = new FieldDesriptor('colour', 'Prefs_colour', 'Green');
+
+      it('throws an error if not bound to a step', () => {
+        const f = new Form();
+        const req = { session: {} };
+
+        expect(() => f.store(req)).to.throw('Form is not bound to a step');
+      });
 
       it('throws an error if session is not initialized', () => {
         const f = new Form();
@@ -82,11 +125,18 @@ describe('forms/form', () => {
 
       it('calls req.field.serialize on each field', () => {
         const f = new Form([name, colour]);
-        const req = { fields: { name, colour }, session: {} };
+        const step = { name: 'MyStep' };
+        const req = {
+          body: { MyStep: { name, colour } },
+          session: {}
+        };
 
         sinon.spy(name, 'serialize');
         sinon.spy(colour, 'serialize');
+
+        f.bind(step);
         f.store(req);
+
         expect(name.serialize).calledOnce;
         expect(colour.serialize).calledOnce;
         name.serialize.restore();
@@ -96,30 +146,30 @@ describe('forms/form', () => {
       it('stores the serialized fields in the session', () => {
         const f = new Form([field('name'), field('colour')]);
         const req = {
-          body: {
-            name: 'Michael Allen',
-            colour: 'Green'
-          },
+          body: { name: 'Michael Allen', colour: 'Green' },
           session: {}
         };
+        const step = { name: 'MyStep' };
+
+        f.bind(step);
         f.parse(req);
         f.store(req);
-        expect(req.session).to.have.property('name', 'Michael Allen');
-        expect(req.session).to.have.property('colour', 'Green');
+        expect(req.session).to.have.property(step.name);
+        expect(req.session[step.name]).has.property('name', 'Michael Allen');
+        expect(req.session[step.name]).to.have.property('colour', 'Green');
       });
 
       it('only calls serialize on fields declared in the form', () => {
         const f = new Form([field('colour')]);
+        const step = { name: 'MyStep' };
         const req = {
-          body: {
-            name: 'Michael Allen',
-            colour: 'Green'
-          },
+          body: { name: 'Michael Allen', colour: 'Green' },
           session: {}
         };
+        f.bind(step);
         f.parse(req);
         f.store(req);
-        expect(req.session).to.eql({ colour: 'Green' });
+        expect(req.session).to.eql({ [step.name]: { colour: 'Green' } });
       });
     });
 

@@ -35,9 +35,8 @@ describe('steps/CheckYourAnswers', () => {
       };
       const journey = { Name: nameStep, Gender: genderStep, CheckYourAnswers };
       const session = {
-        Name_firstName: 'Michael',
-        Name_lastName: 'Allen',
-        Gender_gender: 'Male'
+        Name: { firstName: 'Michael', lastName: 'Allen' },
+        Gender: { gender: 'Male' }
       };
 
       return testStep(new CheckYourAnswers())

@@ -24,7 +24,7 @@ const handlerTest = (_form, { method = 'get', assertions }) => {
   return testStep(_step).execute(method).expect(200);
 };
 
-describe('middleware/parseRequest', () => {
+describe('forms/parseRequest', () => {
   it('attaches an Object to req.fields', () => {
     return handlerTest(form(), {
       assertions(req) {
