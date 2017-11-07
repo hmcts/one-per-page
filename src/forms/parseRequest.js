@@ -10,6 +10,8 @@ const parseRequest = (req, res, next) => {
     return;
   }
 
+  form.bind(req.currentStep);
+
   if (req.method === 'POST') {
     form.parse(req);
     form.validate();

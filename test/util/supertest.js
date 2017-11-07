@@ -117,8 +117,7 @@ class TestStepDSL {
   }
 
   withField(field, value) {
-    const fieldName = `${this.step.name}_${field}`;
-    const newBody = Object.assign({}, this.body, { [fieldName]: value });
+    const newBody = Object.assign({}, this.body, { [field]: value });
     return new TestStepDSL(this.step, newBody, this[_middleware]);
   }
 

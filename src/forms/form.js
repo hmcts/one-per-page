@@ -1,8 +1,15 @@
 const FieldError = require('../../src/forms/fieldError');
+const { notDefined } = require('../util/checks');
+const defaultIfUndefined = require('../util/defaultIfUndefined');
 
 class Form {
   constructor(fields = []) {
     this.fields = fields;
+  }
+
+  bind(step) {
+    this.stepName = step.name;
+    return this;
   }
 
   /**
@@ -13,7 +20,7 @@ class Form {
    * @return {list} fields - the parsed fields containing their values
    */
   parse(req) {
-    this.fields.forEach(field => field.parse(req));
+    this.fields.forEach(field => field.parse(req.body || {}));
     return this;
   }
 
@@ -24,13 +31,19 @@ class Form {
    * @param {object} req - the express request
    */
   store(req) {
-    if (typeof req.session === 'undefined') {
+    if (notDefined(req.session)) {
       throw new Error('Session not initialized');
     }
-    this.fields.forEach(field => {
-      const serialized = field.serialize();
-      Object.assign(req.session, serialized);
-    });
+    if (notDefined(this.stepName)) {
+      throw new Error('Form is not bound to a step');
+    }
+    const values = this.fields
+      .map(field => field.serialize())
+      .reduce((kv, obj) => Object.assign(obj, kv), {});
+
+    if (values !== {}) {
+      Object.assign(req.session, { [this.stepName]: values });
+    }
   }
 
   /**
@@ -41,7 +54,14 @@ class Form {
    * @return {list} fields - the populated fields containing their values
    */
   retrieve(req) {
-    this.fields.forEach(field => field.deserialize(req));
+    if (notDefined(req.session)) {
+      throw new Error('Session not initialized');
+    }
+    if (notDefined(this.stepName)) {
+      throw new Error('Form is not bound to a step');
+    }
+    const values = defaultIfUndefined(req.session[this.stepName], {});
+    this.fields.forEach(field => field.deserialize(values));
     return this;
   }
 

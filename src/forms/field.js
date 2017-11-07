@@ -1,6 +1,7 @@
 const option = require('option');
 const Joi = require('joi');
 const { nonEmptyTextParser } = require('./fieldParsers');
+const { notDefined } = require('../util/checks');
 
 const isNullOrUndefined = value =>
   typeof value === 'undefined' || value === null;
@@ -40,7 +41,7 @@ class FieldDesriptor {
   constructor(name, fieldParser = nonEmptyTextParser) {
     this.parser = fieldParser;
     this.name = name;
-    this.id = undefined; // eslint-disable-line no-undefined
+    this.id = name;
     this.value = undefined; // eslint-disable-line no-undefined
     this.validations = [];
     this._validated = false;
@@ -50,20 +51,15 @@ class FieldDesriptor {
    * Parses the request body looking for a parameter with the same name
    * as this field.
    *
-   * @param {object} req - the express request
+   * @param {object} body - the request body
    * @return {FieldDescriptor} field - the parsed field filled with it's value
    */
-  parse(req) {
-    const id = makeId(this, req.currentStep);
-
-    const value = option
-      .fromNullable(req.body)
-      .flatMap(body => option.fromNullable(body[id]))
+  parse(body = {}) {
+    this.value = option
+      .fromNullable(body[this.name])
       .map(content => this.parser.parse(content))
       .valueOrElse(this.parser.nullValue);
 
-    this.id = id;
-    this.value = value;
     return this;
   }
 
@@ -73,16 +69,11 @@ class FieldDesriptor {
    * @param {object} req - the express request
    * @return {FieldDescriptor} field - the loaded field filled with it's value
    */
-  deserialize(req) {
-    const id = makeId(this, req.currentStep);
-
-    const value = option
-      .fromNullable(req.session)
-      .flatMap(session => option.fromNullable(session[id]))
+  deserialize(values = {}) {
+    this.value = option
+      .fromNullable(values[this.name])
       .valueOrElse(this.parser.nullValue);
 
-    this.id = id;
-    this.value = value;
     return this;
   }
 
@@ -93,9 +84,13 @@ class FieldDesriptor {
    *   session
    */
   serialize() {
-    if (typeof this.id === 'undefined') return {};
-    if (typeof this.value === 'undefined') return {};
-    return { [this.id]: this.value };
+    if (notDefined(this.value)) {
+      if (notDefined(this.parser.nullValue)) {
+        return {};
+      }
+      return { [this.name]: this.parser.nullValue };
+    }
+    return { [this.name]: this.value };
   }
 
   get errors() {

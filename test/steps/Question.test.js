@@ -57,11 +57,11 @@ describe('steps/Question', () => {
         return testStep(question)
           .withSetup(req => {
             req.session.generate();
-            req.session.SimpleQuestion_name = 'Michael Allen';
+            req.session.SimpleQuestion = { name: 'Michael Allen' };
           })
           .get()
           .html($ => {
-            expect($('#SimpleQuestion_name')).to.contain.$val('Michael Allen');
+            return expect($('#name')).has.$val('Michael Allen');
           });
       });
     });
@@ -74,7 +74,9 @@ describe('steps/Question', () => {
 
       it('saves answers in the session', () => {
         return postRequest.session(session => {
-          expect(session).to.contain.key('SimpleQuestion_name');
+          expect(session).to.contain.key('SimpleQuestion');
+          expect(session.SimpleQuestion).to.contain.key('name');
+          expect(session.SimpleQuestion.name).to.eql('Michael Allen');
         });
       });
 
@@ -157,9 +159,10 @@ describe('steps/Question', () => {
         };
         const step = new NameStep();
         const _form = step.form;
+        _form.bind(step);
         _form.retrieve({
           currentStep: step,
-          session: { NameStep_name: 'John' }
+          session: { NameStep: { name: 'John' } }
         });
         _form.validate();
         step.fields = new Proxy(_form, formProxyHandler);
