@@ -1,0 +1,15 @@
+{% for section in _sections %}
+
+<div id="{{ section.id }}">
+  <h1>{{ section.title }}</h1>
+
+  {% for answer in section.answers %}
+  <div id="{{ answer.id }}">
+    <span class="question">{{ answer.question }}</span>
+    <span class="answer">{{ answer.answer }}</span>
+  </div>
+  {% endfor %}
+
+</div>
+
+{% endfor %}

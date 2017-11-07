@@ -1,9 +1,58 @@
 const { expect } = require('../../util/chai');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
+const { form, field } = require('../../../src/forms');
+const { testStep } = require('../../util/supertest');
+const Question = require('../../../src/steps/Question');
 
 describe('steps/CheckYourAnswers', () => {
   it('defines a default #path', () => {
     expect((new CheckYourAnswers()).path).to.eql('/check-your-answers');
+  });
+
+  describe('GET', () => {
+    it('renders an answer for each answered question in the journey', () => {
+      const nameStep = class extends Question {
+        get form() {
+          return form(field('firstName'), field('lastName'));
+        }
+        get name() {
+          return 'Name';
+        }
+        next() {
+          return this.journey.Gender;
+        }
+      };
+      const genderStep = class extends Question {
+        get form() {
+          return form(field('gender'));
+        }
+        get name() {
+          return 'Gender';
+        }
+        next() {
+          return this.journey.CheckYourAnswers;
+        }
+      };
+      const journey = { Name: nameStep, Gender: genderStep, CheckYourAnswers };
+      const session = {
+        Name_firstName: 'Michael',
+        Name_lastName: 'Allen',
+        Gender_gender: 'Male'
+      };
+
+      return testStep(new CheckYourAnswers())
+        .withSession(session)
+        .withSetup(req => {
+          req.journey = journey;
+        })
+        .get()
+        .html($ => {
+          return Promise.all([
+            expect($('#Name .question')).has.$text('Name'),
+            expect($('#Name .answer')).has.$text('Michael Allen')
+          ]);
+        });
+    });
   });
 
   describe('#sections', () => {
