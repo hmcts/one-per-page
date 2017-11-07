@@ -17,8 +17,9 @@ class CheckYourAnswers extends Page {
       .filter(step => step instanceof Question);
 
     Promise.all(
-      questions.map(question => {
-        return question.ready().then(step => {
+      questions.map(question => question
+        .ready()
+        .then(step => {
           step.req = req;
           step.res = res;
           step.journey = req.journey;
@@ -31,8 +32,8 @@ class CheckYourAnswers extends Page {
 
           const answerOrArr = step.answers();
           return Array.isArray(answerOrArr) ? answerOrArr : [answerOrArr];
-        });
-      })
+        })
+      )
     )
       .then(answers => {
         this.answers = answers
