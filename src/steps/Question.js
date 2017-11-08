@@ -39,6 +39,10 @@ class Question extends Page {
   answers() {
     return answer(this);
   }
+
+  static get type() {
+    return 'Question';
+  }
 }
 
 module.exports = Question;

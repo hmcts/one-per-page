@@ -6,18 +6,19 @@ const formProxyHandler = require('../../forms/formProxyHandler');
 const { INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
 class CheckYourAnswers extends Page {
-  constructor(...args) {
-    super(...args);
+  constructor(req, res) {
+    super(req, res);
     this._sections = [];
+    this.questions = Object.values(this.journey)
+      .filter(Step => Step.type !== CheckYourAnswers.type)
+      .map(Step => new Step(req, res))
+      .filter(step => step instanceof Question);
+    this.questions.forEach(step => this.waitFor(step.ready()));
   }
 
   handler(req, res) {
-    const questions = Object.values(this.journey)
-      .map(Step => new Step(req, res))
-      .filter(step => step instanceof Question);
-
     Promise.all(
-      questions.map(question => question
+      this.questions.map(question => question
         .ready()
         .then(step => {
           const form = step.form;
@@ -62,6 +63,10 @@ class CheckYourAnswers extends Page {
   get continueUrl() {
     const nextSection = this._sections.find(s => s.incomplete);
     return defined(nextSection) ? nextSection.continueUrl : '';
+  }
+
+  static get type() {
+    return 'CheckYourAnswers';
   }
 }
 
