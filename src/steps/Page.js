@@ -35,8 +35,8 @@ const allProperties = (obj, arr = []) => {
 };
 
 class Page extends BaseStep {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     this.content = new Proxy(i18NextInstance, contentProxy(this));
     this.waitFor(loadStepContent(this, i18NextInstance));
   }

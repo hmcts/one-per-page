@@ -7,8 +7,8 @@ const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const answer = require('./check-your-answers/answer');
 
 class Question extends Page {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     expectImplemented(this, 'next', 'form');
   }
 

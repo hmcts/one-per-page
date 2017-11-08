@@ -3,8 +3,8 @@ const { expectImplemented } = require('../errors/expectImplemented');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 
 class Redirect extends BaseStep {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     expectImplemented(this, 'next');
   }
 

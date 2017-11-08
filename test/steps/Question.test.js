@@ -11,7 +11,9 @@ const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 describe('steps/Question', () => {
   {
     const unimplementedQuestion = () => {
-      return new class extends Question {}();
+      const req = { journey: {} };
+      const res = {};
+      return new class extends Question {}(req, res);
     };
 
     it('expects form to be implemented', () => {
@@ -152,7 +154,9 @@ describe('steps/Question', () => {
             );
           }
         };
-        const step = new NameStep();
+        const req = { journey: {} };
+        const res = {};
+        const step = new NameStep(req, res);
         const _form = step.form;
         _form.bind(step);
         _form.retrieve({

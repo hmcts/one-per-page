@@ -6,7 +6,9 @@ const Question = require('../../../src/steps/Question');
 
 describe('steps/CheckYourAnswers', () => {
   it('defines a default #path', () => {
-    expect((new CheckYourAnswers()).path).to.eql('/check-your-answers');
+    const req = { journey: {} };
+    const res = {};
+    expect((new CheckYourAnswers(req, res)).path).to.eql('/check-your-answers');
   });
 
   describe('GET', () => {
@@ -56,13 +58,17 @@ describe('steps/CheckYourAnswers', () => {
 
   describe('#sections', () => {
     it('defaults to []', () => {
-      const cya = new CheckYourAnswers();
+      const req = { journey: {} };
+      const res = {};
+      const cya = new CheckYourAnswers(req, res);
       expect(cya.sections()).to.eql([]);
     });
   });
 
   describe('#noCompletedQuestions', () => {
-    const cya = new CheckYourAnswers();
+    const req = { journey: {} };
+    const res = {};
+    const cya = new CheckYourAnswers(req, res);
     const incompleteSection = { atLeast1Completed: true };
     const unansweredSection = { atLeast1Completed: false };
 
@@ -82,7 +88,9 @@ describe('steps/CheckYourAnswers', () => {
   });
 
   describe('#incomplete', () => {
-    const cya = new CheckYourAnswers();
+    const req = { journey: {} };
+    const res = {};
+    const cya = new CheckYourAnswers(req, res);
     const incompleteSection = { incomplete: true };
     const completeSection = { incomplete: false };
 
@@ -102,7 +110,9 @@ describe('steps/CheckYourAnswers', () => {
   });
 
   describe('#continueUrl', () => {
-    const cya = new CheckYourAnswers();
+    const req = { journey: {} };
+    const res = {};
+    const cya = new CheckYourAnswers(req, res);
     const incompleteSection = { incomplete: true, continueUrl: '/incomplete' };
     const completeSection = { incomplete: false, continueUrl: '/complete' };
 
