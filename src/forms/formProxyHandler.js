@@ -1,4 +1,4 @@
-const notProxiedFuncs = ['validate', 'store'];
+const notProxiedFuncs = ['validate', 'store', 'retrieve', 'parse'];
 const notProxiedGetters = ['errors', 'validated', 'valid'];
 const { defined } = require('../util/checks');
 
