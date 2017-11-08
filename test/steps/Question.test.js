@@ -16,12 +16,6 @@ describe('steps/Question', () => {
       return new class extends Question {}(req, res);
     };
 
-    it('expects form to be implemented', () => {
-      return expect(unimplementedQuestion)
-        .to.throw(NotImplemented)
-        .that.has.property('unimplemented').which.contains('form');
-    });
-
     it('expects next to be implemented', () => {
       return expect(unimplementedQuestion)
         .to.throw(NotImplemented)

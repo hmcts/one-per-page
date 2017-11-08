@@ -1,28 +1,22 @@
-const formProxyHandler = require('./formProxyHandler');
-
 const parseRequest = (req, res, next) => {
   req.fields = req.fields || {};
   res.locals = res.locals || {};
 
-  const form = req.currentStep.form;
-  if (typeof form === 'undefined') {
+  if (typeof req.currentStep.fields === 'undefined') {
     next();
     return;
   }
 
-  form.bind(req.currentStep);
-
   if (req.method === 'POST') {
-    form.parse(req);
-    form.validate();
+    req.currentStep.fields.parse(req);
+    req.currentStep.fields.validate();
   } else if (req.method === 'GET') {
-    form.retrieve(req);
+    req.currentStep.fields.retrieve(req);
   }
 
   // set accessors for fields
-  req.fields = new Proxy(form, formProxyHandler);
-  res.locals.fields = req.fields;
-  req.currentStep.fields = req.fields;
+  req.fields = req.currentStep.fields;
+  res.locals.fields = req.currentStep.fields;
 
   next();
 };
