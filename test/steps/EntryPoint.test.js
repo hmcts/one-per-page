@@ -5,7 +5,9 @@ const { goTo } = require('../../src/flow');
 
 describe('steps/EntryPoint', () => {
   it('expects #next to be implemented', () => {
-    const noNextDefined = () => new class extends EntryPoint {}();
+    const req = { journey: {} };
+    const res = {};
+    const noNextDefined = () => new class extends EntryPoint {}(req, res);
     expect(noNextDefined).to.throw(/EntryPoint must implement next/);
   });
 

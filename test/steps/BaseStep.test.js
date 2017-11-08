@@ -51,9 +51,11 @@ describe('steps/BaseStep', () => {
 
   describe('#router', () => {
     {
+      const req = { journey: {} };
+      const res = {};
       const step = new class extends BaseStep {
         handler() { /* intentionally empty */ }
-      }();
+      }(req, res);
 
       it('returns an express router', () => {
         expect(step.router).to.be.a('function');
@@ -128,46 +130,54 @@ describe('steps/BaseStep', () => {
 
   describe('#dirname', () => {
     it('returns the path to the file containing the step', () => {
+      const req = { journey: {} };
+      const res = {};
       const step = new class Foo extends BaseStep {
         handler() { /* intentionally blank */ }
-      }();
+      }(req, res);
       expect(step.dirname).to.eql(__dirname);
     });
   });
 
   describe('#path', () => {
     it('defaults to a slugged class name', () => {
+      const req = { journey: {} };
+      const res = {};
       const foo = new class Foo extends BaseStep {
         handler() { /* intentionally blank */ }
-      }();
+      }(req, res);
       expect(foo.path).to.eql('/foo');
 
       const fooBar = new class FooBar extends BaseStep {
         handler() { /* intentionally blank */ }
-      }();
+      }(req, res);
       expect(fooBar.path).to.eql('/foo-bar');
       const base = new class extends BaseStep {
         handler() { /* intentionally blank */ }
-      }();
+      }(req, res);
       expect(base.path).to.eql('/base-step');
     });
 
     it('is backwards compatible to old #url', () => {
+      const req = { journey: {} };
+      const res = {};
       const step = new class extends BaseStep {
         get url() {
           return '/test-step';
         }
         handler() { /* intentionally blank */ }
-      }();
+      }(req, res);
       expect(step.path).to.eql('/test-step');
     });
   });
 
   describe('#waitFor', () => {
     it('adds the given promise to the steps list of promises', () => {
+      const req = { journey: {} };
+      const res = {};
       const step = new class extends BaseStep {
         handler() { /* intentionally blank */ }
-      }();
+      }(req, res);
       const promise = new Promise(resolve => resolve('Done'));
       step.waitFor(promise);
       expect(step.promises).to.eql([promise]);
@@ -175,9 +185,11 @@ describe('steps/BaseStep', () => {
   });
 
   describe('#ready', () => {
+    const req = { journey: {} };
+    const res = {};
     const step = new class extends BaseStep {
       handler() { /* intentionally blank */ }
-    }();
+    }(req, res);
 
     it('resolves when the steps promises resolve', () => {
       const willResolve = new Promise(resolve => resolve('Done'));

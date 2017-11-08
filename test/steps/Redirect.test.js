@@ -5,7 +5,9 @@ const { goTo } = require('../../src/flow');
 
 describe('steps/Redirect', () => {
   it('expects #next to be implemented', () => {
-    const noNextDefined = () => new class extends Redirect {}();
+    const req = { journey: {} };
+    const res = {};
+    const noNextDefined = () => new class extends Redirect {}(req, res);
     expect(noNextDefined).to.throw(/Redirect must implement next/);
   });
 

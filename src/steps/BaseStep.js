@@ -8,14 +8,6 @@ const logging = require('@log4js-node/log4js-api');
 const { timeout } = require('../util/promises');
 const errorIfNotReady = require('../middleware/errorIfNotReady');
 
-const bindStepToReq = step => (req, res, next) => {
-  req.currentStep = step;
-  step.journey = req.journey;
-  step.req = req;
-  step.res = res;
-  next();
-};
-
 const MAX_WAIT_MS = 50;
 
 const findChildClassFilePath = step => {
@@ -28,11 +20,14 @@ const findChildClassFilePath = step => {
 };
 
 class BaseStep {
-  constructor() {
+  constructor(req, res) {
     expectImplemented(this, 'handler');
     if (notDefined(this.dirname)) {
       this.dirname = findChildClassFilePath(this);
     }
+    this.req = req;
+    this.res = res;
+    this.journey = req.journey;
 
     this.promises = [];
   }
@@ -74,7 +69,6 @@ class BaseStep {
     if (this._router) return this._router;
 
     this._router = expressRouter();
-    this._router.all(this.path, bindStepToReq(this));
     this.middleware.forEach(middleware => {
       this._router.all(this.path, middleware.bind(this));
     });
@@ -84,7 +78,8 @@ class BaseStep {
 
   static bind(app) {
     app.all(this.path, (req, res, next) => {
-      const instance = new this();
+      const instance = new this(req, res);
+      req.currentStep = instance;
       instance.router.handle(req, res, next);
     });
     const logger = logging.getLogger(this.name);

@@ -6,24 +6,20 @@ const formProxyHandler = require('../../forms/formProxyHandler');
 const { INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
 class CheckYourAnswers extends Page {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     this._sections = [];
   }
 
   handler(req, res) {
     const questions = Object.values(this.journey)
-      .map(Step => new Step())
+      .map(Step => new Step(req, res))
       .filter(step => step instanceof Question);
 
     Promise.all(
       questions.map(question => question
         .ready()
         .then(step => {
-          step.req = req;
-          step.res = res;
-          step.journey = req.journey;
-
           const form = step.form;
           form.bind(step);
           form.retrieve(req);
