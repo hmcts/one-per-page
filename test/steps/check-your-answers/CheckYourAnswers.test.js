@@ -13,29 +13,23 @@ describe('steps/CheckYourAnswers', () => {
 
   describe('GET', () => {
     it('renders an answer for each answered question in the journey', () => {
-      const nameStep = class extends Question {
+      const Name = class extends Question {
         get form() {
           return form(field('firstName'), field('lastName'));
-        }
-        get name() {
-          return 'Name';
         }
         next() {
           return this.journey.Gender;
         }
       };
-      const genderStep = class extends Question {
+      const Gender = class extends Question {
         get form() {
           return form(field('gender'));
-        }
-        get name() {
-          return 'Gender';
         }
         next() {
           return this.journey.CheckYourAnswers;
         }
       };
-      const journey = { Name: nameStep, Gender: genderStep, CheckYourAnswers };
+      const journey = { Name, Gender, CheckYourAnswers };
       const session = {
         Name: { firstName: 'Michael', lastName: 'Allen' },
         Gender: { gender: 'Male' }

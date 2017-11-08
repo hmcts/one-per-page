@@ -10,6 +10,10 @@ class EntryPoint extends Redirect {
     req.session.entryPoint = this.name;
     super.handler(req, res);
   }
+
+  static get type() {
+    return 'EntryPoint';
+  }
 }
 
 module.exports = EntryPoint;

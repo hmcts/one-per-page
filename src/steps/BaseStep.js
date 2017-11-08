@@ -85,6 +85,10 @@ class BaseStep {
     const logger = logging.getLogger(this.name);
     logger.info(`${this.name} registered to ${this.path}`);
   }
+
+  static get type() {
+    return 'BaseStep';
+  }
 }
 
 module.exports = BaseStep;
