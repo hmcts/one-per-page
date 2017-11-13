@@ -15,4 +15,12 @@ describe('flow/Conditional', () => {
       expect(redirector.redirect).to.not.be.called;
     });
   });
+
+  describe('#step', () => {
+    it('passes through to the the redirectors step function', () => {
+      const redirector = { step: sinon.stub() };
+      const conditional = new Conditional(redirector, () => false);
+      expect(conditional.step).to.eql(redirector.step);
+    });
+  });
 });

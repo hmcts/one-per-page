@@ -31,6 +31,11 @@ class Branch {
 
     findBranchThatPasses(this.branches).redirect(req, res);
   }
+
+  get step() {
+    const branch = this.branches.find(b => b.check());
+    return (branch || this.fallback).step;
+  }
 }
 
 module.exports = Branch;

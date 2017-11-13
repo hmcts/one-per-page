@@ -15,6 +15,10 @@ class Redirector {
   if(condition) {
     return new Conditional(this, condition);
   }
+
+  get step() {
+    return this.nextStep;
+  }
 }
 
 module.exports = Redirector;
