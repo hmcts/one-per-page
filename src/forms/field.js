@@ -29,14 +29,6 @@ const failOnFirstFailure = (field, validations) => {
 };
 
 
-const makeId = (field, step) => {
-  if (typeof step === 'undefined' || typeof step.name === 'undefined') {
-    return field.name;
-  }
-  return `${step.name}_${field.name}`;
-};
-
-
 class FieldDesriptor {
   constructor(name, fieldParser = nonEmptyTextParser) {
     this.parser = fieldParser;
@@ -130,4 +122,4 @@ class FieldDesriptor {
 
 const field = (name, parser) => new FieldDesriptor(name, parser);
 
-module.exports = { field, FieldDesriptor, makeId };
+module.exports = { field, FieldDesriptor };
