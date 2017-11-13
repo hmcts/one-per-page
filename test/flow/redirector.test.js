@@ -20,4 +20,12 @@ describe('flow/Redirector', () => {
       expect(fakeRes.redirect).calledWith(fakeStep.path);
     });
   });
+
+  describe('#step', () => {
+    it('returns the nextStep', () => {
+      const step = { path: '/foo' };
+      const redirector = new Redirector(step);
+      expect(redirector.step).to.eql(step);
+    });
+  });
 });

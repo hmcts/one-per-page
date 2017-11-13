@@ -65,4 +65,26 @@ describe('flow/Branch', () => {
       expect(fallback.redirect).calledOnce;
     });
   });
+
+  describe('#step', () => {
+    const willFail = new Conditional({ step: sinon.stub() }, () => false);
+    const willPass = new Conditional({ step: sinon.stub() }, () => true);
+    const fallback = new Redirector(sinon.stub());
+
+    beforeEach(() => {
+      willFail.step.reset();
+      willPass.step.reset();
+      fallback.step.reset();
+    });
+
+    it('returns the fallback.step if no conditionals pass', () => {
+      const step = new Branch(willFail, fallback).step;
+      expect(step).to.eql(fallback.step);
+    });
+
+    it('returns the step of the first conditional to pass', () => {
+      const step = new Branch(willFail, willPass, fallback).step;
+      expect(step).to.eql(willPass.step);
+    });
+  });
 });

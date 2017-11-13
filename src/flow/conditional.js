@@ -5,13 +5,20 @@ class Conditional {
   }
 
   redirect(req, res) {
-    if (this.condition()) {
+    if (this.check()) {
       this.redirector.redirect(req, res);
     }
   }
 
   check() {
-    return this.condition();
+    if (typeof this.condition === 'function') {
+      return this.condition();
+    }
+    return Boolean(this.condition);
+  }
+
+  get step() {
+    return this.redirector.step;
   }
 }
 
