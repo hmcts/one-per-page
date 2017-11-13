@@ -25,10 +25,10 @@ describe('forms/ref', () => {
           const r = new Reference(fakeStep, 'foo', textParser);
           const req = {
             currentStep: { name: 'OtherStep' },
-            session: { RefStep_foo: 'ref step' },
-            body: { OtherStep_foo: 'other step' }
+            session: { RefStep: { foo: 'ref step' } },
+            body: { OtherStep: { foo: 'other step' } }
           };
-          r[func](req);
+          r[func]({}, req);
           expect(r.value).to.eql('ref step');
         });
 
@@ -36,10 +36,10 @@ describe('forms/ref', () => {
           const r = new Reference(fakeStep, 'foo', textParser);
           const req = {
             currentStep: { name: 'OtherStep' },
-            session: { RefStep_foo: 'from session' },
-            body: { RefStep_foo: 'from body' }
+            session: { RefStep: { foo: 'from session' } },
+            body: { RefStep: { foo: 'from body' } }
           };
-          r[func](req);
+          r[func]({}, req);
           expect(r.value).to.eql('from session');
         });
       });

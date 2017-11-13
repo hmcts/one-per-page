@@ -20,7 +20,7 @@ class Form {
    * @return {list} fields - the parsed fields containing their values
    */
   parse(req) {
-    this.fields.forEach(field => field.parse(req.body || {}));
+    this.fields.forEach(field => field.parse(req.body || {}, req));
     return this;
   }
 
@@ -61,7 +61,7 @@ class Form {
       throw new Error('Form is not bound to a step');
     }
     const values = defaultIfUndefined(req.session[this.stepName], {});
-    this.fields.forEach(field => field.deserialize(values));
+    this.fields.forEach(field => field.deserialize(values, req));
     return this;
   }
 
