@@ -7,6 +7,7 @@ const { NotImplemented } = require('../../src/errors/expectImplemented');
 const { field, form } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
+const Joi = require('joi');
 
 describe('steps/Question', () => {
   {
@@ -148,17 +149,13 @@ describe('steps/Question', () => {
             );
           }
         };
-        const req = { journey: {} };
+        const req = {
+          journey: {},
+          session: { NameStep: { name: 'John' } }
+        };
         const res = {};
         const step = new NameStep(req, res);
-        const _form = step.form;
-        _form.bind(step);
-        _form.retrieve({
-          currentStep: step,
-          session: { NameStep: { name: 'John' } }
-        });
-        _form.validate();
-        step.fields = new Proxy(_form, formProxyHandler);
+        step.retrieve().validate();
 
         const _answers = step.answers();
         expect(_answers).to.be.an('object');
@@ -168,6 +165,86 @@ describe('steps/Question', () => {
         expect(_answers).to.have.property('answer', 'John');
         expect(_answers).to.have.property('section', section.default.id);
         expect(_answers).to.have.property('complete', true);
+      });
+    });
+  }
+
+  {
+    const NameStep = class extends Question {
+      static get path() {
+        return '/name';
+      }
+
+      get form() {
+        return form(
+          field('name').joi(Joi.string().required())
+        );
+      }
+
+      template() { /* intentionally blank */ }
+      next() { /* intentionally blank */ }
+    };
+
+    describe('#retrieve', () => {
+      it('calls fields.retrieve with the bound request', () => {
+        const req = {
+          journey: { NameStep },
+          session: { NameStep: { name: 'Michael' } }
+        };
+        const step = new NameStep(req, {});
+        step.retrieve();
+        expect(step.fields.name.value).to.eql('Michael');
+      });
+    });
+
+    describe('#parse', () => {
+      it('calls fields.parse with the bound request', () => {
+        const req = {
+          journey: { NameStep },
+          body: { name: 'Michael' }
+        };
+        const step = new NameStep(req, {});
+        step.parse();
+        expect(step.fields.name.value).to.eql('Michael');
+      });
+    });
+
+    describe('#store', () => {
+      it('calls fields.store with the bound request', () => {
+        const req = {
+          journey: { NameStep },
+          session: {}
+        };
+        const step = new NameStep(req, {});
+        step.fields.name.value = 'Michael';
+        step.store();
+        expect(req.session.NameStep.name).to.eql('Michael');
+      });
+    });
+
+    describe('#validate', () => {
+      it('validates the questions fields', () => {
+        const step = new NameStep({}, {});
+        step.fields.name.value = 'Michael';
+
+        expect(step.fields.validated).to.be.false;
+        step.validate();
+        expect(step.fields.validated).to.be.true;
+      });
+    });
+
+    describe('#valid', () => {
+      it('returns true if the questions fields are valid', () => {
+        const step = new NameStep({}, {});
+        step.fields.name.value = 'Michael';
+        step.validate();
+        expect(step.valid).to.be.true;
+      });
+
+      it('returns false if the questions fields are invalid', () => {
+        const step = new NameStep({}, {});
+        step.validate();
+        expect(step.valid).to.be.false;
       });
     });
   }
