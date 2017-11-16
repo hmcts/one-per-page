@@ -16,11 +16,11 @@ class Name extends Question {
       ),
       textField.ref(this.journey.RespondentTitle, 'husbandOrWife'),
       textField('respondentFirstName').joi(
-        this.content.error.respondentFirstName,
+        this.content.fields.respondentFirstName.required,
         Joi.string().required()
       ),
       textField('respondentLastName').joi(
-        this.content.error.respondentLastName,
+        this.content.fields.respondentLastName.required,
         Joi.string().required()
       )
     );
@@ -38,6 +38,7 @@ class Name extends Question {
       answer(this, {
         question: this.content.cya.petitioner.question,
         section: 'personal-details',
+        answer: `${this.fields.firstName.value} ${this.fields.lastName.value}`,
         value: {
           firstName: this.fields.firstName.value,
           lastName: this.fields.lastName.value
