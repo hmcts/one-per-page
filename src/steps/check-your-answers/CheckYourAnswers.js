@@ -1,26 +1,36 @@
 const Page = require('../Page');
 const { section } = require('./section');
-const { defined } = require('../../../src/util/checks');
+const { defined, ensureArray } = require('../../../src/util/checks');
 const Question = require('../Question');
+const walkTree = require('../../flow/walkTree');
 
 class CheckYourAnswers extends Page {
   constructor(req, res) {
     super(req, res);
     this._sections = [];
-    this.questions = Object.values(this.journey)
-      .filter(Step => Step.type === Question.type)
-      .map(Step => new Step(req, res));
+
+    if (defined(this.req.session) && defined(this.req.session.entryPoint)) {
+      const Entry = this.journey[this.req.session.entryPoint];
+
+      const steps = Object.keys(this.journey)
+        .filter(name => name !== this.name)
+        .map(name => this.journey[name])
+        .map(Step => new Step(req, res))
+        .reduce((obj, step) => Object.assign(obj, { [step.name]: step }), {});
+      steps[this.name] = this;
+
+      this.questions = walkTree(steps[Entry.name], steps)
+        .filter(step => step instanceof Question);
+    } else {
+      this.questions = [];
+    }
 
     this.questions.forEach(step => this.waitFor(step.ready()));
   }
 
   handler(req, res) {
     this.answers = this.questions
-      .map(step => {
-        step.fields.retrieve(req);
-        const answerOrArr = step.answers();
-        return Array.isArray(answerOrArr) ? answerOrArr : [answerOrArr];
-      })
+      .map(step => ensureArray(step.answers()))
       .reduceRight((left, right) => [...left, ...right], []);
     this._sections = [
       ...this.sections().map(s => s.filterAnswers(this.answers)),
