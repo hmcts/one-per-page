@@ -79,9 +79,6 @@ class Question extends Page {
   }
 
   get valid() {
-    if (!this.fields.validated) {
-      this.fields.validate();
-    }
     return this.fields.valid;
   }
 }
