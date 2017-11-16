@@ -1,6 +1,8 @@
 const { expect } = require('../../util/chai');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
+const answer = require('../../../src/steps/check-your-answers/answer');
 const { form, field } = require('../../../src/forms');
+const { goTo } = require('../../../src/flow');
 const { testStep } = require('../../util/supertest');
 const Question = require('../../../src/steps/Question');
 
@@ -18,19 +20,23 @@ describe('steps/CheckYourAnswers', () => {
           return form(field('firstName'), field('lastName'));
         }
         next() {
-          return this.journey.Gender;
+          return goTo(this.journey.Gender);
         }
       };
       const Gender = class extends Question {
         get form() {
           return form(field('gender'));
         }
+        answers() {
+          return answer(this, { question: 'Your gender' });
+        }
         next() {
-          return this.journey.CheckYourAnswers;
+          return goTo(this.journey.CheckYourAnswers);
         }
       };
       const journey = { Name, Gender, CheckYourAnswers };
       const session = {
+        entryPoint: Name.name,
         Name: { firstName: 'Michael', lastName: 'Allen' },
         Gender: { gender: 'Male' }
       };
@@ -44,7 +50,9 @@ describe('steps/CheckYourAnswers', () => {
         .html($ => {
           return Promise.all([
             expect($('#Name .question')).has.$text('Name'),
-            expect($('#Name .answer')).has.$text('Michael Allen')
+            expect($('#Name .answer')).has.$text('Michael Allen'),
+            expect($('#Gender .question')).has.$text('Your gender'),
+            expect($('#Gender .answer')).has.$text('Male')
           ]);
         });
     });
