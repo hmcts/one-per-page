@@ -1,5 +1,6 @@
 const { Question, goTo } = require('@hmcts/one-per-page');
 const { form, textField } = require('@hmcts/one-per-page/forms');
+const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 const Joi = require('joi');
 
 class RespondentTitle extends Question {
@@ -18,7 +19,7 @@ class RespondentTitle extends Question {
   }
 
   answers() {
-    return [];
+    return answer(this, { hide: true });
   }
 
   next() {
