@@ -8,7 +8,6 @@ const Redirect = require('./steps/Redirect');
 const journey = require('./Journey');
 
 const requireSession = require('./session/requireSession');
-const parseRequest = require('./forms/parseRequest');
 
 const { field, form, checkboxField } = require('./forms');
 
@@ -22,7 +21,7 @@ module.exports = {
   Page,
   Question,
   journey,
-  middleware: { requireSession, parseRequest },
+  middleware: { requireSession },
   field,
   checkboxField,
   form,

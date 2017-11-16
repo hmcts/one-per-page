@@ -1,6 +1,5 @@
 const Page = require('./Page');
 const requireSession = require('./../session/requireSession');
-const parseRequest = require('../forms/parseRequest');
 const bodyParser = require('body-parser');
 const { expectImplemented } = require('../errors/expectImplemented');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
@@ -22,20 +21,22 @@ class Question extends Page {
     return [
       ...super.middleware,
       bodyParser.urlencoded({ extended: true }),
-      requireSession,
-      parseRequest
+      requireSession
     ];
   }
 
   handler(req, res) {
     if (req.method === 'GET') {
+      this.retrieve();
       super.handler(req, res);
     } else if (req.method === 'POST') {
-      if (this.fields.valid) {
-        this.fields.store(req);
+      this.parse().validate();
+
+      if (this.valid) {
+        this.store();
         this.next().redirect(req, res);
       } else {
-        res.render(this.template);
+        res.render(this.template, this.locals);
       }
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
@@ -55,6 +56,33 @@ class Question extends Page {
     logger.info('No form defined. Using default empty form.');
 
     return form();
+  }
+
+  retrieve() {
+    this.fields.retrieve(this.req);
+    return this;
+  }
+
+  parse() {
+    this.fields.parse(this.req);
+    return this;
+  }
+
+  store() {
+    this.fields.store(this.req);
+    return this;
+  }
+
+  validate() {
+    this.fields.validate();
+    return this;
+  }
+
+  get valid() {
+    if (!this.fields.validated) {
+      this.fields.validate();
+    }
+    return this.fields.valid;
   }
 }
 
