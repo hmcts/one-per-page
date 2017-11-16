@@ -1,5 +1,5 @@
 const { expect } = require('./chai');
-const { notDefined, defined } = require('../../src/util/checks');
+const { notDefined, defined, ensureArray } = require('../../src/util/checks');
 
 describe('util/checks', () => {
   describe('#notDefined', () => {
@@ -51,6 +51,18 @@ describe('util/checks', () => {
 
     it('returns true if function', () => {
       expect(defined(() => null)).to.be.true;
+    });
+  });
+
+  describe('#ensureArray', () => {
+    const obj = 'myObj';
+
+    it('returns the obj wrapped in an array', () => {
+      expect(ensureArray(obj)).to.eql([obj]);
+    });
+
+    it('returns the given array', () => {
+      expect(ensureArray([obj])).to.eql([obj]);
     });
   });
 });
