@@ -91,6 +91,8 @@ const getId = (step, { id }) => {
   return 'no-id';
 };
 
+const getHide = ({ hide = false }) => hide;
+
 const answer = (step, args = {}) => {
   return {
     id: getId(step, args),
@@ -99,7 +101,8 @@ const answer = (step, args = {}) => {
     answer: getAnswer(step, args),
     url: getUrl(step, args),
     value: getValue(step, args),
-    complete: getComplete(step)
+    complete: getComplete(step),
+    hide: getHide(args)
   };
 };
 

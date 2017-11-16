@@ -13,7 +13,7 @@ class Section {
   }
 
   get completedAnswers() {
-    return this.answers.filter(answer => answer.complete);
+    return this.answers.filter(answer => answer.complete && !answer.hide);
   }
 
   get incomplete() {
@@ -21,7 +21,7 @@ class Section {
   }
 
   get atLeast1Completed() {
-    return this.answers.some(answer => answer.complete);
+    return this.answers.some(answer => answer.complete && !answer.hide);
   }
 
   get continueUrl() {
