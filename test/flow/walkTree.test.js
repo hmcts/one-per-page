@@ -32,7 +32,7 @@ describe('flow/walkTree', () => {
     const req = { journey, session };
     const res = {};
 
-    it('returns instances of the steps in the order of the flow', () => {
+    it('returns instances of the questions in the order of the flow', () => {
       const steps = {
         Entry: new Entry(req, res),
         Name: new Name(req, res),
@@ -41,7 +41,7 @@ describe('flow/walkTree', () => {
 
       return steps.CheckAnswers.ready().then(() => {
         const names = walkTree(steps.Entry, steps).map(s => s.name);
-        expect(names).to.eql([Entry.name, Name.name, CheckAnswers.name]);
+        expect(names).to.eql([Name.name, CheckAnswers.name]);
       });
     });
 
@@ -54,7 +54,6 @@ describe('flow/walkTree', () => {
 
       return steps.CheckAnswers.ready().then(() => {
         const valids = walkTree(steps.Entry, steps)
-          .filter(step => step instanceof Question)
           .map(step => step.fields.valid);
         expect(valids).to.eql([true, true]);
       });
@@ -93,7 +92,7 @@ describe('flow/walkTree', () => {
 
       return steps.CheckAnswers.ready().then(() => {
         const names = walkTree(steps.Entry, steps).map(s => s.name);
-        expect(names).to.eql([Entry.name, Name.name]);
+        expect(names).to.eql([Name.name]);
       });
     });
   });
@@ -146,9 +145,7 @@ describe('flow/walkTree', () => {
 
       return steps.CheckAnswers.ready().then(() => {
         const names = walkTree(steps.Entry, steps).map(s => s.name);
-        expect(names).to.eql(
-          [Entry.name, Branch.name, A.name, CheckAnswers.name]
-        );
+        expect(names).to.eql([Branch.name, A.name, CheckAnswers.name]);
       });
     });
   });

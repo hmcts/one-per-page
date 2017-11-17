@@ -1,10 +1,11 @@
-const Page = require('../Page');
+const Question = require('../Question');
 const { section } = require('./section');
 const { defined, ensureArray } = require('../../../src/util/checks');
-const Question = require('../Question');
-const walkTree = require('../../flow/walkTree');
+const { walkTree, stop } = require('../../flow');
+const { form, boolField } = require('../../forms');
+const Joi = require('joi');
 
-class CheckYourAnswers extends Page {
+class CheckYourAnswers extends Question {
   constructor(req, res) {
     super(req, res);
     this._sections = [];
@@ -28,6 +29,23 @@ class CheckYourAnswers extends Page {
     this.questions.forEach(step => this.waitFor(step.ready()));
   }
 
+  get errorMessage() {
+    return 'Confirm that you agree to the statement of truth';
+  }
+
+  get form() {
+    return form(
+      boolField('statementOfTruth').joi(
+        this.errorMessage,
+        Joi.required().valid(true)
+      )
+    );
+  }
+
+  next() {
+    return stop(this);
+  }
+
   handler(req, res) {
     this.answers = this.questions
       .map(step => ensureArray(step.answers()))
@@ -44,12 +62,17 @@ class CheckYourAnswers extends Page {
     return [];
   }
 
-  get noCompletedQuestions() {
-    return this._sections.every(s => !s.atLeast1Completed);
+  answers() {
+    return [];
   }
 
   get incomplete() {
     return this._sections.some(s => s.incomplete);
+  }
+
+  get complete() {
+    const hasSections = this._sections.length > 0;
+    return hasSections && !this.incomplete;
   }
 
   get continueUrl() {

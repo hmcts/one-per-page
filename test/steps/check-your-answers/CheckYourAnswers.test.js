@@ -67,25 +67,26 @@ describe('steps/CheckYourAnswers', () => {
     });
   });
 
-  describe('#noCompletedQuestions', () => {
+  describe('#complete', () => {
     const req = { journey: {} };
     const res = {};
     const cya = new CheckYourAnswers(req, res);
-    const incompleteSection = { atLeast1Completed: true };
-    const unansweredSection = { atLeast1Completed: false };
+    const completeSection = { incomplete: false };
+    const incompleteSection = { incomplete: true };
 
-    it('returns true if no sections', () => {
-      expect(cya.noCompletedQuestions).to.be.true;
+    it('returns false if no sections', () => {
+      // At least 1 section is expected in a journey
+      expect(cya.complete).to.be.false;
     });
 
-    it('returns false if a section has 1 completed question', () => {
-      cya._sections = [incompleteSection];
-      expect(cya.noCompletedQuestions).to.be.false;
+    it('returns true if all sections are complete', () => {
+      cya._sections = [completeSection];
+      expect(cya.complete).to.be.true;
     });
 
-    it('returns true if no sections have 1 completed question', () => {
-      cya._sections = [unansweredSection];
-      expect(cya.noCompletedQuestions).to.be.true;
+    it('returns false if any section is incomplete', () => {
+      cya._sections = [completeSection, incompleteSection];
+      expect(cya.complete).to.be.false;
     });
   });
 
@@ -131,6 +132,18 @@ describe('steps/CheckYourAnswers', () => {
     it('returns the continueUrl of the first incomplete section', () => {
       cya._sections = [completeSection, incompleteSection];
       expect(cya.continueUrl).to.eql(incompleteSection.continueUrl);
+    });
+  });
+
+  describe('#valid', () => {
+    const req = { journey: {} };
+    const res = {};
+
+    it('returns false if no statementOfTruth set', () => {
+      return new CheckYourAnswers(req, res).ready().then(cya => {
+        cya.validate();
+        expect(cya.valid).to.be.false;
+      });
     });
   });
 });

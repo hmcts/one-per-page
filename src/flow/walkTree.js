@@ -7,9 +7,8 @@ const walkTree = (start, steps) => {
   const results = [];
   const numberOfSteps = Object.keys(steps).length;
   while (iterations <= numberOfSteps) {
-    results.push(current);
-
     if (current instanceof Question) {
+      results.push(current);
       current.retrieve().validate();
 
       if (!current.valid) {
