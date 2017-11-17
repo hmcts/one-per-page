@@ -26,7 +26,8 @@ describe('flow/walkTree', () => {
     const journey = { Entry, Name, CheckAnswers };
     const session = {
       entryPoint: Entry.name,
-      Name: { firstName: 'Michael', lastName: 'Allen' }
+      Name: { firstName: 'Michael', lastName: 'Allen' },
+      CheckAnswers: { statementOfTruth: true }
     };
     const req = { journey, session };
     const res = {};
@@ -55,7 +56,7 @@ describe('flow/walkTree', () => {
         const valids = walkTree(steps.Entry, steps)
           .filter(step => step instanceof Question)
           .map(step => step.fields.valid);
-        expect(valids).to.eql([true]);
+        expect(valids).to.eql([true, true]);
       });
     });
   });
