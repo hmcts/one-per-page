@@ -1,5 +1,5 @@
 const Question = require('../steps/Question');
-const { Stop } = require('./stop');
+const Stop = require('./stop');
 
 const walkTree = (start, steps) => {
   let current = start;

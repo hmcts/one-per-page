@@ -15,6 +15,4 @@ class Stop {
   }
 }
 
-const stop = step => new Stop(step);
-
-module.exports = { stop, Stop };
+module.exports = Stop;
