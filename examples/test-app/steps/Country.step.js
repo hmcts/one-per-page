@@ -5,8 +5,11 @@ const Joi = require('joi');
 
 
 const titleise = string => {
+  if (typeof string === 'undefined') {
+    return '';
+  }
   if (string.length < 1) {
-    return string;
+    return string.toUpperCase();
   }
   const firstChar = string[0].toUpperCase();
   const rest = string.slice(1)
