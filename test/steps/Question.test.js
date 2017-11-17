@@ -10,19 +10,15 @@ const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const Joi = require('joi');
 
 describe('steps/Question', () => {
-  {
-    const unimplementedQuestion = () => {
-      const req = { journey: {} };
-      const res = {};
-      return new class extends Question {}(req, res);
-    };
+  describe('#next', () => {
+    const req = { journey: {} };
+    const res = {};
+    const step = new class extends Question {}(req, res);
 
     it('expects next to be implemented', () => {
-      return expect(unimplementedQuestion)
-        .to.throw(NotImplemented)
-        .that.has.property('unimplemented').which.contains('next');
+      return expect(() => step.next()).to.throw(/No next\(\) defined/);
     });
-  }
+  });
 
   {
     const SimpleQuestion = class extends Question {

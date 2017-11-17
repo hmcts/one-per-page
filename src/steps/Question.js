@@ -58,6 +58,13 @@ class Question extends Page {
     return form();
   }
 
+  next() {
+    const logger = logging.getLogger(this.name);
+    const message = `No next() defined for ${this.name}`;
+    logger.error(message);
+    throw new Error(message);
+  }
+
   retrieve() {
     this.fields.retrieve(this.req);
     return this;
