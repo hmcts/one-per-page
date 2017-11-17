@@ -3,7 +3,8 @@ const { field } = require('../../src/forms/field');
 const {
   arrayParser,
   textParser,
-  nonEmptyTextParser
+  nonEmptyTextParser,
+  boolParser
 } = require('../../src/forms/fieldParsers');
 
 describe('forms/fieldParsers', () => {
@@ -44,6 +45,31 @@ describe('forms/fieldParsers', () => {
       deserialize: [
         { to: undefined },
         { to: 'value', from: 'value' }
+      ]
+    }, {
+      parser: boolParser,
+      name: 'boolParser',
+      parse: [
+        { to: undefined },
+        { from: 'nonsense', to: undefined },
+        { from: {}, to: undefined },
+        { from: [], to: undefined },
+        { from: true, to: true },
+        { from: false, to: false },
+        { from: 1, to: true },
+        { from: 0, to: false },
+        { from: 'true', to: true },
+        { from: 'false', to: false },
+        { from: 'yes', to: true },
+        { from: 'no', to: false },
+        { from: '1', to: true },
+        { from: '0', to: false },
+        { from: 'YES', to: true },
+        { from: 'NO', to: false }
+      ],
+      deserialize: [
+        { to: undefined },
+        { to: true, from: true }
       ]
     }
   ];
