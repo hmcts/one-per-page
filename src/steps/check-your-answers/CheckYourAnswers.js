@@ -47,12 +47,12 @@ class CheckYourAnswers extends Question {
   }
 
   handler(req, res) {
-    this.answers = this.questions
+    this._answers = this.questions
       .map(step => ensureArray(step.answers()))
-      .reduceRight((left, right) => [...left, ...right], []);
+      .reduce((left, right) => [...left, ...right], []);
     this._sections = [
-      ...this.sections().map(s => s.filterAnswers(this.answers)),
-      section.default.filterAnswers(this.answers)
+      ...this.sections().map(s => s.filterAnswers(this._answers)),
+      section.default.filterAnswers(this._answers)
     ];
 
     super.handler(req, res);
