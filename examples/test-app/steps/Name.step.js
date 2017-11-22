@@ -14,7 +14,7 @@ class Name extends Question {
         this.content.fields.lastName.required,
         Joi.string().required()
       ),
-      textField.ref(this.journey.RespondentTitle, 'husbandOrWife'),
+      textField.ref(this.journey.steps.RespondentTitle, 'husbandOrWife'),
       textField('respondentFirstName').joi(
         this.content.fields.respondentFirstName.required,
         Joi.string().required()
@@ -56,7 +56,7 @@ class Name extends Question {
   }
 
   next() {
-    return goTo(this.journey.Contact);
+    return goTo(this.journey.steps.Contact);
   }
 }
 

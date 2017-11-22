@@ -17,7 +17,7 @@ class Contact extends Question {
   }
 
   next() {
-    return goTo(this.journey.CheckYourAnswers);
+    return goTo(this.journey.steps.CheckYourAnswers);
   }
 }
 
