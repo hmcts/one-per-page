@@ -38,8 +38,8 @@ class Country extends Question {
       this.fields.country.value === 'northern-ireland';
 
     return branch(
-      goTo(this.journey.ExitNorthernIreland).if(livesInNI),
-      goTo(this.journey.RespondentTitle)
+      goTo(this.journey.steps.ExitNorthernIreland).if(livesInNI),
+      goTo(this.journey.steps.RespondentTitle)
     );
   }
 

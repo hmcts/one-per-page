@@ -23,7 +23,7 @@ class RespondentTitle extends Question {
   }
 
   next() {
-    return goTo(this.journey.Name);
+    return goTo(this.journey.steps.Name);
   }
 }
 
