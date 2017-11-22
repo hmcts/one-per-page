@@ -20,7 +20,7 @@ describe('steps/CheckYourAnswers', () => {
           return form(field('firstName'), field('lastName'));
         }
         next() {
-          return goTo(this.journey.Gender);
+          return goTo(this.journey.steps.Gender);
         }
       };
       const Gender = class extends Question {
@@ -31,10 +31,10 @@ describe('steps/CheckYourAnswers', () => {
           return answer(this, { question: 'Your gender' });
         }
         next() {
-          return goTo(this.journey.CheckYourAnswers);
+          return goTo(this.journey.steps.CheckYourAnswers);
         }
       };
-      const journey = { Name, Gender, CheckYourAnswers };
+      const steps = { Name, Gender, CheckYourAnswers };
       const session = {
         entryPoint: Name.name,
         Name: { firstName: 'Michael', lastName: 'Allen' },
@@ -44,7 +44,7 @@ describe('steps/CheckYourAnswers', () => {
       return testStep(CheckYourAnswers)
         .withSession(session)
         .withSetup(req => {
-          req.journey = journey;
+          req.journey.steps = steps;
         })
         .get()
         .html($ => {

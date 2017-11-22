@@ -78,7 +78,7 @@ class BaseStep {
 
   static bind(app) {
     app.all(this.path, (req, res, next) => {
-      const instance = new this(req, res);
+      const instance = req.journey.instance(this);
       req.currentStep = instance;
       instance.router.handle(req, res, next);
     });

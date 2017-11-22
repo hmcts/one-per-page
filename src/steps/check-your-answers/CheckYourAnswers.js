@@ -9,24 +9,23 @@ class CheckYourAnswers extends Question {
   constructor(req, res) {
     super(req, res);
     this._sections = [];
+  }
 
+  get middleware() {
+    return [this.collectQuestions, ...super.middleware];
+  }
+
+  collectQuestions(req, res, next) {
     if (defined(this.req.session) && defined(this.req.session.entryPoint)) {
-      const Entry = this.journey[this.req.session.entryPoint];
+      const Entry = this.journey.steps[this.req.session.entryPoint];
 
-      const steps = Object.keys(this.journey)
-        .filter(name => name !== this.name)
-        .map(name => this.journey[name])
-        .map(Step => new Step(req, res))
-        .reduce((obj, step) => Object.assign(obj, { [step.name]: step }), {});
-      steps[this.name] = this;
-
-      this.questions = walkTree(steps[Entry.name], steps)
+      this.questions = walkTree(this.journey.instance(Entry), this.journey)
         .filter(step => step instanceof Question);
     } else {
       this.questions = [];
     }
-
     this.questions.forEach(step => this.waitFor(step.ready()));
+    next();
   }
 
   get errorMessage() {

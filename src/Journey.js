@@ -46,17 +46,38 @@ const options = userOpts => {
   };
 };
 
+class RequestBoundJourney {
+  constructor(req, res, steps, settings) {
+    this.req = req;
+    req.journey = this;
+    this.res = res;
+    this.steps = steps;
+    this.settings = settings;
+    this.instances = {};
+  }
+
+  instance(Step) {
+    if (defined(this.instances[Step.name])) {
+      return this.instances[Step.name];
+    }
+    this.instances[Step.name] = new Step(this.req, this.res);
+    return this.instances[Step.name];
+  }
+}
+
 const journey = (app, userOpts) => {
   const opts = options(userOpts);
+  const steps = opts.steps
+    .map(step => {
+      return { [step.name]: step };
+    })
+    .reduce((left, right) => Object.assign(left, right), {});
 
   const setupMiddleware = (req, res, next) => {
-    req.journey = req.journey || {};
+    req.journey = new RequestBoundJourney(req, res, steps, opts);
     if (typeof opts.noSessionHandler !== 'undefined') {
       req.journey.noSessionHandler = opts.noSessionHandler;
     }
-    opts.steps.forEach(step => {
-      req.journey[step.name] = step;
-    });
     next();
   };
 
@@ -68,5 +89,7 @@ const journey = (app, userOpts) => {
 
   return app;
 };
+
+journey.RequestBoundJourney = RequestBoundJourney;
 
 module.exports = journey;

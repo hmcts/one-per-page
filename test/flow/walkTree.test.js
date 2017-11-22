@@ -6,12 +6,13 @@ const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAn
 const { branch, goTo } = require('../../src/flow');
 const { textField, form } = require('../../src/forms');
 const Joi = require('joi');
+const { RequestBoundJourney } = require('../../src/Journey');
 
 describe('flow/walkTree', () => {
   describe('Simple complete journey', () => {
     class Entry extends EntryPoint {
       next() {
-        return goTo(this.journey.Name);
+        return goTo(this.journey.steps.Name);
       }
     }
     class Name extends Question {
@@ -19,51 +20,41 @@ describe('flow/walkTree', () => {
         return form(textField('firstName'), textField('lastName'));
       }
       next() {
-        return goTo(this.journey.CheckAnswers);
+        return goTo(this.journey.steps.CheckAnswers);
       }
     }
     class CheckAnswers extends CheckYourAnswers {}
-    const journey = { Entry, Name, CheckAnswers };
+    const steps = { Entry, Name, CheckAnswers };
     const session = {
       entryPoint: Entry.name,
       Name: { firstName: 'Michael', lastName: 'Allen' },
       CheckAnswers: { statementOfTruth: true }
     };
-    const req = { journey, session };
     const res = {};
 
     it('returns instances of the questions in the order of the flow', () => {
-      const steps = {
-        Entry: new Entry(req, res),
-        Name: new Name(req, res),
-        CheckAnswers: new CheckAnswers(req, res)
-      };
-
-      return steps.CheckAnswers.ready().then(() => {
-        const names = walkTree(steps.Entry, steps).map(s => s.name);
-        expect(names).to.eql([Name.name, CheckAnswers.name]);
-      });
+      const req = { session };
+      const journey = new RequestBoundJourney(req, res, steps, {});
+      req.journey = journey;
+      const names = walkTree(journey.instance(Entry), journey)
+        .map(s => s.name);
+      expect(names).to.eql([Name.name, CheckAnswers.name]);
     });
 
     it('retrieves and validates any questions', () => {
-      const steps = {
-        Entry: new Entry(req, res),
-        Name: new Name(req, res),
-        CheckAnswers: new CheckAnswers(req, res)
-      };
-
-      return steps.CheckAnswers.ready().then(() => {
-        const valids = walkTree(steps.Entry, steps)
-          .map(step => step.fields.valid);
-        expect(valids).to.eql([true, true]);
-      });
+      const req = { session };
+      const journey = new RequestBoundJourney(req, res, steps, {});
+      req.journey = journey;
+      const valids = walkTree(journey.instance(Entry), journey)
+        .map(step => step.fields.valid);
+      expect(valids).to.eql([true, true]);
     });
   });
 
   describe('Simple incomplete journey', () => {
     class Entry extends EntryPoint {
       next() {
-        return goTo(this.journey.Name);
+        return goTo(this.journey.steps.Name);
       }
     }
     class Name extends Question {
@@ -71,36 +62,31 @@ describe('flow/walkTree', () => {
         return form(textField('notPresent').joi(Joi.string().required()));
       }
       next() {
-        return goTo(this.journey.CheckAnswers);
+        return goTo(this.journey.steps.CheckAnswers);
       }
     }
     class CheckAnswers extends CheckYourAnswers {}
-    const journey = { Entry, Name, CheckAnswers };
+    const steps = { Entry, Name, CheckAnswers };
     const session = {
       entryPoint: Entry.name,
       Name: {}
     };
-    const req = { journey, session };
     const res = {};
 
     it('stops on the first incomplete step', () => {
-      const steps = {
-        Entry: new Entry(req, res),
-        Name: new Name(req, res),
-        CheckAnswers: new CheckAnswers(req, res)
-      };
+      const req = { session };
+      const journey = new RequestBoundJourney(req, res, steps, {});
+      req.journey = journey;
 
-      return steps.CheckAnswers.ready().then(() => {
-        const names = walkTree(steps.Entry, steps).map(s => s.name);
-        expect(names).to.eql([Name.name]);
-      });
+      const names = walkTree(journey.instance(Entry), journey).map(s => s.name);
+      expect(names).to.eql([Name.name]);
     });
   });
 
   describe('Branching journey', () => {
     class Entry extends EntryPoint {
       next() {
-        return goTo(this.journey.Branch);
+        return goTo(this.journey.steps.Branch);
       }
     }
     class Branch extends Question {
@@ -108,45 +94,40 @@ describe('flow/walkTree', () => {
         return form(textField('branchControl'));
       }
       next() {
+        const isA = this.fields.branchControl.value === 'A';
+        const isB = this.fields.branchControl.value === 'B';
         return branch(
-          goTo(this.journey.A).if(this.fields.branchControl.value === 'A'),
-          goTo(this.journey.B).if(this.fields.branchControl.value === 'B'),
-          goTo(this.journey.CheckAnswers)
+          goTo(this.journey.steps.A).if(isA),
+          goTo(this.journey.steps.B).if(isB),
+          goTo(this.journey.steps.CheckAnswers)
         );
       }
     }
     class B extends Question {
       next() {
-        return goTo(this.journey.CheckAnswers);
+        return goTo(this.journey.steps.CheckAnswers);
       }
     }
     class A extends Question {
       next() {
-        return goTo(this.journey.CheckAnswers);
+        return goTo(this.journey.steps.CheckAnswers);
       }
     }
     class CheckAnswers extends CheckYourAnswers {}
-    const journey = { Entry, A, B, Branch, CheckAnswers };
+    const steps = { Entry, A, B, Branch, CheckAnswers };
     const session = {
       entryPoint: Entry.name,
       Branch: { branchControl: 'A' }
     };
-    const req = { journey, session };
     const res = {};
 
     it('skips steps that are not accessed by the flow', () => {
-      const steps = {
-        Entry: new Entry(req, res),
-        Branch: new Branch(req, res),
-        A: new A(req, res),
-        B: new B(req, res),
-        CheckAnswers: new CheckAnswers(req, res)
-      };
+      const req = { session };
+      const journey = new RequestBoundJourney(req, res, steps, {});
+      req.journey = journey;
 
-      return steps.CheckAnswers.ready().then(() => {
-        const names = walkTree(steps.Entry, steps).map(s => s.name);
-        expect(names).to.eql([Branch.name, A.name, CheckAnswers.name]);
-      });
+      const names = walkTree(journey.instance(Entry), journey).map(s => s.name);
+      expect(names).to.eql([Branch.name, A.name, CheckAnswers.name]);
     });
   });
 
@@ -154,78 +135,65 @@ describe('flow/walkTree', () => {
     {
       class Entry extends EntryPoint {
         next() {
-          return goTo(this.journey.A);
+          return goTo(this.journey.steps.A);
         }
       }
       class A extends Question {
         next() {
-          return goTo(this.journey.B);
+          return goTo(this.journey.steps.B);
         }
       }
       class B extends Question {
         next() {
-          return goTo(this.journey.A);
+          return goTo(this.journey.steps.A);
         }
       }
       class CheckAnswers extends CheckYourAnswers {}
-      const journey = { Entry, A, B, CheckAnswers };
-      const req = { journey, session: {} };
+      const steps = { Entry, A, B, CheckAnswers };
       const res = {};
 
       it('protects against infinite loops', () => {
-        const steps = {
-          Entry: new Entry(req, res),
-          A: new A(req, res),
-          B: new B(req, res),
-          CheckAnswers: new CheckAnswers(req, res)
-        };
+        const req = { session: {} };
+        const journey = new RequestBoundJourney(req, res, steps, {});
+        req.journey = journey;
 
-        return steps.CheckAnswers.ready().then(() => {
-          const tightLoop = () => walkTree(steps.Entry, steps);
-          expect(tightLoop).to.throw(/possible infinite loop/);
-        });
+        const tightLoop = () => walkTree(journey.instance(Entry), journey);
+        expect(tightLoop).to.throw(/possible infinite loop/);
       });
     }
 
     {
       class Entry extends EntryPoint {
         next() {
-          return goTo(this.journey.A);
+          return goTo(this.journey.steps.A);
         }
       }
       class A extends Question {
         next() {
-          return goTo(this.journey.B);
+          return goTo(this.journey.steps.B);
         }
       }
       class B extends Question {
         next() {
-          return goTo(this.journey.C);
+          return goTo(this.journey.steps.C);
         }
       }
       class C extends Question {
         next() {
-          return goTo(this.journey.A);
+          return goTo(this.journey.steps.A);
         }
       }
       class CheckAnswers extends CheckYourAnswers {}
-      const journey = { Entry, A, B, C, CheckAnswers };
-      const req = { journey, session: {} };
+      const steps = { Entry, A, B, C, CheckAnswers };
       const res = {};
 
       it('protects against infinite loops', () => {
-        const steps = {
-          Entry: new Entry(req, res),
-          A: new A(req, res),
-          B: new B(req, res),
-          C: new C(req, res),
-          CheckAnswers: new CheckAnswers(req, res)
-        };
+        const req = { session: {} };
+        const journey = new RequestBoundJourney(req, res, steps, {});
+        req.journey = journey;
 
-        return steps.CheckAnswers.ready().then(() => {
-          const looseLoop = () => walkTree(steps.Entry, steps);
-          expect(looseLoop).to.throw(/possible infinite loop/);
-        });
+        const looseLoop = () => walkTree(journey.instance(Entry), journey);
+        expect(looseLoop).to.throw(/possible infinite loop/);
       });
     }
   });

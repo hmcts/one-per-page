@@ -1,11 +1,11 @@
 const Question = require('../steps/Question');
 const Stop = require('./stop');
 
-const walkTree = (start, steps) => {
+const walkTree = (start, journey) => {
   let current = start;
   let iterations = 0;
   const results = [];
-  const numberOfSteps = Object.keys(steps).length;
+  const numberOfSteps = Object.keys(journey.steps).length;
   while (iterations <= numberOfSteps) {
     if (current instanceof Question) {
       results.push(current);
@@ -21,8 +21,8 @@ const walkTree = (start, steps) => {
     if (current.next() instanceof Stop) {
       return results;
     }
-    const next = current.next().step.name;
-    current = steps[next];
+    const nextStep = current.next().step;
+    current = journey.instance(nextStep);
 
     iterations += 1;
   }
