@@ -5,13 +5,11 @@ const EntryPoint = require('./steps/EntryPoint');
 const ExitPoint = require('./steps/ExitPoint');
 const Redirect = require('./steps/Redirect');
 
-const { journey } = require('./journey');
-
 const requireSession = require('./session/requireSession');
 
 const { field, form, checkboxField } = require('./forms');
 
-const { goTo, branch } = require('./flow');
+const { goTo, branch, journey } = require('./flow');
 
 module.exports = {
   EntryPoint,

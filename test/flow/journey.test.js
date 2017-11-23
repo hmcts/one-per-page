@@ -1,5 +1,5 @@
 const proxyquire = require('proxyquire');
-const { journey } = require('../../src/journey');
+const { journey } = require('../../src/flow');
 const { supertest, testApp } = require('../util/supertest');
 const { OK } = require('http-status-codes');
 const { expect, sinon } = require('../util/chai');
@@ -84,7 +84,7 @@ describe('journey/journey', () => {
     beforeEach(() => {
       spy = sinon.spy(session);
       stubbedJourney = proxyquire(
-        '../../src/journey/journey',
+        '../../src/flow/journey',
         { '../session': spy }
       );
     });
@@ -132,7 +132,7 @@ describe('journey/journey', () => {
       it('configures the session middleware', () => {
         const spy = sinon.spy(session);
         const stubbedJourney = proxyquire(
-          '../../src/journey/journey',
+          '../../src/flow/journey',
           { '../session': spy }
         );
         const domain = '127.0.0.1';
