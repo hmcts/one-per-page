@@ -3,6 +3,7 @@ const { i18nMiddleware } = require('./i18n/i18Next');
 const urlParse = require('url-parse');
 const defaultIfUndefined = require('./util/defaultIfUndefined');
 const { defined } = require('./util/checks');
+const RequestBoundJourney = require('./journey/RequestBoundJourney');
 const logger = require('@log4js-node/log4js-api')
   .getLogger('one-per-page.Journey');
 
@@ -45,25 +46,6 @@ const options = userOpts => {
     noSessionHandler: userOpts.noSessionHandler
   };
 };
-
-class RequestBoundJourney {
-  constructor(req, res, steps, settings) {
-    this.req = req;
-    req.journey = this;
-    this.res = res;
-    this.steps = steps;
-    this.settings = settings;
-    this.instances = {};
-  }
-
-  instance(Step) {
-    if (defined(this.instances[Step.name])) {
-      return this.instances[Step.name];
-    }
-    this.instances[Step.name] = new Step(this.req, this.res);
-    return this.instances[Step.name];
-  }
-}
 
 const journey = (app, userOpts) => {
   const opts = options(userOpts);

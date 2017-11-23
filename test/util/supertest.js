@@ -39,7 +39,7 @@ const supertestInstance = stepDSL => {
 
   app.use((req, res, next) => {
     // setup req.journey (added by Journey)
-    const steps = { [stepDSL.step.name]: stepDSL.step.name };
+    const steps = { [stepDSL.step.name]: stepDSL.step };
     req.journey = new RequestBoundJourney(req, res, steps, {});
     next();
   });
