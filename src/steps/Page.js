@@ -73,10 +73,6 @@ class Page extends BaseStep {
       res.sendStatus(METHOD_NOT_ALLOWED);
     }
   }
-
-  static get type() {
-    return 'Page';
-  }
 }
 
 module.exports = Page;

@@ -79,10 +79,6 @@ class CheckYourAnswers extends Question {
     const nextSection = this._sections.find(s => s.incomplete);
     return defined(nextSection) ? nextSection.continueUrl : '';
   }
-
-  static get type() {
-    return 'CheckYourAnswers';
-  }
 }
 
 module.exports = CheckYourAnswers;
