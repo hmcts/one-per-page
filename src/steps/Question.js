@@ -47,10 +47,6 @@ class Question extends Page {
     return answer(this);
   }
 
-  static get type() {
-    return 'Question';
-  }
-
   get form() {
     const logger = logging.getLogger(this.name);
     logger.info('No form defined. Using default empty form.');
