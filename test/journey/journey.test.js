@@ -1,10 +1,10 @@
 const proxyquire = require('proxyquire');
-const journey = require('../src/Journey');
-const { supertest, testApp } = require('./util/supertest');
+const { journey } = require('../../src/journey');
+const { supertest, testApp } = require('../util/supertest');
 const { OK } = require('http-status-codes');
-const { expect, sinon } = require('./util/chai');
-const Page = require('./../src/steps/Page');
-const session = require('./../src/session');
+const { expect, sinon } = require('../util/chai');
+const Page = require('../../src/steps/Page');
+const session = require('../../src/session');
 
 class TestPage extends Page {}
 const defaultOptions = {
@@ -35,7 +35,7 @@ const handlerTest = ({ test, options: extraOptions }) => {
 };
 
 
-describe('Journey', () => {
+describe('journey/journey', () => {
   it('returns an express app', () => {
     const testJourney = journey(testApp(), defaultOptions);
 
@@ -84,8 +84,8 @@ describe('Journey', () => {
     beforeEach(() => {
       spy = sinon.spy(session);
       stubbedJourney = proxyquire(
-        '../src/Journey',
-        { './session': spy }
+        '../../src/journey/journey',
+        { '../session': spy }
       );
     });
 
@@ -132,8 +132,8 @@ describe('Journey', () => {
       it('configures the session middleware', () => {
         const spy = sinon.spy(session);
         const stubbedJourney = proxyquire(
-          '../src/Journey',
-          { './session': spy }
+          '../../src/journey/journey',
+          { '../session': spy }
         );
         const domain = '127.0.0.1';
         const baseUrl = `http://${domain}`;

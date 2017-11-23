@@ -1,11 +1,11 @@
-const session = require('./session');
-const { i18nMiddleware } = require('./i18n/i18Next');
+const session = require('../session');
+const { i18nMiddleware } = require('../i18n/i18Next');
 const urlParse = require('url-parse');
-const defaultIfUndefined = require('./util/defaultIfUndefined');
-const { defined } = require('./util/checks');
-const RequestBoundJourney = require('./journey/RequestBoundJourney');
+const defaultIfUndefined = require('../util/defaultIfUndefined');
+const { defined } = require('../util/checks');
+const RequestBoundJourney = require('./RequestBoundJourney');
 const logger = require('@log4js-node/log4js-api')
-  .getLogger('one-per-page.Journey');
+  .getLogger('one-per-page.journey');
 
 const parseUrl = baseUrl => {
   if (typeof baseUrl === 'undefined') {
@@ -71,7 +71,5 @@ const journey = (app, userOpts) => {
 
   return app;
 };
-
-journey.RequestBoundJourney = RequestBoundJourney;
 
 module.exports = journey;

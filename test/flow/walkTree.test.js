@@ -6,7 +6,7 @@ const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAn
 const { branch, goTo } = require('../../src/flow');
 const { textField, form } = require('../../src/forms');
 const Joi = require('joi');
-const { RequestBoundJourney } = require('../../src/Journey');
+const { RequestBoundJourney } = require('../../src/journey');
 
 describe('flow/walkTree', () => {
   describe('Simple complete journey', () => {

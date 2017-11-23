@@ -5,7 +5,7 @@ const EntryPoint = require('./steps/EntryPoint');
 const ExitPoint = require('./steps/ExitPoint');
 const Redirect = require('./steps/Redirect');
 
-const journey = require('./Journey');
+const { journey } = require('./journey');
 
 const requireSession = require('./session/requireSession');
 

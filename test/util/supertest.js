@@ -7,7 +7,7 @@ const domino = require('domino');
 const { expect } = require('../util/chai');
 const { i18nMiddleware } = require('../../src/i18n/i18Next');
 const { defined } = require('../../src/util/checks');
-const { RequestBoundJourney } = require('../../src/Journey');
+const { RequestBoundJourney } = require('../../src/journey');
 
 function testApp() {
   const app = express();
