@@ -1,7 +1,7 @@
 const Question = require('../Question');
 const { section } = require('./section');
 const { defined, ensureArray } = require('../../../src/util/checks');
-const { walkTree, stop } = require('../../flow');
+const { stop } = require('../../flow');
 const { form, boolField } = require('../../forms');
 const Joi = require('joi');
 
@@ -16,14 +16,8 @@ class CheckYourAnswers extends Question {
   }
 
   collectQuestions(req, res, next) {
-    if (defined(this.req.session) && defined(this.req.session.entryPoint)) {
-      const Entry = this.journey.steps[this.req.session.entryPoint];
-
-      this.questions = walkTree(this.journey.instance(Entry), this.journey)
-        .filter(step => step instanceof Question);
-    } else {
-      this.questions = [];
-    }
+    this.questions = this.journey.walkTree()
+      .filter(step => step instanceof Question);
     this.questions.forEach(step => this.waitFor(step.ready()));
     next();
   }
