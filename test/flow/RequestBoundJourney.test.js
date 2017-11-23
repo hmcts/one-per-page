@@ -1,10 +1,9 @@
 const { expect } = require('../util/chai');
-const RequestBoundJourney = require('../../src/journey/RequestBoundJourney');
 const BaseStep = require('../../src/steps/BaseStep');
 const EntryPoint = require('../../src/steps/EntryPoint');
 const Question = require('../../src/steps/Question');
 const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
-const { branch, goTo } = require('../../src/flow');
+const { branch, goTo, RequestBoundJourney } = require('../../src/flow');
 const { textField, form } = require('../../src/forms');
 const Joi = require('joi');
 
