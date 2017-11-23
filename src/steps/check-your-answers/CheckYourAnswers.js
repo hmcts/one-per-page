@@ -12,13 +12,12 @@ class CheckYourAnswers extends Question {
   }
 
   get middleware() {
-    return [this.collectQuestions, ...super.middleware];
+    return [this.collectSteps, ...super.middleware];
   }
 
-  collectQuestions(req, res, next) {
-    this.questions = this.journey.walkTree()
-      .filter(step => step instanceof Question);
-    this.questions.forEach(step => this.waitFor(step.ready()));
+  collectSteps(req, res, next) {
+    this.steps = this.journey.walkTree();
+    this.steps.forEach(step => this.waitFor(step.ready()));
     next();
   }
 
@@ -40,7 +39,8 @@ class CheckYourAnswers extends Question {
   }
 
   handler(req, res) {
-    this._answers = this.questions
+    this._answers = this.steps
+      .filter(step => step instanceof Question)
       .map(step => ensureArray(step.answers()))
       .reduce((left, right) => [...left, ...right], []);
     this._sections = [
