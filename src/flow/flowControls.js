@@ -1,10 +1,16 @@
+/*
+ * TreeWalker
+ *
+ * A class that encapsulates walking the tree of steps safely.
+ *
+ * Expects an iterate function that accepts a block and results obj and
+ * either returns a TreeWalker to continue walking or the results.
+ **/
 class TreeWalker {
-  constructor(step) {
+  constructor(step, iterate) {
     this.step = step;
-    this.journey = step.journey;
+    this.iterate = iterate;
   }
-
-  iterate(/* block */) { /* intentionally blank */ }
 
   map(block) {
     return this.trampoline(this, step => block(step));
@@ -31,26 +37,32 @@ class TreeWalker {
   }
 }
 
-class StopHere extends TreeWalker {
-  iterate(block, results) {
-    return results;
-  }
-}
+/**
+ * Stops walking the tree and returns the results.
+ **/
+const stopHere = step => new TreeWalker(step, (block, results) => results);
 
-const stopHere = step => new StopHere(step);
-
-class IfCompleteThenContinue extends TreeWalker {
-  iterate(block, results) {
-    this.step.retrieve().validate();
-    results.push(block(this.step));
-    if (this.step.valid) {
-      const next = this.journey.instance(this.step.next().step);
+/**
+ * Validates the current step and if valid continues down the tree by calling
+ * the steps next function.
+ **/
+const ifCompleteThenContinue = step => new TreeWalker(
+  step,
+  (block, results) => {
+    step.retrieve().validate();
+    results.push(block(step));
+    if (step.valid) {
+      const next = step.journey.instance(step.next().step);
       return next.flowControl;
     }
     return results;
   }
-}
+);
 
-const ifCompleteThenContinue = step => new IfCompleteThenContinue(step);
+const continueToNext = step =>
+  new TreeWalker(step, (/* block, results */) => {
+    const next = step.journey.instance(step.next().step);
+    return next.flowControl;
+  });
 
-module.exports = { stopHere, ifCompleteThenContinue };
+module.exports = { stopHere, ifCompleteThenContinue, continueToNext };
