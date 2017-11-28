@@ -42,31 +42,7 @@ class RequestBoundJourney {
   }
 
   walkTree(from = this.entryPoint) {
-    let current = this.instance(from);
-    let iterations = 0;
-    const results = [];
-    const numberOfSteps = Object.keys(this.steps).length;
-    while (iterations <= numberOfSteps) {
-      if (current instanceof Question) {
-        results.push(current);
-        current.retrieve().validate();
-
-        if (!current.valid) {
-          return results;
-        }
-      }
-      if (typeof current.next === 'undefined') {
-        return results;
-      }
-      if (current.next() instanceof Stop) {
-        return results;
-      }
-      const nextStep = current.next().step;
-      current = this.instance(nextStep);
-
-      iterations += 1;
-    }
-    throw new Error('possible infinite loop encountered');
+    return this.instance(from).flowControl.walk();
   }
 }
 
