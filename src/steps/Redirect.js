@@ -1,6 +1,7 @@
 const BaseStep = require('./BaseStep');
 const { expectImplemented } = require('../errors/expectImplemented');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
+const { continueToNext } = require('../flow');
 
 class Redirect extends BaseStep {
   constructor(...args) {
@@ -14,6 +15,10 @@ class Redirect extends BaseStep {
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
     }
+  }
+
+  get flowControl() {
+    return continueToNext(this);
   }
 }
 

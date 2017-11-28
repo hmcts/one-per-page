@@ -7,6 +7,7 @@ const answer = require('./check-your-answers/answer');
 const formProxyHandler = require('../forms/formProxyHandler');
 const { form } = require('../forms');
 const logging = require('@log4js-node/log4js-api');
+const { ifCompleteThenContinue } = require('../flow/treeWalker');
 
 class Question extends Page {
   constructor(...args) {
@@ -59,6 +60,10 @@ class Question extends Page {
     const message = `No next() defined for ${this.name}`;
     logger.error(message);
     throw new Error(message);
+  }
+
+  get flowControl() {
+    return ifCompleteThenContinue(this);
   }
 
   retrieve() {

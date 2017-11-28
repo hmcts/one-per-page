@@ -80,12 +80,16 @@ describe('journey/RequestBoundJourney', () => {
       it('returns instances of the questions in the order of the flow', () => {
         const journey = new RequestBoundJourney(req, res, steps, {});
         const names = journey.walkTree().map(s => s.name);
-        expect(names).to.eql([Name.name, CheckAnswers.name]);
+
+        expect(names).to.eql([Entry.name, Name.name, CheckAnswers.name]);
       });
 
       it('retrieves and validates any questions', () => {
         const journey = new RequestBoundJourney(req, res, steps, {});
-        const valids = journey.walkTree().map(step => step.fields.valid);
+        const valids = journey.walkTree()
+          .filter(step => step instanceof Question)
+          .map(step => step.fields.valid);
+
         expect(valids).to.eql([true, true]);
       });
     });
@@ -116,7 +120,7 @@ describe('journey/RequestBoundJourney', () => {
       it('stops on the first incomplete step', () => {
         const journey = new RequestBoundJourney(req, res, steps, {});
         const names = journey.walkTree().map(s => s.name);
-        expect(names).to.eql([Name.name]);
+        expect(names).to.eql([Entry.name, Name.name]);
       });
     });
 
@@ -162,7 +166,12 @@ describe('journey/RequestBoundJourney', () => {
       it('skips steps that are not accessed by the flow', () => {
         const journey = new RequestBoundJourney(req, res, steps, {});
         const names = journey.walkTree().map(s => s.name);
-        expect(names).to.eql([Branch.name, A.name, CheckAnswers.name]);
+        expect(names).to.eql([
+          Entry.name,
+          Branch.name,
+          A.name,
+          CheckAnswers.name
+        ]);
       });
     });
 

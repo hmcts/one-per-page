@@ -1,7 +1,7 @@
 const Question = require('../Question');
 const { section } = require('./section');
 const { defined, ensureArray } = require('../../../src/util/checks');
-const { stop } = require('../../flow');
+const { validateThenStopHere } = require('../../flow');
 const { form, boolField } = require('../../forms');
 const Joi = require('joi');
 
@@ -34,8 +34,8 @@ class CheckYourAnswers extends Question {
     );
   }
 
-  next() {
-    return stop(this);
+  get flowControl() {
+    return validateThenStopHere(this);
   }
 
   handler(req, res) {
