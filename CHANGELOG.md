@@ -1,3 +1,22 @@
+<a name="2.0.0-2"></a>
+# 2.0.0-2 (2017-11-29)
+
+* Add TreeWalker for allowing steps to control what strategy is used to walk the tree ([3fd621c](https://github.com/hmcts/one-per-page/commit/3fd621c))
+* Add treeWalker that validates before stopping ([c8a9e83](https://github.com/hmcts/one-per-page/commit/c8a9e83))
+* Collapse other treewalkers ([63ec80b](https://github.com/hmcts/one-per-page/commit/63ec80b))
+* Copy walkTree functionality in to RequestBoundJourney ([21480a3](https://github.com/hmcts/one-per-page/commit/21480a3))
+* Fix linter errors ([ad80549](https://github.com/hmcts/one-per-page/commit/ad80549))
+* Merge journey and flow modules as they are very related ([fe958f8](https://github.com/hmcts/one-per-page/commit/fe958f8))
+* Move journey in to the new journey package ([07448c4](https://github.com/hmcts/one-per-page/commit/07448c4))
+* Move RequestBoundJourney in to it's own module and test it ([d491914](https://github.com/hmcts/one-per-page/commit/d491914))
+* Store step instances for the life of a request ([9f2cd01](https://github.com/hmcts/one-per-page/commit/9f2cd01))
+* Switch the journeys walkTree function to use the new treeWalkers ([b0618ab](https://github.com/hmcts/one-per-page/commit/b0618ab))
+* Switch to using RequestBoundJourneys walk tree ([c5af443](https://github.com/hmcts/one-per-page/commit/c5af443))
+* Update example app to reflect changes to req.journey ([6d86f53](https://github.com/hmcts/one-per-page/commit/6d86f53))
+* Wait for all steps, not just questions ([b80b370](https://github.com/hmcts/one-per-page/commit/b80b370))
+
+
+
 <a name="2.0.0-1"></a>
 # 2.0.0-1 (2017-11-23)
 
