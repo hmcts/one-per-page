@@ -1,10 +1,6 @@
+{% extends "question-globals.njk" %}
 {% extends "look-and-feel/layouts/question.html" %}
 {% from "look-and-feel/components/fields.njk" import formSection, selectionButtons %}
-
-{% block head -%}
-<link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
-<script type="text/javascript" src="{{ asset_path }}main.js"></script>
-{% endblock %}
 
 {% set title %}
   {{ content.title }}
@@ -35,5 +31,3 @@
   {% endcall %}
 
 {% endblock %}
-
-

@@ -1,0 +1,13 @@
+{% block proposition_header %}
+  {% from "look-and-feel/components/nav.njk" import propositionalNavigation %}
+  {{ propositionalNavigation('Apply for Divorce') }}
+{% endblock %}
+
+{% block header_class %}
+  with-proposition
+{% endblock %}
+
+{% block head -%}
+<link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
+<script type="text/javascript" src="{{ asset_path }}main.js"></script>
+{% endblock %}
