@@ -1,6 +1,4 @@
 const { defined } = require('../util/checks');
-const Question = require('../steps/Question');
-const Stop = require('../flow/stop');
 
 const getName = stepOrName => {
   if (typeof stepOrName === 'string') {

@@ -177,135 +177,119 @@ describe('flow/flowControl', () => {
     }
   });
 
-  describe('#stopHere', () => {
-    {
-      const step = {};
-      const s = stopHere(step);
-      const block = sinon.stub().returns(step);
-
-      const results = s.iterate(block, []);
-
-      it('ends the walking and returns the results', () => {
-        expect(results).to.eql([step]);
-      });
-
-      it('executes the given block', () => {
-        expect(block).to.be.calledWith(step);
-      });
-    }
-  });
-
-  describe('#ifCompleteThenContinue', () => {
-    {
-      const session = { TestStep: { a: 'A value' } };
-      const req = { session };
-      const res = {};
-      const step = new class TestStep extends Question {
-        get form() {
-          return form(textField('a').joi(Joi.string().required()));
+  {
+    const session = { TestStep: { a: 'A value' } };
+    const nextStep = { flowControl: stopHere() };
+    const req = {
+      session,
+      journey: {
+        instance() {
+          return nextStep;
         }
-        get flowControl() {
-          return validateThenStopHere(this);
-        }
-        next() {
-          return { step: '' };
-        }
-      }(req, res);
+      }
+    };
+    const res = {};
 
-      const inputResults = [];
-      const block = sinon.stub().returns(step);
+    describe('#stopHere', () => {
+      {
+        const step = {};
+        const s = stopHere(step);
+        const block = sinon.stub().returns(step);
 
-      const result = step.flowControl.iterate(block, inputResults);
+        const results = s.iterate(block, []);
 
-      it('validates the step', () => {
-        expect(step.fields.validated).to.be.true;
-      });
+        it('ends the walking and returns the results', () => {
+          expect(results).to.eql([step]);
+        });
 
-      it('executes the given block with the step', () => {
-        expect(block).calledWith(step);
-      });
+        it('executes the given block', () => {
+          expect(block).to.be.calledWith(step);
+        });
+      }
+    });
 
-      it('returns the results', () => {
-        expect(result).to.eql([step]);
-      });
-    }
-  });
-
-  describe('#ifCompleteThenContinue', () => {
-    {
-      const session = { TestStep: { a: 'A value' } };
-      const nextStep = { flowControl: stopHere() };
-      const req = {
-        session,
-        journey: {
-          instance() {
-            return nextStep;
+    describe('#ifCompleteThenContinue', () => {
+      {
+        const step = new class TestStep extends Question {
+          get form() {
+            return form(textField('a').joi(Joi.string().required()));
           }
-        }
-      };
-      const res = {};
-      const step = new class TestStep extends Question {
-        get form() {
-          return form(textField('a').joi(Joi.string().required()));
-        }
-        get flowControl() {
-          return ifCompleteThenContinue(this);
-        }
-        next() {
-          return { step: '' };
-        }
-      }(req, res);
-
-      const inputResults = [];
-      const block = sinon.stub().returns(step);
-
-      const result = step.flowControl.iterate(block, inputResults);
-
-      it('returns the next TreeWalker if valid', () => {
-        expect(result).to.eql(nextStep.flowControl);
-      });
-
-      it('executes the given block with the step', () => {
-        expect(block).calledWith(step);
-      });
-
-      it('returns the results if not valid', () => {
-        session.TestStep = {};
-        const _results = step.flowControl.iterate(block, []);
-        expect(_results).to.eql([step]);
-      });
-    }
-  });
-
-  describe('#continueToNext', () => {
-    {
-      const nextStep = { flowControl: stopHere() };
-      const req = {
-        session: {},
-        journey: {
-          instance() {
-            return nextStep;
+          get flowControl() {
+            return validateThenStopHere(this);
           }
-        }
-      };
-      const res = {};
-      const step = new class TestStep extends Redirect {
-        get flowControl() {
-          return continueToNext(this);
-        }
-        next() {
-          return { step: '' };
-        }
-      }(req, res);
+          next() {
+            return { step: '' };
+          }
+        }(req, res);
 
-      const inputResults = [];
-      const block = sinon.stub().returns(step);
+        const block = sinon.stub().returns(step);
+        const result = step.flowControl.iterate(block, []);
 
-      const result = step.flowControl.iterate(block, inputResults);
+        it('validates the step', () => {
+          expect(step.fields.validated).to.be.true;
+        });
 
-      it('returns the next TreeWalker', () => {
-        expect(result).to.eql(nextStep.flowControl);
-      });
-    }
-  });
+        it('executes the given block with the step', () => {
+          expect(block).calledWith(step);
+        });
+
+        it('returns the results', () => {
+          expect(result).to.eql([step]);
+        });
+      }
+    });
+
+    describe('#ifCompleteThenContinue', () => {
+      {
+        const step = new class TestStep extends Question {
+          get form() {
+            return form(textField('a').joi(Joi.string().required()));
+          }
+          get flowControl() {
+            return ifCompleteThenContinue(this);
+          }
+          next() {
+            return { step: '' };
+          }
+        }(req, res);
+
+        const block = sinon.stub().returns(step);
+        const result = step.flowControl.iterate(block, []);
+
+        it('returns the next TreeWalker if valid', () => {
+          expect(result).to.eql(nextStep.flowControl);
+        });
+
+        it('executes the given block with the step', () => {
+          expect(block).calledWith(step);
+        });
+
+        it('returns the results if not valid', () => {
+          session.TestStep = {};
+          const _results = step.flowControl.iterate(block, []);
+          expect(_results).to.eql([step]);
+        });
+      }
+    });
+
+    describe('#continueToNext', () => {
+      {
+        const step = new class TestStep extends Redirect {
+          get flowControl() {
+            return continueToNext(this);
+          }
+          next() {
+            return { step: '' };
+          }
+        }(req, res);
+
+        const block = sinon.stub().returns(step);
+        const result = step.flowControl.iterate(block, []);
+
+        it('returns the next TreeWalker', () => {
+          expect(result).to.eql(nextStep.flowControl);
+        });
+      }
+    });
+  }
 });
