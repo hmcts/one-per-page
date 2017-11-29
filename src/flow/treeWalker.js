@@ -20,6 +20,19 @@ class TreeWalker {
     return this.trampoline(this, step => step);
   }
 
+  // Trampolines are a way of doing recursion when your language doesn't support
+  // tail call optimisation. Standard recursion would lead to the stack growing
+  // to overflow.
+  //
+  // Instead we use the trampoline to bounce the stack. It executes the iterate
+  // function of the TreeWalker it's given. If that TreeWalker returns a
+  // TreeWalker it will continue executing them until a result is returned.
+  //
+  // We also include some loop breaking to ensure that we don't query the same
+  // step multiple times, as that would indicate a possible infinite loop.
+  //
+  // For more reading on trampolines, this blog is pretty good:
+  // http://raganwald.com/2013/03/28/trampolines-in-javascript.html
   trampoline(treeWalker, block, results = []) {
     let walkerOrResults = treeWalker;
     const visits = new Set();
