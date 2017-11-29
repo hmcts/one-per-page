@@ -15,7 +15,7 @@
     "glob": "^7.1.2",
     "http-status-codes": "^1.2.0",
     "i18next": "^10.0.1",
-    "joi": "^11.1.1",
+    "joi": "^13.0.2",
     "js-yaml": "^3.9.0",
     "nunjucks": "^3.0.1",
     "option": "^0.2.4",
@@ -29,10 +29,10 @@
     "chai-as-promised": "^7.1.1",
     "chai-jq": "^0.0.9",
     "codacy-coverage": "^2.0.2",
-    "domino": "^1.0.29",
+    "domino": "^2.0.0",
     "eslint": "^4.5.0",
     "jquery": "^3.2.1",
-    "mocha": "^3.4.2",
+    "mocha": "^4.0.1",
     "nyc": "^11.1.0",
     "proxyquire": "^1.8.0",
     "sinon": "^4.0.0",
@@ -46,7 +46,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
     "lint": "eslint .",
-    "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha 'test/**/*.test.js'"
+    "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha --exit 'test/**/*.test.js'"
   },
   "license": "MIT",
   "publishConfig": {
