@@ -26,6 +26,12 @@ lookAndFeel.configure(app, {
       path.resolve(__dirname, 'assets/js/main.js'),
       path.resolve(__dirname, 'assets/scss/main.scss')
     ]
+  },
+  nunjucks: {
+    globals: {
+      phase: 'ALPHA',
+      feedbackLink: 'https://github.com/hmcts/one-per-page/issues/new'
+    }
   }
 });
 
