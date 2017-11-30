@@ -39,12 +39,12 @@ const options = userOpts => {
   const steps = defaultIfUndefined(userOpts.steps, [])
     .map(constructorFrom);
 
-  return {
+  return Object.assign({}, userOpts, {
     baseUrl: userOpts.baseUrl,
     steps,
     session: sessionProvider,
     noSessionHandler: userOpts.noSessionHandler
-  };
+  });
 };
 
 const journey = (app, userOpts) => {
