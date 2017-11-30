@@ -1,5 +1,6 @@
 {% extends "look-and-feel/layouts/two_thirds.html" %}
 {% from "look-and-feel/components/header.njk" import header %}
+{% from "look-and-feel/components/phase_banner.njk" import phaseBanner %}
 
 {% block head -%}
 <link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
@@ -16,4 +17,9 @@
 
 {{ header(content.title) }}
 
+<p>{{ content.somethingWentWrong }}</p>
+
+<a class="button" href="/" role="button">Start again</a>
+
 {% endblock %}
+
