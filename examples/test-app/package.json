@@ -15,7 +15,9 @@
     "@hmcts/one-per-page": "./../../",
     "express": "^4.15.3",
     "i18next": "^9.0.0",
-    "joi": "^10.6.0"
+    "joi": "^10.6.0",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
     "node-dev": "^3.1.3"
