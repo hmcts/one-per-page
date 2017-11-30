@@ -1,20 +1,5 @@
-const {
-  CheckYourAnswers: CYA,
-  section
-} = require('@hmcts/one-per-page/checkYourAnswers');
-const { goTo } = require('@hmcts/one-per-page/flow');
+const { CheckYourAnswers: CYA } = require('@hmcts/one-per-page/checkYourAnswers');
 
-class CheckYourAnswers extends CYA {
-  sections() {
-    return [
-      section('personal-details', { title: 'Personal Details' }),
-      section('respondent-details', { title: 'Respondent Details' })
-    ];
-  }
-
-  next() {
-    return goTo(this.journey.steps.SendToAPI);
-  }
-}
+class CheckYourAnswers extends CYA {}
 
 module.exports = CheckYourAnswers;

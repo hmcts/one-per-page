@@ -23,12 +23,23 @@ const baseUrl = `http://localhost:${config.port}`;
 
 lookAndFeel.configure(app, {
   baseUrl,
-  express: { views: [path.resolve(__dirname, 'steps')] },
+  express: {
+    views: [
+      path.resolve(__dirname, 'steps'),
+      path.resolve(__dirname, 'views')
+    ]
+  },
   webpack: {
     entry: [
       path.resolve(__dirname, 'assets/js/main.js'),
       path.resolve(__dirname, 'assets/scss/main.scss')
     ]
+  },
+  nunjucks: {
+    globals: {
+      phase: 'ALPHA',
+      feedbackLink: 'https://github.com/hmcts/one-per-page/issues/new'
+    }
   }
 });
 
