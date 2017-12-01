@@ -131,6 +131,32 @@ describe('steps/Question', () => {
       });
     });
 
+    describe('#values', () => {
+      it('returns all of form field values', () => {
+        const NameStep = class extends SimpleQuestion {
+          static get path() {
+            return '/next-step';
+          }
+          get form() {
+            return form(
+              field('name')
+            );
+          }
+        };
+        const req = {
+          journey: {},
+          session: { NameStep: { name: 'John' } }
+        };
+        const res = {};
+        const step = new NameStep(req, res);
+        step.retrieve().validate();
+
+        const _values = step.values();
+        expect(_values).to.be.an('object');
+        expect(_values).to.have.property('name', 'John');
+      });
+    });
+
     describe('#answers', () => {
       it('returns a default answer', () => {
         const NameStep = class extends SimpleQuestion {
