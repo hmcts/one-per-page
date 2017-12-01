@@ -108,24 +108,6 @@ describe('steps/BaseStep', () => {
       return testStep(step).get()
         .expect(OK, { foo: 'Foo' });
     });
-
-    it('are bound to the current step', () => {
-      const step = class extends BaseStep {
-        scopedMiddleware(req, res, next) {
-          req.stepUrl = this.path;
-          next();
-        }
-        get middleware() {
-          return [this.scopedMiddleware];
-        }
-        handler(req, res) {
-          res.status(OK).json({ path: req.stepUrl });
-        }
-      };
-
-      return testStep(step).get()
-        .expect(OK, { path: '/step' });
-    });
   });
 
   describe('#dirname', () => {

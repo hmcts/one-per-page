@@ -18,6 +18,8 @@ class RequestBoundJourney {
     this.steps = steps;
     this.settings = settings;
     this.instances = {};
+
+    this.collectSteps = this.collectSteps.bind(this);
   }
 
   instance(Step) {
