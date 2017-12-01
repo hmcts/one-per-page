@@ -9,6 +9,8 @@ class CheckYourAnswers extends Question {
   constructor(req, res) {
     super(req, res);
     this._sections = [];
+
+    this.collectSteps = this.collectSteps.bind(this);
   }
 
   get middleware() {
