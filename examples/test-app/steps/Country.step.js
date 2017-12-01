@@ -49,6 +49,10 @@ class Country extends Question {
       answer: titleise(this.fields.country.value)
     });
   }
+
+  values() {
+    return { petitioner: { country: this.fields.country.value } };
+  }
 }
 
 module.exports = Country;

@@ -48,6 +48,13 @@ class Question extends Page {
     return answer(this);
   }
 
+  values() {
+    return Object.values(this.fields)
+      .reduce((values, field) =>
+        Object.assign(values, { [field.name]: field.value }), {}
+      );
+  }
+
   get form() {
     const logger = logging.getLogger(this.name);
     logger.info('No form defined. Using default empty form.');

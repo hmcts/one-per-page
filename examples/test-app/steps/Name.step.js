@@ -55,6 +55,19 @@ class Name extends Question {
     ];
   }
 
+  values() {
+    return {
+      petitioner: {
+        firstName: this.fields.firstName.value,
+        lastName: this.fields.lastName.value
+      },
+      respondent: {
+        firstName: this.fields.respondentFirstName.value,
+        lastName: this.fields.respondentLastName.value
+      }
+    };
+  }
+
   next() {
     return goTo(this.journey.steps.Contact);
   }
