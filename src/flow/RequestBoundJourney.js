@@ -1,4 +1,5 @@
 const { defined } = require('../util/checks');
+const deepmerge = require('deepmerge');
 
 const getName = stepOrName => {
   if (typeof stepOrName === 'string') {
@@ -9,6 +10,8 @@ const getName = stepOrName => {
   }
   throw new Error(`${stepOrName} is not a step`);
 };
+
+const hasValues = step => Object.getOwnPropertyNames(step).includes('values');
 
 class RequestBoundJourney {
   constructor(req, res, steps, settings) {
@@ -49,6 +52,13 @@ class RequestBoundJourney {
 
   walkTree(from = this.entryPoint) {
     return this.instance(from).flowControl.walk();
+  }
+
+  get values() {
+    return this.visitedSteps
+      .filter(hasValues)
+      .map(step => step.values())
+      .reduce((accum, value) => deepmerge(accum, value), {});
   }
 }
 
