@@ -34,6 +34,12 @@ class RequestBoundJourney {
     throw new Error(`${name} not registered`);
   }
 
+  collectSteps(req, res, next) {
+    this.visitedSteps = this.walkTree();
+    this.visitedSteps.forEach(step => req.currentStep.waitFor(step.ready()));
+    next();
+  }
+
   get entryPoint() {
     if (defined(this.req.session.entryPoint)) {
       return this.req.session.entryPoint;

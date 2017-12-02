@@ -1,4 +1,4 @@
-const { expect } = require('../util/chai');
+const { expect, sinon } = require('../util/chai');
 const BaseStep = require('../../src/steps/BaseStep');
 const EntryPoint = require('../../src/steps/EntryPoint');
 const Question = require('../../src/steps/Question');
@@ -91,6 +91,53 @@ describe('journey/RequestBoundJourney', () => {
           .map(step => step.fields.valid);
 
         expect(valids).to.eql([true, true]);
+      });
+    });
+
+    describe('#collectSteps', () => {
+      class Entry extends EntryPoint {
+        next() {
+          return goTo(this.journey.steps.Name);
+        }
+      }
+      class Name extends Question {
+        get form() {
+          return form(textField('notPresent').joi(Joi.string().required()));
+        }
+        next() {
+          return goTo(this.journey.steps.CheckAnswers);
+        }
+      }
+      class CheckAnswers extends CheckYourAnswers {}
+      const steps = { Entry, Name, CheckAnswers };
+      const session = {
+        entryPoint: Entry.name,
+        Name: {}
+      };
+      const req = {
+        session,
+        currentStep: { waitFor: sinon.stub() }
+      };
+      const res = {};
+      const next = sinon.stub();
+      const journey = new RequestBoundJourney(req, res, steps, {});
+
+      before(() => {
+        sinon.spy(journey, 'walkTree');
+        journey.collectSteps(req, res, next);
+      });
+
+      it('walks the tree', () => {
+        expect(journey.walkTree).calledOnce;
+      });
+
+      it('sets #visitedSteps to the steps used in the journey', () => {
+        const expectedSteps = [journey.instance(Entry), journey.instance(Name)];
+        expect(journey.visitedSteps).to.eql(expectedSteps);
+      });
+
+      it('makes the current step to wait for the steps to be ready', () => {
+        expect(req.currentStep.waitFor).calledTwice;
       });
     });
 
