@@ -1,6 +1,6 @@
 const Question = require('../Question');
 const { section } = require('./section');
-const { defined, ensureArray } = require('../../../src/util/checks');
+const { defined } = require('../../../src/util/checks');
 const { validateThenStopHere } = require('../../flow');
 const { form, boolField } = require('../../forms');
 const Joi = require('joi');
@@ -9,18 +9,10 @@ class CheckYourAnswers extends Question {
   constructor(req, res) {
     super(req, res);
     this._sections = [];
-
-    this.collectSteps = this.collectSteps.bind(this);
   }
 
   get middleware() {
-    return [this.collectSteps, ...super.middleware];
-  }
-
-  collectSteps(req, res, next) {
-    this.steps = this.journey.walkTree();
-    this.steps.forEach(step => this.waitFor(step.ready()));
-    next();
+    return [this.journey.collectSteps, ...super.middleware];
   }
 
   get errorMessage() {
@@ -41,13 +33,10 @@ class CheckYourAnswers extends Question {
   }
 
   handler(req, res) {
-    this._answers = this.steps
-      .filter(step => step instanceof Question)
-      .map(step => ensureArray(step.answers()))
-      .reduce((left, right) => [...left, ...right], []);
+    const answers = this.journey.answers;
     this._sections = [
-      ...this.sections().map(s => s.filterAnswers(this._answers)),
-      section.default.filterAnswers(this._answers)
+      ...this.sections().map(s => s.filterAnswers(answers)),
+      section.default.filterAnswers(answers)
     ];
 
     super.handler(req, res);

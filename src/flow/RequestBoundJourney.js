@@ -1,4 +1,4 @@
-const { defined } = require('../util/checks');
+const { notDefined, defined, ensureArray } = require('../util/checks');
 const deepmerge = require('deepmerge');
 
 const getName = stepOrName => {
@@ -11,7 +11,18 @@ const getName = stepOrName => {
   throw new Error(`${stepOrName} is not a step`);
 };
 
-const hasValues = step => Object.getOwnPropertyNames(step).includes('values');
+const hasValues = step => 'values' in step;
+const hasAnswers = step => 'answers' in step;
+
+class StepsNotCollected extends Error {
+  constructor(stepname) {
+    super();
+    this.message = [
+      'Visited steps have not been collected.',
+      `Add this.journey.collectSteps to ${stepname}.middleware`
+    ].join('');
+  }
+}
 
 class RequestBoundJourney {
   constructor(req, res, steps, settings) {
@@ -55,10 +66,24 @@ class RequestBoundJourney {
   }
 
   get values() {
+    if (notDefined(this.visitedSteps)) {
+      throw new StepsNotCollected(this.req.currentStep.name);
+    }
     return this.visitedSteps
       .filter(hasValues)
       .map(step => step.values())
-      .reduce((accum, value) => deepmerge(accum, value), {});
+      .reduce(deepmerge, {});
+  }
+
+  get answers() {
+    if (notDefined(this.visitedSteps)) {
+      throw new StepsNotCollected(this.req.currentStep.name);
+    }
+    return this.visitedSteps
+      .filter(hasAnswers)
+      .map(step => step.answers())
+      .map(ensureArray)
+      .reduce((left, right) => [...left, ...right], []);
   }
 }
 
