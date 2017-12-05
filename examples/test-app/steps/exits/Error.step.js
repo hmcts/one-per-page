@@ -1,5 +1,5 @@
-const { Page } = require('@hmcts/one-per-page');
+const { ExitPoint } = require('@hmcts/one-per-page');
 
-class Error extends Page {}
+class Error extends ExitPoint {}
 
 module.exports = Error;
