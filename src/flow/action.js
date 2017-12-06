@@ -45,6 +45,10 @@ class Action {
     this.errorFlow = errorFlow;
     return this;
   }
+
+  get step() {
+    return this.nextFlow.step;
+  }
 }
 
 module.exports = Action;
