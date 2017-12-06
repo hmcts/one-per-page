@@ -43,7 +43,7 @@ describe('i18n/contentProxy', () => {
         expect(key[Symbol.toStringTag]()).to.eql('Content');
       });
 
-      it('throws if key doesn\'t exist', () => {
+      it("throws if key doesn't exist", () => {
         exists.withArgs('FakeStep:key').returns(false);
         const key = proxy.key;
         expect(() => key.toString())

@@ -53,7 +53,7 @@ describe('flow/action', () => {
       expect(actionStub).calledWith(req, res);
     });
 
-    it('calls the next redirector in it\'s chain', () => {
+    it("calls the next redirector in it's chain", () => {
       const action = new Action(actionStub).then(nextStub);
       const promise = action.redirect(req, res);
       return promise.then(() => expect(nextStub.redirect).calledOnce);

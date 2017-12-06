@@ -48,7 +48,7 @@ describe('steps/check-your-answers/section', () => {
   describe('#incomplete', () => {
     const s = section('foo');
 
-    it('returns true if any answers aren\'t complete', () => {
+    it("returns true if any answers aren't complete", () => {
       s.answers = [incompleteAnswer];
       expect(s.incomplete).to.be.true;
     });
@@ -72,7 +72,7 @@ describe('steps/check-your-answers/section', () => {
       expect(s.atLeast1Completed).to.be.true;
     });
 
-    it('returns false if all answers aren\'t complete', () => {
+    it("returns false if all answers aren't complete", () => {
       s.answers = [incompleteAnswer];
       expect(s.atLeast1Completed).to.be.false;
     });

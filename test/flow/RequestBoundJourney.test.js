@@ -35,7 +35,7 @@ describe('journey/RequestBoundJourney', () => {
       expect(journey.instance(Step)).an.instanceof(Step);
     });
 
-    it('throws if given a Step that hasn\'t been registered', () => {
+    it("throws if given a Step that hasn't been registered", () => {
       const UnknownStep = class extends BaseStep {
         handler(/* req, res */) { /* intentionally blank */ }
       };
@@ -45,7 +45,7 @@ describe('journey/RequestBoundJourney', () => {
       expect(creatingUnknownStep).to.throw(/UnknownStep not registered/);
     });
 
-    it('throws if given an object that isn\'t a step', () => {
+    it("throws if given an object that isn't a step", () => {
       const journey = new RequestBoundJourney(req, res, steps, settings);
       const arbitraryObj = () => journey.instance({});
 
@@ -177,7 +177,7 @@ describe('journey/RequestBoundJourney', () => {
     });
 
     describe('#values', () => {
-      it('throws if steps haven\'t been collected yet', () => {
+      it("throws if steps haven't been collected yet", () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
         expect(() => _journey.values).to.throw(
           /Add this.journey.collectSteps to CurrentStep.middleware/
@@ -191,7 +191,7 @@ describe('journey/RequestBoundJourney', () => {
     });
 
     describe('#answers', () => {
-      it('throws if steps haven\'t been collected yet', () => {
+      it("throws if steps haven't been collected yet", () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
         expect(() => _journey.answers).to.throw(
           /Add this.journey.collectSteps to CurrentStep.middleware/
