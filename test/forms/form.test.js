@@ -244,7 +244,7 @@ describe('forms/form', () => {
     });
 
     describe('#validated', () => {
-      it('returns false when a form hasn\'t been validated yet', () => {
+      it("returns false when a form hasn't been validated yet", () => {
         const nameField = new FieldDesriptor('name');
         const f = new Form([nameField]);
         expect(f.validated).to.be.false;

@@ -8,7 +8,7 @@ describe('middleware/errorIfNotReady', () => {
       return 'ReadyStep';
     },
     ready() {
-      return Promise.resolve('I\'m ready');
+      return Promise.resolve("I'm ready");
     }
   };
   const notReadyStep = {

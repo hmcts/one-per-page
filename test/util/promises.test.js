@@ -90,7 +90,7 @@ describe('util/promises', () => {
   });
 
   describe('#timeout', () => {
-    it('rejects if the given promise doesn\'t resolve in time', () => {
+    it("rejects if the given promise doesn't resolve in time", () => {
       const result = timeout(10, new Promise(() => {
         /* intentionally blank */
       }));

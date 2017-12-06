@@ -34,7 +34,7 @@ describe('steps/EntryPoint', () => {
         });
     });
 
-    it('stores it\'s name as the entryPoint in the session', () => {
+    it("stores it's name as the entryPoint in the session", () => {
       return testStep(redirect)
         .get()
         .session(session => {

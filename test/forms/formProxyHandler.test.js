@@ -82,7 +82,7 @@ describe('forms/formProxyHandler', () => {
     it('is enumerable', () => {
       expect(descriptor.enumerable).to.be.true;
     });
-    it('has the field as it\'s value', () => {
+    it("has the field as it's value", () => {
       expect(descriptor.value).to.eql(_form.fields[0]);
     });
   });

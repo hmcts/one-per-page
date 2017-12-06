@@ -1,3 +1,4 @@
+/* eslint quotes: ["error", "single", { "avoidEscape": true }] */
 const { expect } = require('../util/chai');
 const { FieldDesriptor } = require('../../src/forms/field');
 const { ref, Reference } = require('../../src/forms/ref');
@@ -21,7 +22,7 @@ describe('forms/ref', () => {
 
     ['parse', 'deserialize'].forEach(func => {
       describe(`#${func}`, () => {
-        it('loads from session from it\'s step not the current step', () => {
+        it("loads from session from it's step not the current step", () => {
           const r = new Reference(fakeStep, 'foo', textParser);
           const req = {
             currentStep: { name: 'OtherStep' },

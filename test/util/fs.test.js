@@ -59,7 +59,7 @@ describe('util/fs', () => {
       return expect(readJson(fixturesDir)).rejectedWith(/illegal operation/);
     });
 
-    it('rejects if a file doesn\'t exist', () => {
+    it("rejects if a file doesn't exist", () => {
       return expect(readJson('/non-existent')).rejectedWith(/no such file/);
     });
   });
@@ -76,7 +76,7 @@ describe('util/fs', () => {
       return expect(readFile(fixturesDir)).rejectedWith(/illegal operation/);
     });
 
-    it('rejects if a file doesn\'t exist', () => {
+    it("rejects if a file doesn't exist", () => {
       return expect(readFile('/non-existent')).rejectedWith(/no such file/);
     });
   });

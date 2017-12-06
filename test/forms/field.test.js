@@ -29,7 +29,7 @@ describe('forms/field', () => {
         expect(f.serialize()).to.eql({ [f.name]: f.value });
       });
 
-      it('returns it\'s parsers nullValue if no value', () => {
+      it("returns it's parsers nullValue if no value", () => {
         const fakeParser = { nullValue: 'foobar' };
         const f = new FieldDesriptor('name', fakeParser);
         expect(f.serialize()).to.eql({ [f.name]: fakeParser.nullValue });
@@ -139,7 +139,7 @@ describe('forms/field', () => {
     });
 
     describe('#validated', () => {
-      it('returns false when a field hasn\'t been validated yet', () => {
+      it("returns false when a field hasn't been validated yet", () => {
         const nameField = new FieldDesriptor('name');
         expect(nameField.validated).to.be.false;
       });
