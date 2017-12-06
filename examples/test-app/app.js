@@ -2,6 +2,7 @@ const config = require('config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { BAD_REQUEST } = require('http-status-codes');
 const { journey } = require('@hmcts/one-per-page');
 const lookAndFeel = require('@hmcts/look-and-feel');
 const Sessions = require('./steps/admin/Session.step');
@@ -65,8 +66,19 @@ journey(app, {
 });
 
 app.post('/api/submit', bodyParser.json(), (req, res) => {
-  const response = { status: 'ok', originalBody: req.body };
-  res.json(response);
+  const petitionerLastName = req.body.petitioner.lastName.toLowerCase();
+  const respondentLastName = req.body.respondent.lastName.toLowerCase();
+
+  if (petitionerLastName === respondentLastName) {
+    res.json({ status: 'ok', originalBody: req.body });
+  } else {
+    res.status(BAD_REQUEST);
+    res.json({
+      status: 'bad',
+      originalBody: req.body,
+      error: 'For the purpose of this demo, the last names must match'
+    });
+  }
 });
 
 app.listen(config.port);
