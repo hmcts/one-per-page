@@ -1,3 +1,28 @@
+<a name="2.0.0-3"></a>
+# 2.0.0-3 (2017-12-07)
+
+* Add action flow control that performs some action before redirecting ([f73ca4b](https://github.com/hmcts/one-per-page/commit/f73ca4b))
+* Add function to collect the values from steps in a journey ([dc1886e](https://github.com/hmcts/one-per-page/commit/dc1886e))
+* Add logic to collect the steps visited in the journey ([f6fc685](https://github.com/hmcts/one-per-page/commit/f6fc685))
+* Clean up tests for the RequestBoundJourney ([7a0e6b1](https://github.com/hmcts/one-per-page/commit/7a0e6b1))
+* Demo importing show-hide-content.js from govuk_frontend_toolkit ([60e8017](https://github.com/hmcts/one-per-page/commit/60e8017))
+* Demo the action failing ([b5eb615](https://github.com/hmcts/one-per-page/commit/b5eb615))
+* Demo using action to send values to an API after CYA ([0df3394](https://github.com/hmcts/one-per-page/commit/0df3394))
+* Document what a trampoline is as it's not an obvious concept ([aa80fc6](https://github.com/hmcts/one-per-page/commit/aa80fc6))
+* Ensure action will not break the chain ([bfc4beb](https://github.com/hmcts/one-per-page/commit/bfc4beb))
+* Explicitly bind of function used in middleware ([4d1b267](https://github.com/hmcts/one-per-page/commit/4d1b267))
+* Expose steps and flow modules ([6e97ce2](https://github.com/hmcts/one-per-page/commit/6e97ce2))
+* Merge options with options given by users ([5d6b134](https://github.com/hmcts/one-per-page/commit/5d6b134))
+* Provide a way to change values for a step ([9d39e37](https://github.com/hmcts/one-per-page/commit/9d39e37))
+* Remove escaped quotes from strings based on review feedback ([ea11f8f](https://github.com/hmcts/one-per-page/commit/ea11f8f))
+* Set up Error/Done and API for demoing actions ([ccf6c49](https://github.com/hmcts/one-per-page/commit/ccf6c49))
+* Update dependencies to latest ([16be7ad](https://github.com/hmcts/one-per-page/commit/16be7ad))
+* update the documentation while going through as a new starter ([34a99e6](https://github.com/hmcts/one-per-page/commit/34a99e6))
+* Use globals to clean up templates ([a2356fe](https://github.com/hmcts/one-per-page/commit/a2356fe))
+* Use multiple extends to use the same globals in all templates ([fb55f26](https://github.com/hmcts/one-per-page/commit/fb55f26))
+
+
+
 <a name="2.0.0-2"></a>
 # 2.0.0-2 (2017-11-29)
 
