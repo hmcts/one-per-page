@@ -1,6 +1,7 @@
 const option = require('option');
 const Joi = require('joi');
 const { nonEmptyTextParser } = require('./fieldParsers');
+const FieldError = require('./fieldError');
 const { notDefined } = require('../util/checks');
 
 const isNullOrUndefined = value =>
@@ -87,6 +88,10 @@ class FieldDesriptor {
 
   get errors() {
     return this._errors;
+  }
+
+  get mappedErrors() {
+    return this.errors.map(error => new FieldError(this, error));
   }
 
   get valid() {

@@ -1,6 +1,7 @@
 const { expect, sinon } = require('../util/chai');
 const Joi = require('joi');
 const { field, FieldDesriptor } = require('../../src/forms/field');
+const FieldError = require('../../src/forms/fieldError');
 const { nonEmptyTextParser } = require('../../src/forms/fieldParsers');
 
 describe('forms/field', () => {
@@ -163,6 +164,24 @@ describe('forms/field', () => {
           .joi('Will Fail', Joi.string().required());
         nameField.validate();
         expect(nameField.errors).to.eql(['Will Fail']);
+      });
+    });
+
+    describe('#mappedErrors', () => {
+      it('returns [] if validations passed', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Pass', Joi.any());
+        nameField.validate();
+        expect(nameField.mappedErrors).to.eql([]);
+      });
+
+      it('returns FieldErrors for each error', () => {
+        const nameField = new FieldDesriptor('name')
+          .joi('Will Fail', Joi.string().required());
+        nameField.validate();
+        expect(nameField.mappedErrors).to.eql(
+          [new FieldError(nameField, 'Will Fail')]
+        );
       });
     });
 

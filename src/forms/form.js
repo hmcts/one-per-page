@@ -86,10 +86,7 @@ class Form {
 
   get errors() {
     const fieldErrors = this.fields
-      .map(field => {
-        const errors = field.errors.map(error => new FieldError(field, error));
-        return errors;
-      })
+      .map(field => field.mappedErrors)
       .reduce((accum, errorsArr) => [...accum, ...errorsArr], []);
     return fieldErrors;
   }

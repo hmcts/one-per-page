@@ -1,5 +1,6 @@
 const { expect } = require('../util/chai');
 const { CompoundField, errorFor } = require('../../src/forms/compoundField');
+const FieldError = require('../../src/forms/fieldError');
 const { textField } = require('../../src/forms');
 const Joi = require('joi');
 
@@ -146,6 +147,49 @@ describe('forms/CompoundField', () => {
       date.parse({ year: 2017 });
       date.validate();
       expect(date.day.errors).to.contain('Day is required');
+    });
+  });
+
+  describe('#mappedErrors', () => {
+    it('returns [] if validations passed', () => {
+      const date = new CompoundField('date',
+        textField('day'),
+        textField('month'),
+        textField('year')
+      ).joi('Will Pass', Joi.any());
+      date.validate();
+      expect(date.mappedErrors).to.eql([]);
+    });
+
+    it('returns FieldErrors if validations passed', () => {
+      const date = new CompoundField('date',
+        textField('day'),
+        textField('month'),
+        textField('year')
+      ).joi(
+        'Will fail',
+        Joi.object({
+          day: Joi.string().required(),
+          month: Joi.string().required(),
+          year: Joi.string().required()
+        })
+      );
+      date.validate();
+      expect(date.mappedErrors).to.eql([new FieldError(date, 'Will fail')]);
+    });
+
+    it('returns FieldErrors for child fileds', () => {
+      const date = new CompoundField('date',
+        textField('day').joi('Will fail', Joi.string().required()),
+        textField('month').joi('Will fail', Joi.string().required()),
+        textField('year').joi('Will fail', Joi.string().required())
+      );
+      date.validate();
+      expect(date.mappedErrors).to.eql([
+        new FieldError(date.day, 'Will fail'),
+        new FieldError(date.month, 'Will fail'),
+        new FieldError(date.year, 'Will fail')
+      ]);
     });
   });
 });
