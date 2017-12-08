@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const option = require('option');
+const FieldError = require('./fieldError');
 
 class BadValidationTargetError extends Error {
   constructor(id, field) {
@@ -127,6 +128,13 @@ class CompoundField {
     return this.fields
       .map(field => field.serialize())
       .reduce((obj, value) => Object.assign(obj, value), {});
+  }
+
+  get mappedErrors() {
+    return [
+      this.errors.map(error => new FieldError(this, error)),
+      ...this.fields.map(field => field.mappedErrors)
+    ].reduce((left, right) => [...left, ...right], []);
   }
 }
 
