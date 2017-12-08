@@ -1,6 +1,7 @@
 const { form } = require('./form');
 const { field } = require('./field');
 const { ref } = require('./ref');
+const { compoundField, errorFor } = require('./compoundField');
 const parsers = require('./fieldParsers');
 
 const arrayField = name => field(name, parsers.arrayParser);
@@ -22,5 +23,7 @@ module.exports = {
   arrayField,
   textField,
   nonEmptyTextField,
-  boolField
+  boolField,
+  compoundField,
+  errorFor
 };
