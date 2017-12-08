@@ -1,7 +1,7 @@
 const textParser = {
   nullValue: undefined, // eslint-disable-line no-undefined
   parse(value) {
-    return value.toString();
+    return value === '' ? this.nullValue : value.toString();
   }
 };
 

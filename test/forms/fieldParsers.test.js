@@ -39,6 +39,8 @@ describe('forms/fieldParsers', () => {
       name: 'textParser',
       parse: [
         { to: undefined },
+        { to: undefined, from: '' },
+        { to: undefined, from: null },
         { to: 'value', from: 'value' },
         { to: '1', from: 1 }
       ],
