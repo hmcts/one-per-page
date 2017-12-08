@@ -1,5 +1,5 @@
 const { expect } = require('../util/chai');
-const CompoundField = require('../../src/forms/compoundField');
+const { CompoundField, errorFor } = require('../../src/forms/compoundField');
 const { textField } = require('../../src/forms');
 const Joi = require('joi');
 
@@ -129,6 +129,23 @@ describe('forms/CompoundField', () => {
       date.parse({ day: 10 });
       date.validate();
       expect(date.errors).to.contain('A date is required');
+    });
+
+    it('attaches a targeted error to the correct child field', () => {
+      const date = new CompoundField('date',
+        textField('day'),
+        textField('month'),
+        textField('year')
+      ).joi(
+        errorFor('day', 'Day is required'),
+        Joi.object()
+          .with('year', 'day')
+          .with('month', 'day')
+      );
+
+      date.parse({ year: 2017 });
+      date.validate();
+      expect(date.day.errors).to.contain('Day is required');
     });
   });
 });
