@@ -9,6 +9,7 @@ const {
   boolField
 } = require('./simpleFields');
 
+const dateField = require('./complex/dateField');
 
 module.exports = {
   form,
@@ -18,5 +19,6 @@ module.exports = {
   nonEmptyTextField,
   boolField,
   compoundField,
-  errorFor
+  errorFor,
+  dateField
 };
