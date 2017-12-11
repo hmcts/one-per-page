@@ -16,6 +16,8 @@ const RespondentTitle = require('./steps/respondent/RespondentTitle.step');
 const ExitNorthernIreland = require('./steps/exits/ExitNorthernIreland.step');
 const Done = require('./steps/exits/Done.step');
 const Error = require('./steps/exits/Error.step');
+const ExitDate = require('./steps/exits/ExitDate.step');
+const DateOfMarriage = require('./steps/DateOfMarriage.step');
 
 const app = express();
 
@@ -56,7 +58,9 @@ journey(app, {
     CheckYourAnswers,
     ExitNorthernIreland,
     Done,
-    Error
+    Error,
+    ExitDate,
+    DateOfMarriage
   ],
   session: {
     redis: { url: config.redisUrl },

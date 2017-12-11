@@ -1,0 +1,14 @@
+{
+  "title": "When did you get married?",
+  "date": {
+    "question": "Date you got married",
+    "hint": "For example, {{ today }}",
+    "dayLabel": "Day",
+    "monthLabel": "Month",
+    "yearLabel": "Year",
+    "allRequired": "Enter the date you got married",
+    "dayRequired": "Enter the day you got married",
+    "monthRequired": "Enter the month you got married",
+    "yearRequired": "Enter the year you got married"
+  }
+}

@@ -1,0 +1,26 @@
+{% extends "question-globals.njk" %}
+{% extends "look-and-feel/layouts/question.html" %}
+
+{% from "look-and-feel/components/fields.njk" import formSection, date %}
+
+{% set title %}
+{{ content.title }}
+{% endset %}
+
+{% block fields %}
+
+  {% call formSection() %}
+
+    {{ date(fields.date, content.date.question,
+      hideQuestion = true,
+      hint = content.date.hint,
+      labels = {
+        day: content.date.dayLabel,
+        month: content.date.monthLabel,
+        year: content.date.yearLabel
+      }
+    ) }}
+
+  {% endcall %}
+
+{% endblock %}

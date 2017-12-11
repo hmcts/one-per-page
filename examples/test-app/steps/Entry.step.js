@@ -6,7 +6,7 @@ class Entry extends EntryPoint {
   }
 
   next() {
-    return goTo(this.journey.steps.Country);
+    return goTo(this.journey.steps.DateOfMarriage);
   }
 }
 
