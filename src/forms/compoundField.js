@@ -30,20 +30,19 @@ const failOnFirstFailure = validations => {
   return { result: false, errors: [maybeError] };
 };
 
+const errorFor = (id, message) => {
+  return { id, message };
+};
+
 const parseErrorTarget = (targetOrMessage, fallbackId) => {
-  if (typeof targetOrMessage === 'string') {
-    return { message: targetOrMessage, id: fallbackId };
-  }
   const isObject = typeof targetOrMessage === 'object';
   if (isObject && 'message' in targetOrMessage && 'id' in targetOrMessage) {
     return targetOrMessage;
   }
-  throw new Error(`Cannot parse ${targetOrMessage}`);
+  return errorFor(fallbackId, targetOrMessage);
 };
 
-const errorFor = (id, message) => {
-  return { id, message };
-};
+const noChange = value => value;
 
 class CompoundField {
   constructor(name, ...fields) {
@@ -53,6 +52,8 @@ class CompoundField {
     this.validations = [];
     this.errors = [];
     this.validated = false;
+
+    this.transformValue = noChange;
 
     fields.forEach(field => {
       this[field.name] = field;
@@ -76,7 +77,7 @@ class CompoundField {
   }
 
   serialize() {
-    return { [this.name]: this.value };
+    return { [this.name]: this.fieldValues };
   }
 
   validate() {
@@ -107,7 +108,7 @@ class CompoundField {
   joi(targetOrError, joiSchema) {
     const { message, id } = parseErrorTarget(targetOrError, this.name);
     const validator = () => {
-      const { error } = Joi.validate(this.value, joiSchema);
+      const { error } = Joi.validate(this.fieldValues, joiSchema);
       return error ? message : error;
     };
     return this.addValidation(id, message, validator);
@@ -116,7 +117,7 @@ class CompoundField {
   check(targetOrError, predicate) {
     const { message, id } = parseErrorTarget(targetOrError, this.name);
     const validator = () => {
-      if (predicate(this.value)) {
+      if (predicate(this.fieldValues)) {
         return false;
       }
       return message;
@@ -124,10 +125,14 @@ class CompoundField {
     return this.addValidation(id, message, validator);
   }
 
-  get value() {
+  get fieldValues() {
     return this.fields
       .map(field => field.serialize())
       .reduce((obj, value) => Object.assign(obj, value), {});
+  }
+
+  get value() {
+    return this.transformValue(this.fieldValues);
   }
 
   get mappedErrors() {
@@ -135,6 +140,11 @@ class CompoundField {
       this.errors.map(error => new FieldError(this, error)),
       ...this.fields.map(field => field.mappedErrors)
     ].reduce((left, right) => [...left, ...right], []);
+  }
+
+  mapValue(func) {
+    this.transformValue = func;
+    return this;
   }
 }
 
