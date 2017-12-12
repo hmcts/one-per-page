@@ -5,3 +5,4 @@ yarn-error.log
 /examples/**/node_modules/
 /.nyc_output/
 /coverage.lcov
+.idea

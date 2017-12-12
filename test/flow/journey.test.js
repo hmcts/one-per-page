@@ -5,6 +5,7 @@ const { OK } = require('http-status-codes');
 const { expect, sinon } = require('../util/chai');
 const Page = require('../../src/steps/Page');
 const session = require('../../src/session');
+const errorPages = require('../../src/errors/errorPages');
 
 class TestPage extends Page {}
 const defaultOptions = {
@@ -142,6 +143,42 @@ describe('journey/journey', () => {
         expect(spy).calledWith(sinon.match({ secret }));
         expect(spy).calledWith(sinon.match({ cookie: { domain } }));
       });
+    });
+  });
+
+  describe('Error pages option', () => {
+    let stubbedJourney = null;
+    let bindStub = null;
+
+    beforeEach(() => {
+      bindStub = sinon.stub().returns(true);
+      const errorPagesStubObj = { bind: bindStub };
+
+      stubbedJourney = proxyquire(
+        '../../src/flow/journey',
+        { '../errors/errorPages': errorPagesStubObj }
+      );
+    });
+
+    it('should register default error pages', () => {
+      const app = testApp();
+      stubbedJourney(app, defaultOptions);
+      return expect(bindStub).to.have.been.calledWith(app, undefined);
+    });
+
+    it('should register configured error pages', () => {
+      const errorPagesConfig = { template: 'sometemplate' };
+      const app = testApp();
+
+      stubbedJourney(app,
+        {
+          baseUrl: 'http://localhost',
+          session: { secret: 'foo' },
+          errorPages: errorPagesConfig
+        }
+      );
+
+      return expect(bindStub).to.have.been.calledWith(app, errorPagesConfig);
     });
   });
 });
