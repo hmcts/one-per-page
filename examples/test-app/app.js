@@ -18,6 +18,7 @@ const Done = require('./steps/exits/Done.step');
 const Error = require('./steps/exits/Error.step');
 const ExitDate = require('./steps/exits/ExitDate.step');
 const DateOfMarriage = require('./steps/DateOfMarriage.step');
+const ExampleServerError = require('./steps/errors/ExampleServerError.step');
 
 const app = express();
 
@@ -59,9 +60,11 @@ journey(app, {
     ExitNorthernIreland,
     Done,
     Error,
+    ExampleServerError,
     ExitDate,
     DateOfMarriage
   ],
+  errorPages: {},
   session: {
     redis: { url: config.redisUrl },
     cookie: { secure: false }
