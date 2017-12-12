@@ -42,7 +42,7 @@ class Page extends BaseStep {
   }
 
   get middleware() {
-    return [resolveTemplate, addLocals];
+    return [...super.middleware, resolveTemplate, addLocals];
   }
 
   get locals() {
