@@ -1,3 +1,10 @@
+<a name="2.0.0-5"></a>
+# 2.0.0-5 (2017-12-13)
+
+* Filter ref fields out of default values ([59148a5](https://github.com/hmcts/one-per-page/commit/59148a5))
+
+
+
 <a name="2.0.0-4"></a>
 # 2.0.0-4 (2017-12-13)
 
