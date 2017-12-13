@@ -6,6 +6,7 @@ const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const answer = require('./check-your-answers/answer');
 const formProxyHandler = require('../forms/formProxyHandler');
 const { form } = require('../forms');
+const { Reference } = require('../forms/ref');
 const logging = require('@log4js-node/log4js-api');
 const { ifCompleteThenContinue } = require('../flow/treeWalker');
 
@@ -50,6 +51,7 @@ class Question extends Page {
 
   values() {
     return Object.values(this.fields)
+      .filter(field => !(field instanceof Reference))
       .reduce((values, field) =>
         Object.assign(values, { [field.name]: field.value }), {}
       );
