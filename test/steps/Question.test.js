@@ -2,7 +2,7 @@ const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
 const { section } = require('../../src/steps/check-your-answers/section');
-const { field, form } = require('../../src/forms');
+const { field, form, textField } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const Joi = require('joi');
@@ -154,6 +154,30 @@ describe('steps/Question', () => {
         const _values = step.values();
         expect(_values).to.be.an('object');
         expect(_values).to.have.property('name', 'John');
+      });
+
+      it("doesn't include ref fields", () => {
+        const NameStep = class extends SimpleQuestion {
+          static get path() {
+            return '/next-step';
+          }
+          get form() {
+            return form(
+              textField.ref(this.journey.steps.NameStep, 'name')
+            );
+          }
+        };
+        const req = {
+          journey: { steps: { NameStep } },
+          session: { NameStep: { name: 'John' } }
+        };
+        const res = {};
+        const step = new NameStep(req, res);
+        step.retrieve().validate();
+
+        const _values = step.values();
+        expect(_values).to.be.an('object');
+        expect(_values).to.not.have.property('name', 'John');
       });
     });
 
