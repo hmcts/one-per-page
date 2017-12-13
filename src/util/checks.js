@@ -7,4 +7,18 @@ const ensureArray = maybeArray => {
   return [maybeArray];
 };
 
-module.exports = { notDefined, defined, ensureArray };
+const hasKey = (obj, key) => Object.getOwnPropertyNames(obj).includes(key);
+
+const hasKeys = (obj, ...keys) => keys.reduce(
+  (result, key) => result && hasKey(obj, key),
+  true
+);
+
+const isObject = maybeObj => typeof maybeObj === 'object';
+
+module.exports = {
+  notDefined, defined,
+  ensureArray,
+  hasKey, hasKeys,
+  isObject
+};

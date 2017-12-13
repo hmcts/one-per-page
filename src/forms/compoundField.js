@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const option = require('option');
 const FieldError = require('./fieldError');
+const { hasKeys, isObject, notDefined } = require('../util/checks');
 
 class BadValidationTargetError extends Error {
   constructor(id, field) {
@@ -14,9 +15,6 @@ class BadValidationTargetError extends Error {
   }
 }
 
-const isNullOrUndefined = value =>
-  typeof value === 'undefined' || value === null;
-
 const failOnFirstFailure = validations => {
   if (!(validations && validations.length)) {
     return { result: true, errors: [] };
@@ -24,7 +22,7 @@ const failOnFirstFailure = validations => {
   const [currentValidation, ...rest] = validations;
   const maybeError = currentValidation();
 
-  if (!maybeError || isNullOrUndefined(maybeError)) {
+  if (!maybeError || notDefined(maybeError)) {
     return failOnFirstFailure(rest);
   }
   return { result: false, errors: [maybeError] };
@@ -35,8 +33,7 @@ const errorFor = (id, message) => {
 };
 
 const parseErrorTarget = (targetOrMessage, fallbackId) => {
-  const isObject = typeof targetOrMessage === 'object';
-  if (isObject && 'message' in targetOrMessage && 'id' in targetOrMessage) {
+  if (isObject(targetOrMessage) && hasKeys(targetOrMessage, 'message', 'id')) {
     return targetOrMessage;
   }
   return errorFor(fallbackId, targetOrMessage);
