@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const option = require('option');
-const FieldError = require('./fieldError');
-const { hasKeys, isObject, notDefined } = require('../util/checks');
+const { FieldDesriptor } = require('./field');
+const { hasKeys, isObject } = require('../util/checks');
 
 class TargetNotFoundError extends Error {
   constructor(id, field) {
@@ -14,19 +14,6 @@ class TargetNotFoundError extends Error {
     this.targetId = id;
   }
 }
-
-const failOnFirstFailure = validations => {
-  if (!(validations && validations.length)) {
-    return { result: true, errors: [] };
-  }
-  const [currentValidation, ...rest] = validations;
-  const maybeError = currentValidation();
-
-  if (!maybeError || notDefined(maybeError)) {
-    return failOnFirstFailure(rest);
-  }
-  return { result: false, errors: [maybeError] };
-};
 
 const errorFor = (id, message) => {
   return { id, message };
@@ -41,15 +28,10 @@ const parseErrorTarget = (targetOrMessage, fallbackId) => {
 
 const noChange = value => value;
 
-class CompoundField {
+class CompoundField extends FieldDesriptor {
   constructor(name, ...fields) {
-    this.name = name;
-    this.id = name;
+    super(name);
     this.fields = fields;
-    this.validations = [];
-    this.errors = [];
-    this.validated = false;
-
     this.transformValue = noChange;
 
     fields.forEach(field => {
@@ -80,15 +62,11 @@ class CompoundField {
   validate() {
     const results = this.fields.map(field => field.validate());
     if (results.some(result => result === false)) {
-      this.validated = true;
-      this.valid = false;
+      this._validated = true;
+      this._valid = false;
       return false;
     }
-    const { result, errors } = failOnFirstFailure(this.validations);
-    this.errors = errors;
-    this.valid = result;
-    this.validated = true;
-    return result;
+    return super.validate();
   }
 
   addValidation(id, message, validator) {
@@ -134,7 +112,7 @@ class CompoundField {
 
   get mappedErrors() {
     return [
-      this.errors.map(error => new FieldError(this, error)),
+      super.mappedErrors,
       ...this.fields.map(field => field.mappedErrors)
     ].reduce((left, right) => [...left, ...right], []);
   }
