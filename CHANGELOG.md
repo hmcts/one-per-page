@@ -1,3 +1,20 @@
+<a name="2.0.0-4"></a>
+# 2.0.0-4 (2017-12-13)
+
+* Add a basic dateField complex field ([c1d85bd](https://github.com/hmcts/one-per-page/commit/c1d85bd))
+* Allow a compoundFields value to be mapped to another object ([ea87b85](https://github.com/hmcts/one-per-page/commit/ea87b85))
+* Allow compound fields to target their errors ([86f3334](https://github.com/hmcts/one-per-page/commit/86f3334))
+* Basic compound field type ([4d67cdd](https://github.com/hmcts/one-per-page/commit/4d67cdd))
+* Clean up checks in compoundField based on review feedback ([9b81ade](https://github.com/hmcts/one-per-page/commit/9b81ade))
+* Ensure empty strings are parsed as undefined by textParser ([1b415d9](https://github.com/hmcts/one-per-page/commit/1b415d9))
+* Fix #77 by always waiting for a promises to complete ([a922f8a](https://github.com/hmcts/one-per-page/commit/a922f8a)), closes [#77](https://github.com/hmcts/one-per-page/issues/77)
+* Move base field types in to a file that can be required by complex fields ([34fa7ba](https://github.com/hmcts/one-per-page/commit/34fa7ba))
+* Move mapping of errors to FieldErrors in to FieldDescriptor ([7f86857](https://github.com/hmcts/one-per-page/commit/7f86857))
+* Rename for clear understanding based on review feedback ([68079eb](https://github.com/hmcts/one-per-page/commit/68079eb))
+* Use dateField to ask for the users date of marriage ([cbec718](https://github.com/hmcts/one-per-page/commit/cbec718))
+
+
+
 <a name="2.0.0-3"></a>
 # 2.0.0-3 (2017-12-07)
 
