@@ -35,9 +35,9 @@ class FieldDesriptor {
     this.parser = fieldParser;
     this.name = name;
     this.id = name;
-    this.value = undefined; // eslint-disable-line no-undefined
     this.validations = [];
     this._validated = false;
+    this._errors = [];
   }
 
   /**
