@@ -3,7 +3,7 @@ const option = require('option');
 const FieldError = require('./fieldError');
 const { hasKeys, isObject, notDefined } = require('../util/checks');
 
-class BadValidationTargetError extends Error {
+class TargetNotFoundError extends Error {
   constructor(id, field) {
     const targets = [field.name, ...field.fields.map(f => f.name)];
     const message = `${id} not recognised. Must be one of ${targets.join(',')}`;
@@ -97,7 +97,7 @@ class CompoundField {
     } else if (this.fields.some(f => f.name === id)) {
       this[id].validations.push(validator);
     } else {
-      throw new BadValidationTargetError(id, this);
+      throw new TargetNotFoundError(id, this);
     }
     return this;
   }
