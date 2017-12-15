@@ -11,39 +11,48 @@ const readable = value => {
 };
 
 const fieldTest = (field, tests) => {
-  const deserializes = ({ from, to, key = 'foo' }) => {
+  const deserializes = ({ from, to, key = 'foo', only = false }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
+    const mochaTest = only ? it.only : it;
 
-    it(`deserializes ${toStr} from ${fromStr}`, () => {
+    mochaTest(`deserializes ${toStr} from ${fromStr}`, () => {
       const session = isObject(from) ? from : { [key]: from };
       const fieldValue = field.deserialize(key, session);
       expect(fieldValue.value).to.eql(to);
     });
   };
-  const parses = ({ from, to, key = 'foo' }) => {
+  const parses = ({ from, to, key = 'foo', only = false }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
+    const mochaTest = only ? it.only : it;
 
-    it(`parses ${toStr} from ${fromStr}`, () => {
+    mochaTest(`parses ${toStr} from ${fromStr}`, () => {
       const body = isObject(from) ? from : { [key]: from };
       const fieldValue = field.parse(key, body);
       expect(fieldValue.value).to.eql(to);
     });
   };
-  const serializes = ({ from, to, key = 'foo' }) => {
+  const serializes = ({ from, to, key = 'foo', only = false }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
+    const mochaTest = only ? it.only : it;
 
-    it(`serializes ${toStr} from ${fromStr}`, () => {
-      const body = isObject(from) ? from : { [key]: from };
+    mochaTest(`serializes ${toStr} from ${fromStr}`, () => {
+      const values = isObject(from) ? from : { [key]: from };
       const serialized = isObject(to) ? to : { [key]: to };
-      const fieldValue = field.parse(key, body);
+      const fieldValue = field.deserialize(key, values);
       expect(fieldValue.serialize()).to.eql(serialized);
     });
   };
 
-  return () => tests({ deserializes, parses, serializes });
+  const only = {
+    serializes: args => serializes(Object.assign(args, { only: true })),
+    deserializes: args => deserializes(Object.assign(args, { only: true })),
+    parses: args => parses(Object.assign(args, { only: true }))
+  };
+
+  return () => tests({ deserializes, parses, serializes, only });
 };
 
 
