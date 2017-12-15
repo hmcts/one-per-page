@@ -14,7 +14,8 @@ const hasKeys = (obj, ...keys) => keys.reduce(
   true
 );
 
-const isObject = maybeObj => typeof maybeObj === 'object';
+const isObject = maybeObj =>
+  typeof maybeObj === 'object' && !Array.isArray(maybeObj);
 
 module.exports = {
   notDefined, defined,
