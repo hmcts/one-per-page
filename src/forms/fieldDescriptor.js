@@ -22,16 +22,18 @@ class FieldDescriptor {
   constructor({
     parser = getValue,
     deserializer = getValue,
-    serializer
+    serializer,
+    produces = fieldValue
   } = {}) {
     this.parser = parser;
     this.deserializer = deserializer;
     this.serializer = serializer;
     this.validations = [];
+    this.field = produces;
   }
 
   fillField(name, value) {
-    return fieldValue({
+    return this.field({
       id: name,
       name,
       value,
