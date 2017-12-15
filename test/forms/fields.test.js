@@ -1,5 +1,5 @@
 const { expect } = require('../util/chai');
-const { text, nonEmptyText, bool } = require('../../src/forms/fields');
+const { text, nonEmptyText, bool, list } = require('../../src/forms/fields');
 const { isObject } = require('../../src/util/checks');
 
 const readable = value => {
@@ -114,5 +114,35 @@ describe('forms/fields', () => {
     it.serializes({ to: {}, from: undefined });
     it.serializes({ to: true, from: true });
     it.serializes({ to: false, from: false });
+  }));
+
+  describe('list(bool)', fieldTest(list(bool), it => {
+    it.parses({ to: [true], from: { 'foo.0': 'true' } });
+    it.parses({
+      to: [true, false],
+      from: { 'foo.0': 'true', 'foo.1': 'no' }
+    });
+
+    it.deserializes({ to: [], from: {} });
+    it.deserializes({ to: [true], from: [true] });
+    it.deserializes({ to: [true, false], from: [true, false] });
+
+    it.serializes({ to: {}, from: [] });
+    it.serializes({ to: [true], from: [true] });
+    it.serializes({ to: [true, false], from: [true, false] });
+  }));
+
+  describe('list(text)', fieldTest(list(text), it => {
+    it.parses({ to: ['Foo'], from: { 'foo.0': 'Foo' } });
+    it.parses({
+      to: ['Foo', 'Bar'],
+      from: { 'foo.0': 'Foo', 'foo.1': 'Bar' }
+    });
+
+    it.deserializes({ to: ['Foo'], from: ['Foo'] });
+    it.deserializes({ to: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
+
+    it.serializes({ to: ['Foo'], from: ['Foo'] });
+    it.serializes({ to: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
   }));
 });

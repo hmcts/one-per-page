@@ -1,4 +1,4 @@
-const { notDefined } = require('../util/checks');
+const { notDefined, defined } = require('../util/checks');
 
 const failOnFirstFailure = (field, validations) => {
   if (!(validations && validations.length)) {
@@ -32,7 +32,7 @@ class FieldValue {
   }) {
     this.id = id;
     this.name = name;
-    this.value = value;
+    if (defined(value)) this.value = value;
     this.validations = validations;
     this.serializer = serializer;
   }
