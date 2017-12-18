@@ -37,6 +37,13 @@ class FieldValue {
     this.serializer = serializer;
   }
 
+  static from(args, fieldDesc) {
+    return new this(Object.assign({}, args, {
+      validations: fieldDesc.validations,
+      serializer: fieldDesc.serializer
+    }));
+  }
+
   serialize() {
     return this.serializer(this);
   }
