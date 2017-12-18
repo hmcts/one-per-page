@@ -1,5 +1,5 @@
 const option = require('option');
-const { fieldValue } = require('./fieldValue');
+const { FieldValue } = require('./fieldValue');
 const Joi = require('joi');
 
 
@@ -22,32 +22,25 @@ class FieldDescriptor {
   constructor({
     parser = getValue,
     deserializer = getValue,
-    serializer,
-    produces = fieldValue
+    serializer
   } = {}) {
     this.parser = parser;
     this.deserializer = deserializer;
     this.serializer = serializer;
     this.validations = [];
-    this.field = produces;
   }
 
-  fillField(name, value) {
-    return this.field({
-      id: name,
-      name,
-      value,
-      validations: this.validations,
-      serializer: this.serializer
-    });
+  ensureField(name, value) {
+    if (value instanceof FieldValue) return value;
+    return FieldValue.from({ name, value }, this);
   }
 
   parse(name, body = {}) {
-    return this.fillField(name, this.parser(name, body));
+    return this.ensureField(name, this.parser(name, body));
   }
 
   deserialize(name, values = {}) {
-    return this.fillField(name, this.deserializer(name, values));
+    return this.ensureField(name, this.deserializer(name, values));
   }
 
   joi(...args) {
