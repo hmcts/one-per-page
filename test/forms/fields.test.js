@@ -116,6 +116,28 @@ describe('forms/fields', () => {
     it.serializes({ to: false, from: false });
   }));
 
+  describe('bool.default(true)', fieldTest(bool.default(true), it => {
+    it.parses({ to: true, from: undefined });
+    it.parses({ to: true, from: {} });
+    it.parses({ to: true, from: 'nonsense' });
+    it.parses({ to: true, from: {} });
+    it.parses({ to: true, from: [] });
+
+    it.parses({ to: true, from: true });
+    it.parses({ to: false, from: false });
+  }));
+
+  describe('bool.default(false)', fieldTest(bool.default(false), it => {
+    it.parses({ to: false, from: undefined });
+    it.parses({ to: false, from: {} });
+    it.parses({ to: false, from: 'nonsense' });
+    it.parses({ to: false, from: {} });
+    it.parses({ to: false, from: [] });
+
+    it.parses({ to: true, from: true });
+    it.parses({ to: false, from: false });
+  }));
+
   describe('list(bool)', fieldTest(list(bool), it => {
     it.parses({ to: [true], from: { 'foo.0': 'true' } });
     it.parses({
