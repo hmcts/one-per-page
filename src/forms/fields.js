@@ -109,5 +109,12 @@ const bool = fieldDescriptor({
       .valueOrElse(undefined); // eslint-disable-line no-undefined
   }
 });
+bool.default = defaultValue => fieldDescriptor({
+  parser(name, body) {
+    const parsed = bool.parser(name, body);
+    if (defined(parsed)) return parsed;
+    return defaultValue;
+  }
+});
 
 module.exports = { nonEmptyText, text, bool, list };
