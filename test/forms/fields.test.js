@@ -1,5 +1,10 @@
 const { expect } = require('../util/chai');
-const { text, nonEmptyText, bool, list } = require('../../src/forms/fields');
+const {
+  text, nonEmptyText,
+  bool,
+  list,
+  object
+} = require('../../src/forms/fields');
 const { isObject } = require('../../src/util/checks');
 
 const readable = value => {
@@ -11,18 +16,28 @@ const readable = value => {
 };
 
 const fieldTest = (field, tests) => {
-  const deserializes = ({ from, to, key = 'foo', only = false }) => {
+  const deserializes = ({
+    from, value, key = 'foo', only = false,
+    assertions = ({ fieldValue }) => {
+      expect(fieldValue.value).to.eql(value);
+    }
+  }) => {
     const fromStr = readable(from);
-    const toStr = readable(to);
+    const toStr = readable(value);
     const mochaTest = only ? it.only : it;
 
     mochaTest(`deserializes ${toStr} from ${fromStr}`, () => {
       const session = isObject(from) ? from : { [key]: from };
       const fieldValue = field.deserialize(key, session);
-      expect(fieldValue.value).to.eql(to);
+      return assertions({ fieldValue, field });
     });
   };
-  const parses = ({ from, to, key = 'foo', only = false }) => {
+  const parses = ({
+    from, to, key = 'foo', only = false,
+    assertions = ({ fieldValue }) => {
+      expect(fieldValue.value).to.eql(to);
+    }
+  }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
     const mochaTest = only ? it.only : it;
@@ -30,19 +45,25 @@ const fieldTest = (field, tests) => {
     mochaTest(`parses ${toStr} from ${fromStr}`, () => {
       const body = isObject(from) ? from : { [key]: from };
       const fieldValue = field.parse(key, body);
-      expect(fieldValue.value).to.eql(to);
+      return assertions({ fieldValue, field });
     });
   };
-  const serializes = ({ from, to, key = 'foo', only = false }) => {
+  const serializes = ({
+    from, to, key = 'foo', only = false,
+    assertions = ({ serializedValue }) => {
+      const serialized = isObject(to) ? to : { [key]: to };
+      expect(serializedValue).to.eql(serialized);
+    }
+  }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
     const mochaTest = only ? it.only : it;
 
     mochaTest(`serializes ${toStr} from ${fromStr}`, () => {
       const values = isObject(from) ? from : { [key]: from };
-      const serialized = isObject(to) ? to : { [key]: to };
       const fieldValue = field.deserialize(key, values);
-      expect(fieldValue.serialize()).to.eql(serialized);
+      const serializedValue = fieldValue.serialize();
+      return assertions({ fieldValue, field, serializedValue });
     });
   };
 
@@ -58,9 +79,9 @@ const fieldTest = (field, tests) => {
 
 describe('forms/fields', () => {
   describe('nonEmptyText', fieldTest(nonEmptyText, it => {
-    it.deserializes({ to: '', from: '' });
-    it.deserializes({ to: 'value', from: 'value' });
-    it.deserializes({ to: '', from: {} });
+    it.deserializes({ value: '', from: '' });
+    it.deserializes({ value: 'value', from: 'value' });
+    it.deserializes({ value: '', from: {} });
 
     it.parses({ to: 'value', from: 'value' });
     it.parses({ to: '1', from: 1 });
@@ -73,9 +94,9 @@ describe('forms/fields', () => {
   }));
 
   describe('text', fieldTest(text, it => {
-    it.deserializes({ to: undefined, from: '' });
-    it.deserializes({ to: 'value', from: 'value' });
-    it.deserializes({ to: undefined, from: {} });
+    it.deserializes({ value: undefined, from: '' });
+    it.deserializes({ value: 'value', from: 'value' });
+    it.deserializes({ value: undefined, from: {} });
 
     it.parses({ to: 'value', from: 'value' });
     it.parses({ to: '1', from: 1 });
@@ -107,9 +128,9 @@ describe('forms/fields', () => {
     it.parses({ to: false, from: 0 });
     it.parses({ to: false, from: '0' });
 
-    it.deserializes({ to: undefined, from: {} });
-    it.deserializes({ to: true, from: true });
-    it.deserializes({ to: false, from: false });
+    it.deserializes({ value: undefined, from: {} });
+    it.deserializes({ value: true, from: true });
+    it.deserializes({ value: false, from: false });
 
     it.serializes({ to: {}, from: undefined });
     it.serializes({ to: true, from: true });
@@ -145,9 +166,9 @@ describe('forms/fields', () => {
       from: { 'foo.0': 'true', 'foo.1': 'no' }
     });
 
-    it.deserializes({ to: [], from: {} });
-    it.deserializes({ to: [true], from: [true] });
-    it.deserializes({ to: [true, false], from: [true, false] });
+    it.deserializes({ value: [], from: {} });
+    it.deserializes({ value: [true], from: [true] });
+    it.deserializes({ value: [true, false], from: [true, false] });
 
     it.serializes({ to: {}, from: [] });
     it.serializes({ to: [true], from: [true] });
@@ -161,10 +182,54 @@ describe('forms/fields', () => {
       from: { 'foo.0': 'Foo', 'foo.1': 'Bar' }
     });
 
-    it.deserializes({ to: ['Foo'], from: ['Foo'] });
-    it.deserializes({ to: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
+    it.deserializes({ value: ['Foo'], from: ['Foo'] });
+    it.deserializes({ value: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
 
     it.serializes({ to: ['Foo'], from: ['Foo'] });
     it.serializes({ to: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
+  }));
+
+  const objectWithChildren = object({ a: text, b: bool });
+  describe('object({ a: text, b: bool })', fieldTest(objectWithChildren, it => {
+    it.parses({ to: {}, from: {} });
+    it.parses({
+      to: { a: 'A text field', b: true },
+      from: { 'foo.a': 'A text field', 'foo.b': 'true' }
+    });
+    it.parses({
+      to: { a: 'A text field' },
+      from: { 'foo.a': 'A text field' }
+    });
+
+    it.deserializes({
+      value: { a: 'A text field', b: true },
+      from: { foo: { a: 'A text field', b: true } }
+    });
+    it.deserializes({
+      value: {},
+      from: { foo: {} }
+    });
+    it.deserializes({
+      from: { foo: { a: 'A text field', b: true } },
+      assertions({ fieldValue }) {
+        expect(fieldValue).to.have.property('a');
+        expect(fieldValue).to.have.property('b');
+        expect(fieldValue.a).to.have.property('value', 'A text field');
+        expect(fieldValue.b).to.have.property('value', true);
+      }
+    });
+
+    it.serializes({
+      to: { foo: { a: 'A text field', b: true } },
+      from: { foo: { a: 'A text field', b: true } }
+    });
+    it.serializes({
+      to: { foo: { a: 'A text field' } },
+      from: { foo: { a: 'A text field' } }
+    });
+    it.serializes({
+      to: {},
+      from: { foo: {} }
+    });
   }));
 });
