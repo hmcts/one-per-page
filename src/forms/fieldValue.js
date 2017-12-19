@@ -1,4 +1,5 @@
 const { notDefined, defined } = require('../util/checks');
+const FieldError = require('./fieldError');
 
 const failOnFirstFailure = (field, validations) => {
   if (!(validations && validations.length)) {
@@ -35,6 +36,9 @@ class FieldValue {
     if (defined(value)) this.value = value;
     this.validations = validations;
     this.serializer = serializer;
+
+    this[validatedProp] = false;
+    this[errorsProp] = [];
   }
 
   static from(args, fieldDesc) {
@@ -65,6 +69,9 @@ class FieldValue {
   }
   get validated() {
     return this[validatedProp];
+  }
+  get mappedErrors() {
+    return this.errors.map(error => new FieldError(this, error));
   }
 }
 
