@@ -95,10 +95,22 @@ describe('forms/fieldDescriptor', () => {
     });
 
     describe('#joi', () => {
-      it('adds a joi validator to #validations', () => {
+      it('returns a new instance with validator added to #validations', () => {
         const f = new FieldDescriptor();
-        f.joi('Error Message', Joi.string().required());
-        expect(f.validations).to.have.length(1);
+        const withValidation = f.joi('Error Message', Joi.string().required());
+
+        expect(withValidation.validations).to.have.length(1);
+        expect(f).to.not.eql(withValidation);
+      });
+    });
+
+    describe('#check', () => {
+      it('returns a new instance with validator added to #validations', () => {
+        const f = new FieldDescriptor();
+        const withValidation = f.check('Error Message', value => value === 'a');
+
+        expect(withValidation.validations).to.have.length(1);
+        expect(f).to.not.eql(withValidation);
       });
     });
   });
