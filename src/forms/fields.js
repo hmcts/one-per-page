@@ -8,6 +8,15 @@ const intoObject = (obj, { key, value }) => {
   return obj;
 };
 
+const mapEntries = (obj, block) => Object.entries(obj)
+  .reduce((accum, [key, value]) => {
+    const newValue = block(key, value);
+    if (defined(newValue)) {
+      return Object.assign(accum, { [key]: newValue });
+    }
+    return accum;
+  }, {});
+
 class ObjectFieldValue extends FieldValue {
   constructor({ id, name, serializer, validations, fields = [] }) {
     super({ id, name, serializer, validations });
@@ -19,13 +28,7 @@ class ObjectFieldValue extends FieldValue {
   }
 
   get value() {
-    return Object
-      .keys(this.fields)
-      .map(key => {
-        return { key, value: this.fields[key].value };
-      })
-      .filter(({ value }) => defined(value))
-      .reduce(intoObject, {});
+    return mapEntries(this.fields, (name, field) => field.value);
   }
 }
 
@@ -37,14 +40,10 @@ class ListFieldValue extends ObjectFieldValue {
 
 const object = childFields => fieldDescriptor({
   parser(name, body) {
-    const keys = Object.keys(childFields);
-
-    const fields = keys
-      .map(key => {
-        const fieldName = `${name}.${key}`;
-        return { key, value: childFields[key].parse(fieldName, body) };
-      })
-      .reduce(intoObject, {});
+    const fields = mapEntries(childFields, (key, field) => {
+      const fieldName = `${name}.${key}`;
+      return field.parse(fieldName, body);
+    });
 
     return ObjectFieldValue.from({ name, fields }, this);
   },
@@ -53,31 +52,24 @@ const object = childFields => fieldDescriptor({
       .fromNullable(values[name])
       .valueOrElse({});
 
-    const fields = Object.keys(childFields)
-      .map(key => {
-        const fieldName = `${name}.${key}`;
-        const value = { [fieldName]: obj[key] };
-        return {
-          key,
-          value: childFields[key].deserialize(fieldName, value)
-        };
-      })
-      .reduce(intoObject, {});
+    const fields = mapEntries(childFields, (key, field) => {
+      const fieldName = `${name}.${key}`;
+      const value = { [fieldName]: obj[key] };
+      return field.deserialize(fieldName, value);
+    });
 
     return ObjectFieldValue.from({ name, fields }, this);
   },
   serializer(field) {
-    const serializedFields = Object.entries(field.fields)
-      .map(([name, childField]) => {
-        const fieldName = `${field.name}.${name}`;
-        return { key: name, value: childField.serialize()[fieldName] };
-      })
-      .filter(({ value }) => defined(value));
+    const serialized = mapEntries(field.fields, (key, childField) => {
+      const fieldName = `${field.name}.${key}`;
+      return childField.serialize()[fieldName];
+    });
 
-    if (serializedFields.length === 0) {
+    if (Object.keys(serialized).length === 0) {
       return {};
     }
-    return { [field.name]: serializedFields.reduce(intoObject, {}) };
+    return { [field.name]: serialized };
   }
 });
 
