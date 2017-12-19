@@ -46,13 +46,13 @@ describe('forms/field', () => {
     describe('#deserialize', () => {
       it('returns a FieldDesriptor', () => {
         const foo = new FieldDesriptor('first_name');
-        expect(foo.deserialize({})).to.be.an.instanceof(FieldDesriptor);
+        expect(foo.deserialize('first_name', {})).instanceof(FieldDesriptor);
       });
 
       it('fills FieldDesriptor.value with answer from the session', () => {
         const sessionValues = { firstName: 'Michael' };
         const firstName = new FieldDesriptor('firstName');
-        firstName.deserialize(sessionValues);
+        firstName.deserialize('firstName', sessionValues);
         expect(firstName).to.have.property('value', 'Michael');
       });
     });
@@ -60,13 +60,14 @@ describe('forms/field', () => {
     describe('#parse', () => {
       it('returns a FieldDesriptor', () => {
         const foo = new FieldDesriptor('first_name');
-        expect(foo.parse({})).to.be.an.instanceof(FieldDesriptor);
+        expect(foo.parse('first_name', {})).to.be.an.instanceof(FieldDesriptor);
       });
 
       it('fills FieldDesriptor.value with answer from request body', () => {
         const req = { firstName: 'Michael' };
         const firstName = new FieldDesriptor('firstName');
-        expect(firstName.parse(req)).to.have.property('value', 'Michael');
+        firstName.parse('firstName', req);
+        expect(firstName).to.have.property('value', 'Michael');
       });
     });
 

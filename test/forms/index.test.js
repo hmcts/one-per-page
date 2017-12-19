@@ -2,7 +2,7 @@ const { expect } = require('../util/chai');
 const forms = require('../../src/forms');
 const { Reference } = require('../../src/forms/ref');
 const { FieldDesriptor } = require('../../src/forms/field');
-const { Form } = require('../../src/forms/form');
+const { Form } = require('../../src/forms/newForm');
 const parsers = require('../../src/forms/fieldParsers');
 
 describe('@hmcts/one-per-page/forms', () => {

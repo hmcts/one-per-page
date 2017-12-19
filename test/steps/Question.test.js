@@ -256,10 +256,11 @@ describe('steps/Question', () => {
       it('calls fields.store with the bound request', () => {
         const req = {
           journey: { NameStep },
+          body: { name: 'Michael' },
           session: {}
         };
         const step = new NameStep(req, {});
-        step.fields.name.value = 'Michael';
+        step.parse();
         step.store();
         expect(req.session.NameStep.name).to.eql('Michael');
       });
@@ -267,8 +268,9 @@ describe('steps/Question', () => {
 
     describe('#validate', () => {
       it('validates the questions fields', () => {
-        const step = new NameStep({}, {});
-        step.fields.name.value = 'Michael';
+        const req = { body: { name: 'Michael' } };
+        const step = new NameStep(req, {});
+        step.parse();
 
         expect(step.fields.validated).to.be.false;
         step.validate();
@@ -278,14 +280,17 @@ describe('steps/Question', () => {
 
     describe('#valid', () => {
       it('returns true if the questions fields are valid', () => {
-        const step = new NameStep({}, {});
-        step.fields.name.value = 'Michael';
+        const req = { body: { name: 'Michael' } };
+        const step = new NameStep(req, {});
+        step.parse();
         step.validate();
         expect(step.valid).to.be.true;
       });
 
       it('returns false if the questions fields are invalid', () => {
-        const step = new NameStep({}, {});
+        const req = { body: {} };
+        const step = new NameStep(req, {});
+        step.parse();
         step.validate();
         expect(step.valid).to.be.false;
       });

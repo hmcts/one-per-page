@@ -47,7 +47,7 @@ class FieldDesriptor {
    * @param {object} body - the request body
    * @return {FieldDescriptor} field - the parsed field filled with it's value
    */
-  parse(body = {}) {
+  parse(key, body = {}) {
     this.value = option
       .fromNullable(body[this.name])
       .map(content => this.parser.parse(content))
@@ -62,7 +62,7 @@ class FieldDesriptor {
    * @param {object} req - the express request
    * @return {FieldDescriptor} field - the loaded field filled with it's value
    */
-  deserialize(values = {}) {
+  deserialize(key, values = {}) {
     this.value = option
       .fromNullable(values[this.name])
       .valueOrElse(this.parser.nullValue);

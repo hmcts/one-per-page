@@ -13,7 +13,7 @@ class Reference extends FieldDesriptor {
    * @param {object} req - the express request
    * @return {FieldDescriptor} field - the parsed field filled with it's value
    */
-  parse(_, req) {
+  parse(key, _, req) {
     this.value = option
       .fromNullable(req.session)
       .flatMap(session => option.fromNullable(session[this.step.name]))
@@ -30,7 +30,7 @@ class Reference extends FieldDesriptor {
    * @param {object} req - the express request
    * @return {FieldDescriptor} field - the loaded field filled with it's value
    */
-  deserialize(_, req) {
+  deserialize(key, _, req) {
     this.value = option
       .fromNullable(req.session)
       .flatMap(session => option.fromNullable(session[this.step.name]))

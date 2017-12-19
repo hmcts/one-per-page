@@ -1,4 +1,3 @@
-/* eslint quotes: ["error", "single", { "avoidEscape": true }] */
 const { expect } = require('../util/chai');
 const { FieldDesriptor } = require('../../src/forms/field');
 const { ref, Reference } = require('../../src/forms/ref');
@@ -29,7 +28,7 @@ describe('forms/ref', () => {
             session: { RefStep: { foo: 'ref step' } },
             body: { OtherStep: { foo: 'other step' } }
           };
-          r[func]({}, req);
+          r[func](r.name, {}, req);
           expect(r.value).to.eql('ref step');
         });
 
@@ -40,7 +39,7 @@ describe('forms/ref', () => {
             session: { RefStep: { foo: 'from session' } },
             body: { RefStep: { foo: 'from body' } }
           };
-          r[func]({}, req);
+          r[func](r.name, {}, req);
           expect(r.value).to.eql('from session');
         });
       });
