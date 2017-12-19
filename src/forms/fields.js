@@ -2,20 +2,7 @@ const { fieldDescriptor } = require('./fieldDescriptor');
 const option = require('option');
 const { FieldValue } = require('./fieldValue');
 const { defined } = require('../util/checks');
-
-const intoObject = (obj, { key, value }) => {
-  Object.assign(obj, { [key]: value });
-  return obj;
-};
-
-const mapEntries = (obj, block) => Object.entries(obj)
-  .reduce((accum, [key, value]) => {
-    const newValue = block(key, value);
-    if (defined(newValue)) {
-      return Object.assign(accum, { [key]: newValue });
-    }
-    return accum;
-  }, {});
+const { mapEntries, flattenObject } = require('../util/ops');
 
 class ObjectFieldValue extends FieldValue {
   constructor({ id, name, serializer, validations, fields = [] }) {
@@ -84,9 +71,9 @@ const list = field => fieldDescriptor({
     const length = Math.max(...indexes) + 1;
     const fields = Array(length).fill(length)
       .map((_, i) => {
-        return { key: i, value: field.parse(`${name}.${i}`, body) };
+        return { [i]: field.parse(`${name}.${i}`, body) };
       })
-      .reduce(intoObject, {});
+      .reduce(flattenObject, {});
 
     return ListFieldValue.from({ name, fields }, this);
   },
@@ -99,9 +86,9 @@ const list = field => fieldDescriptor({
       .map((value, i) => {
         const fieldName = `${name}.${i}`;
         const fieldValue = field.deserialize(fieldName, { [fieldName]: value });
-        return { key: i, value: fieldValue };
+        return { [i]: fieldValue };
       })
-      .reduce(intoObject, {});
+      .reduce(flattenObject, {});
 
     return ListFieldValue.from({ name, fields }, this);
   },
