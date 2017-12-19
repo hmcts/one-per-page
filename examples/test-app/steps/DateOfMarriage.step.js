@@ -16,7 +16,7 @@ class DateOfMarriage extends Question {
           yearRequired: this.content.date.yearRequired
         }
       ).mapValue(
-        ({ day, month, year }) => moment({ day, month, year })
+        date => moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD')
       )
     );
   }
