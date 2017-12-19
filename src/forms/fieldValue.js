@@ -31,7 +31,7 @@ class FieldValue {
     validations = [],
     serializer = omitIfUndefined
   }) {
-    this.id = id;
+    this.id = defined(id) ? id : name;
     this.name = name;
     if (defined(value)) this.value = value;
     this.validations = validations;

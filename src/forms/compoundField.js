@@ -39,18 +39,18 @@ class CompoundField extends FieldDesriptor {
     });
   }
 
-  parse(body = {}) {
-    this.fields.forEach(field => field.parse(body));
+  parse(key, body = {}) {
+    this.fields.forEach(field => field.parse(field.name, body));
 
     return this;
   }
 
-  deserialize(session = {}) {
+  deserialize(key, session = {}) {
     const values = option
       .fromNullable(session[this.name])
       .valueOrElse({});
 
-    this.fields.forEach(field => field.deserialize(values));
+    this.fields.forEach(field => field.deserialize(field.name, values));
 
     return this;
   }

@@ -82,9 +82,9 @@ describe('forms/fieldParsers', () => {
         it(`parses ${from} to ${to}`, () => {
           const f = field('foo', parser);
           if (from === 'field missing') {
-            f.parse({});
+            f.parse(f.name, {});
           } else {
-            f.parse({ foo: from });
+            f.parse(f.name, { foo: from });
           }
           expect(f.value).to.eql(to);
         });
@@ -94,9 +94,9 @@ describe('forms/fieldParsers', () => {
         it(`deserializes ${from} to ${to}`, () => {
           const f = field('foo', parser);
           if (from === 'field missing') {
-            f.deserialize({});
+            f.deserialize(f.name, {});
           } else {
-            f.deserialize({ foo: from });
+            f.deserialize(f.name, { foo: from });
           }
           expect(f.value).to.eql(to);
         });

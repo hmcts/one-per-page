@@ -141,6 +141,7 @@ describe('steps/CheckYourAnswers', () => {
 
     it('returns false if no statementOfTruth set', () => {
       return new CheckYourAnswers(req, res).ready().then(cya => {
+        cya.parse();
         cya.validate();
         expect(cya.valid).to.be.false;
       });

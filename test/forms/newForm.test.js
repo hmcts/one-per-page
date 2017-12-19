@@ -1,9 +1,22 @@
 const { expect, sinon } = require('../util/chai');
-const { Form, FilledForm } = require('../../src/forms/newForm');
+const { Form, FilledForm, form } = require('../../src/forms/newForm');
 const FieldError = require('../../src/forms/fieldError');
 const { text } = require('../../src/forms/fields');
+const { textField } = require('../../src/forms');
 
 describe('forms/newForm', () => {
+  describe('#form', () => {
+    it('returns a Form', () => {
+      const f = form();
+      expect(f).an.instanceof(Form);
+    });
+
+    it('handles the old field interface', () => {
+      const f = form(textField('foo'));
+      expect(f.fields).to.have.property('foo');
+    });
+  });
+
   describe('Form', () => {
     it('accepts an object of FieldDescriptors', () => {
       const fields = { foo: text, bar: text };

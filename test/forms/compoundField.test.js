@@ -29,7 +29,7 @@ describe('forms/CompoundField', () => {
         textField('year')
       );
 
-      date.parse(body);
+      date.parse('date', body);
       expect(date.day.value).to.eql(body.day);
       expect(date.month.value).to.eql(body.month);
       expect(date.year.value).to.eql(body.year);
@@ -50,7 +50,7 @@ describe('forms/CompoundField', () => {
         textField('month'),
         textField('year')
       );
-      date.deserialize(session);
+      date.deserialize('date', session);
       expect(date.day.value).to.eql(session.date.day);
       expect(date.month.value).to.eql(session.date.month);
       expect(date.year.value).to.eql(session.date.year);
@@ -81,7 +81,7 @@ describe('forms/CompoundField', () => {
         textField('year').joi('year error', Joi.number())
       ).joi('date error', Joi.object().and('day', 'month', 'year'));
 
-      date.parse({ day: 1, month: 12, year: 1988 });
+      date.parse('date', { day: 1, month: 12, year: 1988 });
       expect(date.validate()).to.be.true;
     });
 
@@ -127,7 +127,7 @@ describe('forms/CompoundField', () => {
         Joi.object().and('day', 'month', 'year')
       );
 
-      date.parse({ day: 10 });
+      date.parse('date', { day: 10 });
       date.validate();
       expect(date.errors).to.contain('A date is required');
     });
@@ -144,7 +144,7 @@ describe('forms/CompoundField', () => {
           .with('month', 'day')
       );
 
-      date.parse({ year: 2017 });
+      date.parse('date', { year: 2017 });
       date.validate();
       expect(date.day.errors).to.contain('Day is required');
     });

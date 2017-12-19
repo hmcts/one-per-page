@@ -14,9 +14,6 @@ class Question extends Page {
   constructor(...args) {
     super(...args);
     expectImplemented(this, 'next');
-
-    const _form = this.form.bind(this);
-    this.fields = new Proxy(_form, formProxyHandler);
   }
 
   get middleware() {
@@ -32,7 +29,8 @@ class Question extends Page {
       this.retrieve();
       super.handler(req, res);
     } else if (req.method === 'POST') {
-      this.parse().validate();
+      this.parse();
+      this.validate();
 
       if (this.valid) {
         this.store();
@@ -76,17 +74,17 @@ class Question extends Page {
   }
 
   retrieve() {
-    this.fields.retrieve(this.req);
+    this.fields = this.form.retrieve(this.name, this.req);
     return this;
   }
 
   parse() {
-    this.fields.parse(this.req);
+    this.fields = this.form.parse(this.req);
     return this;
   }
 
   store() {
-    this.fields.store(this.req);
+    this.fields.store(this.name, this.req);
     return this;
   }
 
