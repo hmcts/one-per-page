@@ -205,7 +205,6 @@ describe('steps/Question', () => {
         expect(_answers).to.be.an('object');
         expect(_answers).to.have.property('url', '/next-step');
         expect(_answers).to.have.property('question', 'Name step');
-        expect(_answers).to.have.property('value').that.eql({ name: 'John' });
         expect(_answers).to.have.property('answer', 'John');
         expect(_answers).to.have.property('section', section.default.id);
         expect(_answers).to.have.property('complete', true);

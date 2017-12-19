@@ -2,17 +2,9 @@ const { defined } = require('../../util/checks');
 const { Reference } = require('../../forms/ref');
 const { section } = require('./section');
 
-const getAnswer = (step, { value, answer }) => {
+const getAnswer = (step, { answer }) => {
   if (defined(answer)) {
     return answer;
-  }
-
-  if (typeof value === 'string') {
-    return value;
-  } else if (typeof value === 'object') {
-    return Object.values(value).join(' ');
-  } else if (Array.isArray(value)) {
-    return value.join(' ');
   }
 
   if (defined(step.fields)) {
@@ -52,21 +44,6 @@ const getSection = args => {
   return section.default.id;
 };
 
-const getValue = (step, { value }) => {
-  if (defined(value)) {
-    return value;
-  }
-  if (defined(step.fields)) {
-    return Object.values(step.fields)
-      .filter(field => !(field instanceof Reference))
-      .reduce((obj, field) => {
-        Object.assign(obj, { [field.name]: field.value });
-        return obj;
-      }, {});
-  }
-  return undefined; // eslint-disable-line no-undefined
-};
-
 const getUrl = (step, { url }) => {
   if (defined(url)) {
     return url;
@@ -100,7 +77,6 @@ const answer = (step, args = {}) => {
     question: getQuestion(step, args),
     answer: getAnswer(step, args),
     url: getUrl(step, args),
-    value: getValue(step, args),
     complete: getComplete(step),
     hide: getHide(args)
   };
