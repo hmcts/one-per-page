@@ -65,7 +65,7 @@ const supertestInstance = stepDSL => {
 
 const wrapWithResponseAssertions = supertestObj => {
   supertestObj.html = assertions => {
-    return supertestObj.expect(200).then(res => {
+    return supertestObj.then(res => {
       const _window = domino.createWindow(res.text);
       const $ = zepto(_window);
       return assertions($);
@@ -176,5 +176,6 @@ module.exports = {
   testApp,
   testStep: TestStepDSL.create,
   shouldNotSetCookie,
-  shouldSetCookie
+  shouldSetCookie,
+  wrapWithResponseAssertions
 };

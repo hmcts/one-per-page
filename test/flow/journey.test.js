@@ -5,7 +5,6 @@ const { OK } = require('http-status-codes');
 const { expect, sinon } = require('../util/chai');
 const Page = require('../../src/steps/Page');
 const session = require('../../src/session');
-const errorPages = require('../../src/errors/errorPages');
 
 class TestPage extends Page {}
 const defaultOptions = {
