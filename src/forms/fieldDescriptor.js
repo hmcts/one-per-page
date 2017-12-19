@@ -22,12 +22,24 @@ class FieldDescriptor {
   constructor({
     parser = getValue,
     deserializer = getValue,
-    serializer
+    serializer,
+    validations = []
   } = {}) {
     this.parser = parser;
     this.deserializer = deserializer;
     this.serializer = serializer;
-    this.validations = [];
+    this.validations = validations;
+  }
+
+  clone(overrides) {
+    return new this.constructor(
+      Object.assign({
+        parser: this.parser,
+        deserializer: this.deserializer,
+        serializer: this.serializer,
+        validations: this.validations
+      }, overrides)
+    );
   }
 
   ensureField(name, value) {
@@ -44,12 +56,22 @@ class FieldDescriptor {
   }
 
   joi(...args) {
-    this.validations.push(field => {
+    const joi = field => {
       const { message, joiSchema } = parseJoiArgs(field, args);
       const { error } = Joi.validate(field.value, joiSchema);
       return error ? message : error;
-    });
-    return this;
+    };
+    return this.clone({ validations: [...this.validations, joi] });
+  }
+
+  check(message, predicate) {
+    const check = field => {
+      if (predicate(field.value)) {
+        return undefined; // eslint-disable-line no-undefined
+      }
+      return message;
+    };
+    return this.clone({ validations: [...this.validations, check] });
   }
 }
 
