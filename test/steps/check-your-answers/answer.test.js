@@ -52,26 +52,6 @@ describe('steps/check-your-answers/answer', () => {
       expect(_answer).to.eql('An answer');
     });
 
-    it('falls back to value (string)', () => {
-      const _answer = answer(fakeStep, { value: 'Foo Bar' }).answer;
-      expect(_answer).to.eql('Foo Bar');
-    });
-
-    it('falls back to value (array)', () => {
-      const _answer = answer(fakeStep, { value: ['Foo', 'Bar'] }).answer;
-      expect(_answer).to.eql('Foo Bar');
-    });
-
-    it('falls back to value (object)', () => {
-      const _answer = answer(fakeStep, {
-        value: {
-          foo: 'Foo',
-          bar: 'Bar'
-        }
-      }).answer;
-      expect(_answer).to.eql('Foo Bar');
-    });
-
     it('falls back to step.fields concated (ignoring refs)', () => {
       const _answer = answer(fakeStep, {}).answer;
       expect(_answer).to.eql('John Smith');
@@ -87,18 +67,6 @@ describe('steps/check-your-answers/answer', () => {
     it('falls back to step.path', () => {
       const url = answer(fakeStep).url;
       expect(url).to.eql('/name');
-    });
-  });
-
-  describe('.value', () => {
-    it('can be set explicitly', () => {
-      const value = answer(fakeStep, { value: 'foobar' }).value;
-      expect(value).to.eql('foobar');
-    });
-
-    it('falls back to fields (ignoring refs)', () => {
-      const value = answer(fakeStep).value;
-      expect(value).to.eql({ firstName: 'John', lastName: 'Smith' });
     });
   });
 
