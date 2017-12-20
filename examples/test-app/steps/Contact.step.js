@@ -1,5 +1,5 @@
 const { Question, goTo } = require('@hmcts/one-per-page');
-const { form, boolField, arrayField } = require('@hmcts/one-per-page/forms');
+const { form, bool, list, text } = require('@hmcts/one-per-page/forms');
 const Joi = require('joi');
 const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 
@@ -9,15 +9,15 @@ class Contact extends Question {
   get form() {
     const validAnswers = Joi.string().valid(['phone', 'email', 'post']);
 
-    return form(
-      boolField('contactMe'),
-      arrayField('contactMethod').joi(
+    return form({
+      contactMe: bool,
+      contactMethod: list(text).joi(
         this.content.errors.noOptionSelected,
         Joi.array()
           .items(validAnswers)
           .min(twoMethods)
       )
-    );
+    });
   }
 
   next() {
