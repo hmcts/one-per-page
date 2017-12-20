@@ -7,6 +7,8 @@ const {
 } = require('./fieldValue');
 const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
+const { errorFor } = require('./validator');
+const Joi = require('joi');
 
 const object = childFields => fieldDescriptor({
   parser(name, body) {
@@ -172,4 +174,38 @@ const convert = (transformation, field) => fieldDescriptor({
   }
 });
 
-module.exports = { nonEmptyText, text, bool, list, object, ref, convert };
+const date = ({
+  allRequired = 'Enter a date',
+  dayRequired = 'Enter a day',
+  monthRequired = 'Enter a month',
+  yearRequired = 'Enter a year'
+} = {}) => object({ day: text, month: text, year: text })
+  .joi(
+    errorFor('day', dayRequired),
+    Joi.object()
+      .with('year', 'day')
+      .with('month', 'day')
+  )
+  .joi(
+    errorFor('month', monthRequired),
+    Joi.object()
+      .with('year', 'month')
+      .with('day', 'month')
+  )
+  .joi(
+    errorFor('year', yearRequired),
+    Joi.object()
+      .with('day', 'year')
+      .with('month', 'year')
+  )
+  .joi(
+    allRequired,
+    Joi.object().keys({
+      day: Joi.string().required(),
+      month: Joi.string().required(),
+      year: Joi.string().required()
+    })
+  );
+
+
+module.exports = { nonEmptyText, text, bool, list, object, ref, date, convert };
