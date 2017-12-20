@@ -3,7 +3,8 @@ const {
   text, nonEmptyText,
   bool,
   list,
-  object
+  object,
+  ref
 } = require('../../src/forms/fields');
 const { isObject } = require('../../src/util/checks');
 
@@ -17,7 +18,7 @@ const readable = value => {
 
 const fieldTest = (field, tests) => {
   const deserializes = ({
-    from, value, key = 'foo', only = false,
+    from = {}, value, key = 'foo', only = false, req = {},
     assertions = ({ fieldValue }) => {
       expect(fieldValue.value).to.eql(value);
     }
@@ -28,12 +29,12 @@ const fieldTest = (field, tests) => {
 
     mochaTest(`deserializes ${toStr} from ${fromStr}`, () => {
       const session = isObject(from) ? from : { [key]: from };
-      const fieldValue = field.deserialize(key, session);
+      const fieldValue = field.deserialize(key, session, req);
       return assertions({ fieldValue, field });
     });
   };
   const parses = ({
-    from, to, key = 'foo', only = false,
+    from = {}, to, key = 'foo', only = false, req = {},
     assertions = ({ fieldValue }) => {
       expect(fieldValue.value).to.eql(to);
     }
@@ -44,12 +45,12 @@ const fieldTest = (field, tests) => {
 
     mochaTest(`parses ${toStr} from ${fromStr}`, () => {
       const body = isObject(from) ? from : { [key]: from };
-      const fieldValue = field.parse(key, body);
+      const fieldValue = field.parse(key, body, req);
       return assertions({ fieldValue, field });
     });
   };
   const serializes = ({
-    from, to, key = 'foo', only = false,
+    from = {}, to, key = 'foo', only = false, req = {},
     assertions = ({ serializedValue }) => {
       const serialized = isObject(to) ? to : { [key]: to };
       expect(serializedValue).to.eql(serialized);
@@ -61,7 +62,7 @@ const fieldTest = (field, tests) => {
 
     mochaTest(`serializes ${toStr} from ${fromStr}`, () => {
       const values = isObject(from) ? from : { [key]: from };
-      const fieldValue = field.deserialize(key, values);
+      const fieldValue = field.deserialize(key, values, req);
       const serializedValue = fieldValue.serialize();
       return assertions({ fieldValue, field, serializedValue });
     });
@@ -231,5 +232,14 @@ describe('forms/fields', () => {
       to: {},
       from: { foo: {} }
     });
+  }));
+
+  const myStep = { name: 'MyStep' };
+  describe('ref([step], text)', fieldTest(ref(myStep, text), it => {
+    const req = { session: { MyStep: { foo: 'From another step' } } };
+
+    it.parses({ to: 'From another step', req });
+    it.deserializes({ value: 'From another step', req });
+    it.serializes({ to: {}, req });
   }));
 });

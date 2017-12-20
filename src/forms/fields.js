@@ -157,4 +157,22 @@ bool.default = defaultValue => fieldDescriptor({
   }
 });
 
-module.exports = { nonEmptyText, text, bool, list, object };
+const ref = (step, field) => fieldDescriptor({
+  parser(name, _, req) {
+    return option
+      .fromNullable(req.session)
+      .flatMap(session => option.fromNullable(session[step.name]))
+      .flatMap(values => field.deserializer(name, values));
+  },
+  deserializer(name, _, req) {
+    return option
+      .fromNullable(req.session)
+      .flatMap(session => option.fromNullable(session[step.name]))
+      .flatMap(values => field.deserializer(name, values));
+  },
+  serializer() {
+    return {};
+  }
+});
+
+module.exports = { nonEmptyText, text, bool, list, object, ref };
