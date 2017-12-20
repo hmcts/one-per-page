@@ -1,29 +1,8 @@
 const { fieldDescriptor } = require('./fieldDescriptor');
 const option = require('option');
-const { FieldValue } = require('./fieldValue');
+const { ObjectFieldValue, ListFieldValue } = require('./fieldValue');
 const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
-
-class ObjectFieldValue extends FieldValue {
-  constructor({ id, name, serializer, validations, fields = [] }) {
-    super({ id, name, serializer, validations });
-
-    this.fields = fields;
-    Object.keys(fields).forEach(key => {
-      this[key] = this.fields[key];
-    });
-  }
-
-  get value() {
-    return mapEntries(this.fields, (name, field) => field.value);
-  }
-}
-
-class ListFieldValue extends ObjectFieldValue {
-  get value() {
-    return Object.values(this.fields).map(field => field.value);
-  }
-}
 
 const object = childFields => fieldDescriptor({
   parser(name, body) {

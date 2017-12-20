@@ -1,5 +1,6 @@
 const { notDefined, defined } = require('../util/checks');
 const FieldError = require('./fieldError');
+const { mapEntries } = require('../util/ops');
 
 const failOnFirstFailure = (field, validations) => {
   if (!(validations && validations.length)) {
@@ -75,6 +76,29 @@ class FieldValue {
   }
 }
 
+
+class ObjectFieldValue extends FieldValue {
+  constructor({ id, name, serializer, validations, fields = [] }) {
+    super({ id, name, serializer, validations });
+
+    this.fields = fields;
+    Object.keys(fields).forEach(key => {
+      this[key] = this.fields[key];
+    });
+  }
+
+  get value() {
+    return mapEntries(this.fields, (name, field) => field.value);
+  }
+}
+
+
+class ListFieldValue extends ObjectFieldValue {
+  get value() {
+    return Object.values(this.fields).map(field => field.value);
+  }
+}
+
 const fieldValue = args => new FieldValue(args);
 
-module.exports = { FieldValue, fieldValue };
+module.exports = { FieldValue, fieldValue, ObjectFieldValue, ListFieldValue };
