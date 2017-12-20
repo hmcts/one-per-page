@@ -1,29 +1,29 @@
 const { Question, goTo } = require('@hmcts/one-per-page');
-const { form, textField } = require('@hmcts/one-per-page/forms');
+const { form, text, ref } = require('@hmcts/one-per-page/forms');
 const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 const Joi = require('joi');
 
 class Name extends Question {
   get form() {
-    return form(
-      textField('firstName').joi(
+    return form({
+      firstName: text.joi(
         this.content.fields.firstName.required,
         Joi.string().required()
       ),
-      textField('lastName').joi(
+      lastName: text.joi(
         this.content.fields.lastName.required,
         Joi.string().required()
       ),
-      textField.ref(this.journey.steps.RespondentTitle, 'husbandOrWife'),
-      textField('respondentFirstName').joi(
+      husbandOrWife: ref(this.journey.steps.RespondentTitle, text),
+      respondentFirstName: text.joi(
         this.content.fields.respondentFirstName.required,
         Joi.string().required()
       ),
-      textField('respondentLastName').joi(
+      respondentLastName: text.joi(
         this.content.fields.respondentLastName.required,
         Joi.string().required()
       )
-    );
+    });
   }
 
   get husbandOrWife() {

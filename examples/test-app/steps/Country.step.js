@@ -1,5 +1,5 @@
 const { Question, goTo, branch } = require('@hmcts/one-per-page');
-const { form, textField } = require('@hmcts/one-per-page/forms');
+const { form, text } = require('@hmcts/one-per-page/forms');
 const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 const Joi = require('joi');
 
@@ -28,9 +28,9 @@ class Country extends Question {
       .valid(ukCountries)
       .required();
 
-    return form(
-      textField('country').joi(this.content.errors.required, validCountry)
-    );
+    const country = text.joi(this.content.errors.required, validCountry);
+
+    return form({ country });
   }
 
   next() {
