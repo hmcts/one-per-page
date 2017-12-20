@@ -1,6 +1,6 @@
 const { expect } = require('../util/chai');
 const i18Next = require('i18next');
-const loadStepContent = require('../../src/i18n/loadStepContent');
+const { loadStepContent } = require('../../src/i18n/loadStepContent');
 const path = require('path');
 
 describe('i18n/loadStepContent', () => {

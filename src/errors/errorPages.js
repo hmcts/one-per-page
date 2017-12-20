@@ -1,53 +1,55 @@
 // const { Page } = require('@hmcts/one-per-page');
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
+const i18next = require('i18next');
+const path = require('path');
+const { i18NextInstance } = require('../i18n/i18Next');
+const { loadFileContents } = require('../i18n/loadStepContent');
 
-const defaulTemplate = 'look-and-feel/layouts/error.html';
+
 
 class ErrorPages {
-  constructor() {}
+
+  constructor() {
+  }
 
   /** bind 404 and 500's to the app */
   static bind(app, userOpts) {
-    const opts = userOpts || {};
+    loadFileContents(path.join(__dirname, 'errorPages.content.en.json'), i18NextInstance)
+    .then((i18Next) => {
+      const opts = userOpts || {};
 
-    app.use((errors, req, res, next) => {
-      const serverError = opts.serverError || {};
-      const defaultAssets = '<link href="' + req.app.locals.asset_path +
-        'main.css" media="screen" rel="stylesheet" />';
+      app.use((errors, req, res, next) => {
+        const serverError = opts.serverError || {};
 
-      res.status(INTERNAL_SERVER_ERROR).render(
-        serverError.template || defaulTemplate,
-        {
-          title: serverError.title || 'Sorry, we\'re having technical problems',
-          message: serverError.message || 'Please try again in a few minutes.',
-          error: errors,
-          assets: serverError.assets || defaultAssets
-        }
-      );
-    });
+        res.status(INTERNAL_SERVER_ERROR).render(
+          serverError.template || i18Next.t('serverError.template'),
+          {
+            title: serverError.title || i18Next.t('serverError.title'),
+            message: serverError.message || i18Next.t('serverError.message'),
+            error: errors,
+            assets: serverError.assets || i18next.t('serverError.assets', { path: req.app.locals.asset_path + 'main.css' })
+          }
+        );
+      });
 
-    app.use((req, res, next) => {
-      const notFound = opts.notFound || {};
-      const defaultAssets = '<link href="'+ req.app.locals.asset_path +
-        'main.css" media="screen" rel="stylesheet" />';
+      app.use((req, res, next) => {
+        const notFound = opts.notFound || {};
 
-      if (typeof notFound.nextSteps !== 'undefined'
+        if (typeof notFound.nextSteps !== 'undefined'
           && !Array.isArray(notFound.nextSteps)) {
-        throw new TypeError('nextSteps is expected to be an array');
-      }
-
-      res.status(NOT_FOUND).render(
-        notFound.template || defaulTemplate,
-        {
-          title: notFound.title || 'Page not found',
-          message: notFound.message || `This could be because you've followed a broken or outdated link, or there's an error on our site.`,
-          nextSteps: notFound.nextSteps || [
-            'go to the previous page',
-            '<a href="/">go home</a>'
-          ],
-          assets: notFound.assets || defaultAssets
+          throw new TypeError('nextSteps is expected to be an array');
         }
-      );
+
+        res.status(NOT_FOUND).render(
+          notFound.template || i18Next.t('notFound.template'),
+          {
+            title: notFound.title || i18Next.t('notFound.title'),
+            message: notFound.message || i18Next.t('notFound.message'),
+            nextSteps: notFound.nextSteps || i18Next.t('notFound.nextSteps', { returnObjects: true }),
+            assets: notFound.assets || i18next.t('notFound.assets', { path: req.app.locals.asset_path + 'main.css' })
+          }
+        );
+      });
     });
   }
 }

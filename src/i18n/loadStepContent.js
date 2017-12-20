@@ -7,13 +7,8 @@ const langRegex = /^\w{2}(?:-\w{2})?$/;
 const keyParseError = (key, filepath) =>
   `top level key: ${key} in ${filepath} not a country code`;
 
-const parseI18N = (filepath, contents) => {
-  const match = filepath.match(langInFilepathRegex);
 
-  if (defined(match) && defined(match[1])) {
-    return [{ lang: match[1], translations: contents }];
-  }
-
+const translationMapper = (contents, filepath) => {
   return Object.keys(contents)
     .map(key => {
       if (defined(key.match(langRegex))) {
@@ -22,6 +17,40 @@ const parseI18N = (filepath, contents) => {
       throw new Error(keyParseError(key, filepath));
     })
     .reduce((acc, arr) => [...acc, ...arr], []);
+};
+
+const parseI18N = (filepath, contents) => {
+  const match = filepath.match(langInFilepathRegex);
+
+  if (defined(match) && defined(match[1])) {
+    return [{ lang: match[1], translations: contents }];
+  }
+
+  return translationMapper(contents, filepath);
+};
+
+const loadFileContents = (filePath, i18Next) => {
+  const addResourceBundles = (contents, i18Next, filepath) => {
+    const bundles = translationMapper(contents, filepath);
+    bundles.forEach(({ lang, translations }) => {
+      const deep = true;
+      const overwrite = true;
+      i18Next.addResourceBundle(
+        lang,
+        'translation',
+        translations,
+        deep,
+        overwrite
+      );
+    });
+    return i18Next;
+  };
+
+  return fileExists(filePath)
+    .then(readJson)
+    .then((contents) => {
+      return addResourceBundles(contents, i18Next, filePath);
+    });
 };
 
 const loadStepContent = (step, i18Next) => {
@@ -39,6 +68,7 @@ const loadStepContent = (step, i18Next) => {
       );
     });
   };
+
   const loadContents = filepaths => {
     const loadPromises = filepaths.map(filepath =>
       fileExists(filepath)
@@ -60,4 +90,4 @@ const loadStepContent = (step, i18Next) => {
   return Promise.all(promises);
 };
 
-module.exports = loadStepContent;
+module.exports = { loadStepContent, loadFileContents };
