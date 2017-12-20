@@ -1,4 +1,4 @@
-const { form } = require('./newForm');
+const { form } = require('./form');
 const { field } = require('./field');
 const { compoundField } = require('./compoundField');
 
