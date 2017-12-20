@@ -47,12 +47,12 @@ class FieldDescriptor {
     return FieldValue.from({ name, value }, this);
   }
 
-  parse(name, body = {}) {
-    return this.ensureField(name, this.parser(name, body));
+  parse(name, body = {}, req = {}) {
+    return this.ensureField(name, this.parser(name, body, req));
   }
 
-  deserialize(name, values = {}) {
-    return this.ensureField(name, this.deserializer(name, values));
+  deserialize(name, values = {}, req = {}) {
+    return this.ensureField(name, this.deserializer(name, values, req));
   }
 
   joi(...args) {
