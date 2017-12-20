@@ -1,5 +1,6 @@
 const { expect } = require('../util/chai');
-const { CompoundField, errorFor } = require('../../src/forms/compoundField');
+const { CompoundField } = require('../../src/forms/compoundField');
+const { errorFor } = require('../../src/forms/validator');
 const FieldError = require('../../src/forms/fieldError');
 const { textField } = require('../../src/forms');
 const Joi = require('joi');
