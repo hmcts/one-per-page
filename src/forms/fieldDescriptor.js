@@ -32,14 +32,7 @@ class FieldDescriptor {
   }
 
   clone(overrides) {
-    return new this.constructor(
-      Object.assign({
-        parser: this.parser,
-        deserializer: this.deserializer,
-        serializer: this.serializer,
-        validations: this.validations
-      }, overrides)
-    );
+    return new this.constructor(Object.assign({}, this, overrides));
   }
 
   ensureField(name, value) {
