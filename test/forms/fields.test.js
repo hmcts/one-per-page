@@ -161,11 +161,9 @@ describe('forms/fields', () => {
   }));
 
   describe('list(bool)', fieldTest(list(bool), it => {
-    it.parses({ to: [true], from: { 'foo.0': 'true' } });
-    it.parses({
-      to: [true, false],
-      from: { 'foo.0': 'true', 'foo.1': 'no' }
-    });
+    it.parses({ to: [true], from: { foo: 'true' } });
+    it.parses({ to: [true], from: { foo: ['true'] } });
+    it.parses({ to: [true, false], from: { foo: ['true', 'no'] } });
 
     it.deserializes({ value: [], from: {} });
     it.deserializes({ value: [true], from: [true] });
@@ -177,11 +175,9 @@ describe('forms/fields', () => {
   }));
 
   describe('list(text)', fieldTest(list(text), it => {
-    it.parses({ to: ['Foo'], from: { 'foo.0': 'Foo' } });
-    it.parses({
-      to: ['Foo', 'Bar'],
-      from: { 'foo.0': 'Foo', 'foo.1': 'Bar' }
-    });
+    it.parses({ to: ['Foo'], from: { foo: 'Foo' } });
+    it.parses({ to: ['Foo'], from: { foo: ['Foo'] } });
+    it.parses({ to: ['Foo', 'Bar'], from: { foo: ['Foo', 'Bar'] } });
 
     it.deserializes({ value: ['Foo'], from: ['Foo'] });
     it.deserializes({ value: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });

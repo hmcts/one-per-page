@@ -1,7 +1,7 @@
 const { fieldDescriptor } = require('./fieldDescriptor');
 const option = require('option');
 const { FieldValue } = require('./fieldValue');
-const { defined } = require('../util/checks');
+const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
 
 class ObjectFieldValue extends FieldValue {
@@ -62,16 +62,15 @@ const object = childFields => fieldDescriptor({
 
 const list = field => fieldDescriptor({
   parser(name, body) {
-    const r = `${name}\\.(\\d{1,})`;
-    const indexes = Object.keys(body)
-      .filter(str => str.match(r))
-      .map(str => str.match(r)[1])
-      .map(str => parseInt(str));
+    const arr = option
+      .fromNullable(body[name])
+      .map(ensureArray)
+      .valueOrElse([]);
 
-    const length = Math.max(...indexes) + 1;
-    const fields = Array(length).fill(length)
-      .map((_, i) => {
-        return { [i]: field.parse(`${name}.${i}`, body) };
+    const fields = arr
+      .map((value, i) => {
+        const fieldName = `${name}[${i}]`;
+        return { [i]: field.parse(fieldName, { [fieldName]: value }) };
       })
       .reduce(flattenObject, {});
 
@@ -84,7 +83,7 @@ const list = field => fieldDescriptor({
 
     const fields = arr
       .map((value, i) => {
-        const fieldName = `${name}.${i}`;
+        const fieldName = `${name}[${i}]`;
         const fieldValue = field.deserialize(fieldName, { [fieldName]: value });
         return { [i]: fieldValue };
       })
