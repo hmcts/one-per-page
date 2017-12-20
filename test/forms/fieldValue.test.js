@@ -187,7 +187,7 @@ describe('forms/fieldValue', () => {
       const t = new TransformFieldValue({ transformation, field });
 
       it('accepts a field and a transformation function', () => {
-        expect(t.field).to.eql(field);
+        expect(t.wrapped).to.eql(field);
         expect(t.transformation).to.eql(transformation);
       });
 
