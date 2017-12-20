@@ -1,21 +1,12 @@
 const option = require('option');
 const { FieldValue } = require('./fieldValue');
 const Joi = require('joi');
+const { validator, parseErrorTarget } = require('./validator');
 
 
 const getValue = (name, body) => option
   .fromNullable(body[name])
   .valueOrElse(undefined); // eslint-disable-line no-undefined
-
-
-const parseJoiArgs = (field, args) => {
-  if (args.length === 1) {
-    const [joiSchema] = args;
-    return { message: `No error content for ${field.name}`, joiSchema };
-  }
-  const [message, joiSchema] = args;
-  return { message, joiSchema };
-};
 
 
 class FieldDescriptor {
@@ -48,23 +39,18 @@ class FieldDescriptor {
     return this.ensureField(name, this.deserializer(name, values, req));
   }
 
-  joi(...args) {
+  joi(targetOrError, joiSchema) {
     const joi = field => {
-      const { message, joiSchema } = parseJoiArgs(field, args);
       const { error } = Joi.validate(field.value, joiSchema);
-      return error ? message : error;
+      return !error;
     };
-    return this.clone({ validations: [...this.validations, joi] });
+    return this.check(targetOrError, joi);
   }
 
-  check(message, predicate) {
-    const check = field => {
-      if (predicate(field.value)) {
-        return undefined; // eslint-disable-line no-undefined
-      }
-      return message;
-    };
-    return this.clone({ validations: [...this.validations, check] });
+  check(targetOrError, test) {
+    const { message, id } = parseErrorTarget(targetOrError, this.name);
+    const validations = [...this.validations, validator(id, message, test)];
+    return this.clone({ validations });
   }
 }
 

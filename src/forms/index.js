@@ -1,6 +1,6 @@
 const { form } = require('./newForm');
 const { field } = require('./field');
-const { compoundField, errorFor } = require('./compoundField');
+const { compoundField } = require('./compoundField');
 
 const {
   arrayField,
@@ -17,6 +17,8 @@ const {
   object,
   ref
 } = require('./fields');
+
+const { errorFor } = require('./validator');
 
 const dateField = require('./complex/dateField');
 

@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const option = require('option');
 const { FieldDesriptor } = require('./field');
-const { hasKeys, isObject } = require('../util/checks');
+const { parseErrorTarget } = require('./validator');
 
 class TargetNotFoundError extends Error {
   constructor(id, field) {
@@ -14,17 +14,6 @@ class TargetNotFoundError extends Error {
     this.targetId = id;
   }
 }
-
-const errorFor = (id, message) => {
-  return { id, message };
-};
-
-const parseErrorTarget = (targetOrMessage, fallbackId) => {
-  if (isObject(targetOrMessage) && hasKeys(targetOrMessage, 'message', 'id')) {
-    return targetOrMessage;
-  }
-  return errorFor(fallbackId, targetOrMessage);
-};
 
 const noChange = value => value;
 
@@ -125,4 +114,4 @@ class CompoundField extends FieldDesriptor {
 
 const compoundField = (name, ...fields) => new CompoundField(name, ...fields);
 
-module.exports = { CompoundField, compoundField, errorFor };
+module.exports = { CompoundField, compoundField };

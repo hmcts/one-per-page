@@ -1,18 +1,17 @@
 const { notDefined, defined } = require('../util/checks');
 const FieldError = require('./fieldError');
-const { mapEntries } = require('../util/ops');
+const { mapEntries, andWise } = require('../util/ops');
+const { validator } = require('./validator');
 
-const failOnFirstFailure = (field, validations) => {
-  if (!(validations && validations.length)) {
+const failOnFirstFailure = (field, validators) => {
+  if (!(validators && validators.length)) {
     return { result: true, errors: [] };
   }
-  const [currentValidation, ...rest] = validations;
-  const maybeError = currentValidation(field);
-
-  if (notDefined(maybeError)) {
+  const [currentValidator, ...rest] = validators;
+  if (currentValidator.predicate(field)) {
     return failOnFirstFailure(field, rest);
   }
-  return { result: false, errors: [maybeError] };
+  return { result: false, errors: [currentValidator.message] };
 };
 
 const omitIfUndefined = field => {
@@ -79,16 +78,41 @@ class FieldValue {
 
 class ObjectFieldValue extends FieldValue {
   constructor({ id, name, serializer, validations, fields = [] }) {
-    super({ id, name, serializer, validations });
+    const myValidations = validations.filter(v => v.target === name);
+    super({ id, name, serializer, validations: myValidations });
 
     this.fields = fields;
     Object.keys(fields).forEach(key => {
+      const fieldsValidations = validations
+        .filter(v => v.target === key)
+        .map(v => validator(v.target, v.message, () => v.predicate(this)));
       this[key] = this.fields[key];
+      this[key].validations.push(...fieldsValidations);
     });
   }
 
   get value() {
     return mapEntries(this.fields, (name, field) => field.value);
+  }
+
+  validate() {
+    const childrenAreValid = Object.values(this.fields)
+      .map(field => field.validate())
+      .reduce(andWise, true);
+
+    if (childrenAreValid) {
+      return super.validate();
+    }
+    this._validated = true;
+    this._valid = false;
+    return false;
+  }
+
+  get mappedErrors() {
+    return [
+      super.mappedErrors,
+      ...Object.values(this.fields).map(field => field.mappedErrors)
+    ].reduce((left, right) => [...left, ...right], []);
   }
 }
 
