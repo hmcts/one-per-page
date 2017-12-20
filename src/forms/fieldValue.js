@@ -123,6 +123,52 @@ class ListFieldValue extends ObjectFieldValue {
   }
 }
 
+class TransformFieldValue extends FieldValue {
+  constructor({ transformation, field, validations = [] }) {
+    super({ name: field.name, id: field.id, serializer: field.serializer });
+    this.field = field;
+    this.transformation = transformation;
+    this.validations = validations;
+  }
+
+  static from(args, descriptor) {
+    return new this(
+      Object.assign({}, args, { validations: descriptor.validations })
+    );
+  }
+
+  serialize() {
+    return this.field.serialize();
+  }
+
+  validate() {
+    if (this.field.validate()) {
+      return super.validate();
+    }
+    this[validProp] = false;
+    return false;
+  }
+
+  get value() {
+    return this.transformation(this.field.value);
+  }
+
+  get errors() {
+    return [...this.field.errors, ...super.errors];
+  }
+  get valid() {
+    return super.valid && this.field.valid;
+  }
+  get validated() {
+    return this[validatedProp] && this.field.validated;
+  }
+}
+
 const fieldValue = args => new FieldValue(args);
 
-module.exports = { FieldValue, fieldValue, ObjectFieldValue, ListFieldValue };
+module.exports = {
+  FieldValue, fieldValue,
+  ObjectFieldValue,
+  ListFieldValue,
+  TransformFieldValue
+};

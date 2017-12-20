@@ -1,6 +1,10 @@
 const { fieldDescriptor } = require('./fieldDescriptor');
 const option = require('option');
-const { ObjectFieldValue, ListFieldValue } = require('./fieldValue');
+const {
+  ObjectFieldValue,
+  ListFieldValue,
+  TransformFieldValue
+} = require('./fieldValue');
 const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
 
@@ -153,4 +157,19 @@ const ref = (step, field) => fieldDescriptor({
   }
 });
 
-module.exports = { nonEmptyText, text, bool, list, object, ref };
+const convert = (transformation, field) => fieldDescriptor({
+  parser(name, body, req) {
+    return TransformFieldValue.from(
+      { transformation, field: field.parse(name, body, req) },
+      this
+    );
+  },
+  deserializer(name, values, req) {
+    return TransformFieldValue.from(
+      { transformation, field: field.deserialize(name, values, req) },
+      this
+    );
+  }
+});
+
+module.exports = { nonEmptyText, text, bool, list, object, ref, convert };

@@ -39,18 +39,22 @@ class FieldDescriptor {
     return this.ensureField(name, this.deserializer(name, values, req));
   }
 
+  checkField(targetOrError, check) {
+    const { message, id } = parseErrorTarget(targetOrError, this.name);
+    const validations = [...this.validations, validator(id, message, check)];
+    return this.clone({ validations });
+  }
+
   joi(targetOrError, joiSchema) {
     const joi = field => {
       const { error } = Joi.validate(field.value, joiSchema);
       return !error;
     };
-    return this.check(targetOrError, joi);
+    return this.checkField(targetOrError, joi);
   }
 
   check(targetOrError, test) {
-    const { message, id } = parseErrorTarget(targetOrError, this.name);
-    const validations = [...this.validations, validator(id, message, test)];
-    return this.clone({ validations });
+    return this.checkField(targetOrError, field => test(field.value));
   }
 }
 
