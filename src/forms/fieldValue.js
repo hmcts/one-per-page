@@ -126,12 +126,12 @@ class ListFieldValue extends ObjectFieldValue {
 class TransformFieldValue extends FieldValue {
   constructor({ transformation, field, validations = [] }) {
     super({ name: field.name, id: field.id, serializer: field.serializer });
-    this.field = field;
+    this.wrapped = field;
     this.transformation = transformation;
     this.validations = validations;
 
-    if (defined(this.field.fields)) {
-      Object.entries(this.field.fields)
+    if (defined(this.wrapped.fields)) {
+      Object.entries(this.wrapped.fields)
         .forEach(([key, childField]) => {
           this[key] = childField;
         });
@@ -145,11 +145,11 @@ class TransformFieldValue extends FieldValue {
   }
 
   serialize() {
-    return this.field.serialize();
+    return this.wrapped.serialize();
   }
 
   validate() {
-    if (this.field.validate()) {
+    if (this.wrapped.validate()) {
       return super.validate();
     }
     this[validProp] = false;
@@ -157,17 +157,17 @@ class TransformFieldValue extends FieldValue {
   }
 
   get value() {
-    return this.transformation(this.field.value);
+    return this.transformation(this.wrapped.value);
   }
 
   get errors() {
-    return [...this.field.errors, ...super.errors];
+    return [...this.wrapped.errors, ...super.errors];
   }
   get valid() {
-    return super.valid && this.field.valid;
+    return super.valid && this.wrapped.valid;
   }
   get validated() {
-    return this[validatedProp] && this.field.validated;
+    return this[validatedProp] && this.wrapped.validated;
   }
 }
 
