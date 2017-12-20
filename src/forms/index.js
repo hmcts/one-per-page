@@ -9,16 +9,33 @@ const {
   boolField
 } = require('./simpleFields');
 
+const {
+  nonEmptyText,
+  text,
+  bool,
+  list,
+  object,
+  ref
+} = require('./fields');
+
 const dateField = require('./complex/dateField');
 
 module.exports = {
   form,
+  nonEmptyText,
+  text,
+  bool,
+  list,
+  object,
+  ref,
+  errorFor,
+
+  // old interfaces, soon to be removed
   field,
   arrayField,
   textField,
   nonEmptyTextField,
   boolField,
   compoundField,
-  errorFor,
   dateField
 };
