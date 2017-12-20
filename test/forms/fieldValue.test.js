@@ -195,6 +195,16 @@ describe('forms/fieldValue', () => {
         expect(t.name).to.eql(field.name);
         expect(t.id).to.eql(field.id);
       });
+
+      it('exposes any child fields the field has', () => {
+        const objectField = new ObjectFieldValue({ fields: { foo: field } });
+        const nested = new TransformFieldValue({
+          transformation,
+          field: objectField
+        });
+        expect(nested).to.have.property('foo');
+        expect(nested.foo).to.eql(objectField.foo);
+      });
     }
 
     describe('#serialize', () => {
