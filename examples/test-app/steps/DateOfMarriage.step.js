@@ -1,24 +1,22 @@
 const { Question } = require('@hmcts/one-per-page/steps');
-const { form, dateField } = require('@hmcts/one-per-page/forms');
+const { form, date, convert } = require('@hmcts/one-per-page/forms');
 const { branch, goTo } = require('@hmcts/one-per-page/flow');
 const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 const moment = require('moment');
 
 class DateOfMarriage extends Question {
   get form() {
-    return form(
-      dateField(
-        'date',
-        {
+    return form({
+      date: convert(
+        d => moment(`${d.year}-${d.month}-${d.day}`, 'YYYY-MM-DD'),
+        date({
           allRequired: this.content.date.allRequired,
           dayRequired: this.content.date.dayRequired,
           monthRequired: this.content.date.monthRequired,
           yearRequired: this.content.date.yearRequired
-        }
-      ).mapValue(
-        date => moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD')
+        })
       )
-    );
+    });
   }
 
   get today() {
