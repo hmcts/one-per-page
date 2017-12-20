@@ -4,7 +4,8 @@ const {
   bool,
   list,
   object,
-  ref
+  ref,
+  convert
 } = require('../../src/forms/fields');
 const { isObject } = require('../../src/util/checks');
 
@@ -237,5 +238,12 @@ describe('forms/fields', () => {
     it.parses({ to: 'From another step', req });
     it.deserializes({ value: 'From another step', req });
     it.serializes({ to: {}, req });
+  }));
+
+  const toUpper = convert(str => str.toUpperCase(), text);
+  describe('convert(() => {}, text)', fieldTest(toUpper, it => {
+    it.parses({ to: 'FOO', from: 'foo' });
+    it.deserializes({ value: 'FOO', from: 'foo' });
+    it.serializes({ to: 'foo', from: 'foo' });
   }));
 });

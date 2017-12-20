@@ -15,7 +15,8 @@ const {
   bool,
   list,
   object,
-  ref
+  ref,
+  convert
 } = require('./fields');
 
 const { errorFor } = require('./validator');
@@ -30,6 +31,7 @@ module.exports = {
   list,
   object,
   ref,
+  convert,
   errorFor,
 
   // old interfaces, soon to be removed
