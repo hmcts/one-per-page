@@ -77,7 +77,7 @@ class FieldValue {
 
 
 class ObjectFieldValue extends FieldValue {
-  constructor({ id, name, serializer, validations, fields = [] }) {
+  constructor({ id, name, serializer, validations = [], fields = [] }) {
     const myValidations = validations.filter(v => v.target === name);
     super({ id, name, serializer, validations: myValidations });
 
@@ -129,6 +129,13 @@ class TransformFieldValue extends FieldValue {
     this.field = field;
     this.transformation = transformation;
     this.validations = validations;
+
+    if (defined(this.field.fields)) {
+      Object.entries(this.field.fields)
+        .forEach(([key, childField]) => {
+          this[key] = childField;
+        });
+    }
   }
 
   static from(args, descriptor) {
