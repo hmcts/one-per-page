@@ -9,6 +9,7 @@
     "allRequired": "Enter the date you got married",
     "dayRequired": "Enter the day you got married",
     "monthRequired": "Enter the month you got married",
-    "yearRequired": "Enter the year you got married"
+    "yearRequired": "Enter the year you got married",
+    "notInFuture": "Enter a date that is not in the future"
   }
 }
