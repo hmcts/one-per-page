@@ -9,7 +9,7 @@ class DateOfMarriage extends Question {
     return form({
       date: convert(
         d => moment(`${d.year}-${d.month}-${d.day}`, 'YYYY-MM-DD'),
-        date({
+        date.required({
           allRequired: this.content.date.allRequired,
           dayRequired: this.content.date.dayRequired,
           monthRequired: this.content.date.monthRequired,

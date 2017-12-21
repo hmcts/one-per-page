@@ -40,7 +40,7 @@ class FieldDescriptor {
   }
 
   checkField(targetOrError, check) {
-    const { message, id } = parseErrorTarget(targetOrError, this.name);
+    const { message, id } = parseErrorTarget(targetOrError);
     const validations = [...this.validations, validator(id, message, check)];
     return this.clone({ validations });
   }

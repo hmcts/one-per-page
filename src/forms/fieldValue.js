@@ -73,22 +73,31 @@ class FieldValue {
   get mappedErrors() {
     return this.errors.map(error => new FieldError(this, error));
   }
+
+  clone(overrides) {
+    return new this.constructor(Object.assign({}, this, overrides));
+  }
 }
 
 
 class ObjectFieldValue extends FieldValue {
   constructor({ id, name, serializer, validations = [], fields = [] }) {
-    const myValidations = validations.filter(v => v.target === name);
+    const myValidations = validations.filter(v => v.target === 'no-target');
     super({ id, name, serializer, validations: myValidations });
 
-    this.fields = fields;
-    Object.keys(fields).forEach(key => {
+    this.fields = mapEntries(fields, (key, field) => {
       const fieldsValidations = validations
         .filter(v => v.target === key)
         .map(v => validator(v.target, v.message, () => v.predicate(this)));
-      this[key] = this.fields[key];
-      this[key].validations.push(...fieldsValidations);
+      const mappedValidations = [...fieldsValidations, ...field.validations];
+
+      return field.clone({ validations: mappedValidations });
     });
+
+    Object.keys(this.fields)
+      .forEach(key => {
+        this[key] = this.fields[key];
+      });
   }
 
   get value() {
