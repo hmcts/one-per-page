@@ -11,24 +11,24 @@ describe('forms/fieldValue', () => {
   describe('TransformFieldValue', () => {
     {
       const transformation = f => f;
-      const field = new FieldValue({ name: 'field', value: 'foo' });
-      const t = new TransformFieldValue({ transformation, field });
+      const wrapped = new FieldValue({ name: 'field', value: 'foo' });
+      const t = new TransformFieldValue({ transformation, wrapped });
 
       it('accepts a field and a transformation function', () => {
-        expect(t.wrapped).to.eql(field);
+        expect(t.wrapped).to.eql(wrapped);
         expect(t.transformation).to.eql(transformation);
       });
 
       it('takes its name and id from the field', () => {
-        expect(t.name).to.eql(field.name);
-        expect(t.id).to.eql(field.id);
+        expect(t.name).to.eql(wrapped.name);
+        expect(t.id).to.eql(wrapped.id);
       });
 
       it('exposes any child fields the field has', () => {
-        const objectField = new ObjectFieldValue({ fields: { foo: field } });
+        const objectField = new ObjectFieldValue({ fields: { foo: wrapped } });
         const nested = new TransformFieldValue({
           transformation,
-          field: objectField
+          wrapped: objectField
         });
         expect(nested).to.have.property('foo');
         expect(nested.foo).to.eql(objectField.foo);
@@ -38,10 +38,10 @@ describe('forms/fieldValue', () => {
     describe('#serialize', () => {
       it('calls field.serialize', () => {
         const transformation = f => f;
-        const field = { serialize: sinon.stub().returns({}) };
-        const t = new TransformFieldValue({ transformation, field });
+        const wrapped = { serialize: sinon.stub().returns({}) };
+        const t = new TransformFieldValue({ transformation, wrapped });
         expect(t.serialize()).to.eql({});
-        expect(field.serialize).calledOnce;
+        expect(wrapped.serialize).calledOnce;
       });
     });
 
@@ -62,7 +62,7 @@ describe('forms/fieldValue', () => {
 
         const t = new TransformFieldValue({
           transformation: toArray,
-          field,
+          wrapped: field,
           validations: [arrayCheck]
         });
 
@@ -78,7 +78,10 @@ describe('forms/fieldValue', () => {
           name: 'field', value: '1,2,3',
           validate: sinon.stub().returns(true)
         };
-        const t = new TransformFieldValue({ transformation: v => v, field });
+        const t = new TransformFieldValue({
+          transformation: v => v,
+          wrapped: field
+        });
 
         expect(t.validate()).to.eql(true);
         expect(field.validate).calledOnce;
@@ -90,7 +93,7 @@ describe('forms/fieldValue', () => {
 
         const t = new TransformFieldValue({
           transformation: v => v,
-          field,
+          wrapped: field,
           validations: [notRun]
         });
 
@@ -104,7 +107,7 @@ describe('forms/fieldValue', () => {
         const field = { value: 'John Smith' };
         const t = new TransformFieldValue({
           transformation: sinon.stub().returns('foo'),
-          field
+          wrapped: field
         });
         expect(t.value).to.not.eql(field.value);
         expect(t.transformation).calledOnce;
@@ -123,7 +126,7 @@ describe('forms/fieldValue', () => {
         const willFail = validator('field', 'from transformed', () => false);
         const t = new TransformFieldValue({
           transformation: sinon.stub().returns('foo'),
-          field,
+          wrapped: field,
           validations: [willFail]
         });
         t.validate();
@@ -141,7 +144,7 @@ describe('forms/fieldValue', () => {
         const transformedErr = validator('f', 'from transformed', () => false);
         const t = new TransformFieldValue({
           transformation: sinon.stub().returns('foo'),
-          field,
+          wrapped: field,
           validations: [transformedErr]
         });
         t.validate();
@@ -168,7 +171,7 @@ describe('forms/fieldValue', () => {
       it('returns true if it and field are valid', () => {
         const t = new TransformFieldValue({
           transformation,
-          field: validField,
+          wrapped: validField,
           validations: [willPass]
         });
         t.validate();
@@ -178,7 +181,7 @@ describe('forms/fieldValue', () => {
       it('returns false if it is not valid', () => {
         const t = new TransformFieldValue({
           transformation,
-          field: validField,
+          wrapped: validField,
           validations: [willFail]
         });
         t.validate();
@@ -188,7 +191,7 @@ describe('forms/fieldValue', () => {
       it('returns false if the field is not valid', () => {
         const t = new TransformFieldValue({
           transformation,
-          field: invalidField,
+          wrapped: invalidField,
           validations: [willPass]
         });
         t.validate();
@@ -211,7 +214,7 @@ describe('forms/fieldValue', () => {
       it('returns true if it and field have been validated', () => {
         const t = new TransformFieldValue({
           transformation,
-          field: validatedField,
+          wrapped: validatedField,
           validations: [willPass]
         });
         t.validate();
@@ -221,7 +224,7 @@ describe('forms/fieldValue', () => {
       it('returns false if it has not been validated', () => {
         const t = new TransformFieldValue({
           transformation,
-          field: notValidatedField,
+          wrapped: notValidatedField,
           validations: [willPass]
         });
         expect(t.validated).to.be.false;
