@@ -37,46 +37,43 @@ describe('errors/errorPages', () => {
     }
   };
 
+  const testEndpointWithExpectedResponseAndText = (
+    app, path, expectedResponse, expectedText) => {
+    return wrapWithResponseAssertions(supertest(app)
+      .get(path)).expect(expectedResponse)
+      .html($ => {
+        return expect($('body')).to.contain
+          .$text(expectedText);
+      });
+  };
+
   describe('bind', () => {
     describe('404 Not found', () => {
       describe('default page', () => {
         const app = journey(testApp(), options());
 
         it('should contain default header', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get('/some-random-page')).expect(NOT_FOUND)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text('Page not found');
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, '/some-random-page', NOT_FOUND, 'Page not found');
         });
 
         it('should contain default body', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get('/some-random-page')).expect(NOT_FOUND)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text('could be because you\'ve followed a ' +
-                  'broken or outdated link, or there\'s an error on our site.');
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, '/some-random-page', NOT_FOUND,
+            'could be because you\'ve followed a ' +
+            'broken or outdated link, or there\'s an error on our site.'
+          );
         });
 
         describe('should contain default steps', () => {
           it('should include go to previous', () => {
-            return wrapWithResponseAssertions(supertest(app)
-              .get('/some-random-page')).expect(NOT_FOUND)
-              .html($ => {
-                return expect($('body')).to.contain
-                  .$text('go to the previous page');
-              });
+            return testEndpointWithExpectedResponseAndText(
+              app, '/some-random-page', NOT_FOUND, 'go to the previous page');
           });
 
           it('should include go home', () => {
-            return wrapWithResponseAssertions(supertest(app)
-              .get('/some-random-page')).expect(NOT_FOUND)
-              .html($ => {
-                return expect($('body')).to.contain.$text('go home');
-              });
+            return testEndpointWithExpectedResponseAndText(
+              app, '/some-random-page', NOT_FOUND, 'go home');
           });
         });
       });
@@ -85,30 +82,20 @@ describe('errors/errorPages', () => {
         const app = journey(testApp(), options({ errorPages: customNotFound }));
 
         it('should contain custom header', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get('/some-random-page')).expect(NOT_FOUND)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text(customNotFound.notFound.title);
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, '/some-random-page', NOT_FOUND, customNotFound.notFound.title);
         });
 
         it('should contain custom body', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get('/some-random-page')).expect(NOT_FOUND)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text(customNotFound.notFound.message);
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, '/some-random-page',
+            NOT_FOUND, customNotFound.notFound.message);
         });
 
         it('should contain custom steps', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get('/some-random-page')).expect(NOT_FOUND)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text(customNotFound.notFound.nextSteps[2]);
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, '/some-random-page',
+            NOT_FOUND, customNotFound.notFound.nextSteps[2]);
         });
       });
 
@@ -128,27 +115,20 @@ describe('errors/errorPages', () => {
       describe('default page', () => {
         const app = journey(testApp(), options({ steps: [failurePage] }));
         it('should contain default header', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get(failurePage.path))
-            .expect(INTERNAL_SERVER_ERROR)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text('Sorry, we\'re having technical problems');
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, failurePage.path,
+            INTERNAL_SERVER_ERROR, 'Sorry, we\'re having technical problems');
         });
 
         it('should contain default body', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get(failurePage.path))
-            .expect(INTERNAL_SERVER_ERROR)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text('Sorry, we\'re having technical problems\n' +
-                  'Please try again in a few minutes.');
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, failurePage.path,
+            INTERNAL_SERVER_ERROR,
+            'Sorry, we\'re having technical problems\n' +
+            'Please try again in a few minutes.');
         });
 
-        it('should show error message', () => {
+        it('should not show error message', () => {
           return wrapWithResponseAssertions(supertest(app)
             .get(failurePage.path))
             .expect(INTERNAL_SERVER_ERROR)
@@ -156,7 +136,6 @@ describe('errors/errorPages', () => {
               return expect($('body')).to.not.contain
                 .$text('an error occurred :(');
             });
-
         });
       });
 
@@ -165,26 +144,18 @@ describe('errors/errorPages', () => {
           steps: [failurePage], errorPages: customServerError }));
 
         it('should contain default header', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get(failurePage.path))
-            .expect(INTERNAL_SERVER_ERROR)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text(customServerError.serverError.title);
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, failurePage.path,
+            INTERNAL_SERVER_ERROR, customServerError.serverError.title);
         });
 
         it('should contain default body', () => {
-          return wrapWithResponseAssertions(supertest(app)
-            .get(failurePage.path))
-            .expect(INTERNAL_SERVER_ERROR)
-            .html($ => {
-              return expect($('body')).to.contain
-                .$text(customServerError.serverError.message);
-            });
+          return testEndpointWithExpectedResponseAndText(
+            app, failurePage.path,
+            INTERNAL_SERVER_ERROR, customServerError.serverError.message);
         });
 
-        it('should show error message', () => {
+        it('should not show error message', () => {
           return wrapWithResponseAssertions(supertest(app)
             .get(failurePage.path))
             .expect(INTERNAL_SERVER_ERROR)
@@ -192,10 +163,8 @@ describe('errors/errorPages', () => {
               return expect($('body')).to.not.contain
                 .$text('an error occurred :(');
             });
-
         });
       });
-
     });
   });
 });
