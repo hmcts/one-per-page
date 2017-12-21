@@ -15,7 +15,7 @@ class DateOfMarriage extends Question {
           monthRequired: this.content.date.monthRequired,
           yearRequired: this.content.date.yearRequired
         })
-      )
+      ).check(this.content.date.notInFuture, m => m.isBefore(moment.now()))
     });
   }
 
