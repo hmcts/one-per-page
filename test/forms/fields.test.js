@@ -5,7 +5,8 @@ const {
   list,
   object,
   ref,
-  convert
+  convert,
+  date
 } = require('../../src/forms/fields');
 const { isObject } = require('../../src/util/checks');
 
@@ -246,4 +247,36 @@ describe('forms/fields', () => {
     it.deserializes({ value: 'FOO', from: 'foo' });
     it.serializes({ to: 'foo', from: 'foo' });
   }));
+
+  describe('date', fieldTest(date, it => {
+    it.parses({ to: {}, from: {} });
+    it.parses({
+      to: { day: '1', month: '12', year: '2017' },
+      from: { 'foo.day': '1', 'foo.month': '12', 'foo.year': '2017' }
+    });
+
+    it.deserializes({
+      value: { day: '1', month: '12', year: '2017' },
+      from: { foo: { day: '1', month: '12', year: '2017' } }
+    });
+
+    it.serializes({
+      to: { foo: { day: '1', month: '12', year: '2017' } },
+      from: { foo: { day: '1', month: '12', year: '2017' } }
+    });
+  }));
+
+  describe('date.required', () => {
+    it('errors if all fields missing', () => {
+      const errored = date.required().parse('date', {});
+      errored.validate();
+      expect(errored.errors).to.eql(['Enter a date']);
+    });
+    it('errors if any fields missing', () => {
+      const errored = date.required().parse('date', { 'date.month': '1' });
+      errored.validate();
+      expect(errored.day.errors).to.eql(['Enter a day']);
+      expect(errored.year.errors).to.eql(['Enter a year']);
+    });
+  });
 });

@@ -174,12 +174,13 @@ const convert = (transformation, field) => fieldDescriptor({
   }
 });
 
-const date = ({
+const date = object({ day: text, month: text, year: text });
+date.required = ({
   allRequired = 'Enter a date',
   dayRequired = 'Enter a day',
   monthRequired = 'Enter a month',
   yearRequired = 'Enter a year'
-} = {}) => object({ day: text, month: text, year: text })
+} = {}) => date
   .joi(
     errorFor('day', dayRequired),
     Joi.object()
@@ -206,6 +207,5 @@ const date = ({
       year: Joi.string().required()
     })
   );
-
 
 module.exports = { nonEmptyText, text, bool, list, object, ref, date, convert };

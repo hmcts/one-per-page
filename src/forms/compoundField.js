@@ -59,7 +59,7 @@ class CompoundField extends FieldDesriptor {
   }
 
   addValidation(id, message, validator) {
-    if (id === this.name) {
+    if (id === this.name || id === 'no-target') {
       this.validations.push(validator);
     } else if (this.fields.some(f => f.name === id)) {
       this[id].validations.push(validator);

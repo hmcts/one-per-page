@@ -114,9 +114,9 @@ describe('forms/fieldValue', () => {
       });
 
       expect(f.validations).to.eql([]);
-      expect(day.validations).has.length(1);
-      expect(month.validations).has.length(1);
-      expect(year.validations).has.length(1);
+      expect(f.day.validations).has.length(1);
+      expect(f.month.validations).has.length(1);
+      expect(f.year.validations).has.length(1);
     });
 
     describe('#validate', () => {
@@ -136,7 +136,7 @@ describe('forms/fieldValue', () => {
         });
         f.validate();
         expect(mapped.predicate).calledWith(f);
-        expect(notMapped.predicate).calledWith(child);
+        expect(notMapped.predicate).calledWith(f.child);
       });
 
       it("won't execute the parents validators if child.validate fails", () => {
@@ -173,8 +173,8 @@ describe('forms/fieldValue', () => {
         });
         f.validate();
         expect(f.mappedErrors).to.eql([
-          new FieldError(child1, 'notMapped'),
-          new FieldError(child2, 'mapped')
+          new FieldError(f.child1, 'notMapped'),
+          new FieldError(f.child2, 'mapped')
         ]);
       });
     });

@@ -15,11 +15,11 @@ const errorFor = (id, message) => {
   return { id, message };
 };
 
-const parseErrorTarget = (targetOrMessage, fallbackId) => {
+const parseErrorTarget = targetOrMessage => {
   if (isObject(targetOrMessage) && hasKeys(targetOrMessage, 'message', 'id')) {
     return targetOrMessage;
   }
-  return errorFor(fallbackId, targetOrMessage);
+  return errorFor('no-target', targetOrMessage);
 };
 
 
