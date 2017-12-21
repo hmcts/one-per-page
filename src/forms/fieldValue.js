@@ -133,9 +133,13 @@ class ListFieldValue extends ObjectFieldValue {
 }
 
 class TransformFieldValue extends FieldValue {
-  constructor({ transformation, field, validations = [] }) {
-    super({ name: field.name, id: field.id, serializer: field.serializer });
-    this.wrapped = field;
+  constructor({ transformation, wrapped, validations = [] }) {
+    super({
+      name: wrapped.name,
+      id: wrapped.id,
+      serializer: wrapped.serializer
+    });
+    this.wrapped = wrapped;
     this.transformation = transformation;
     this.validations = validations;
 

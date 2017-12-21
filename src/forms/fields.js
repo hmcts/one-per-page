@@ -161,14 +161,16 @@ const ref = (step, field) => fieldDescriptor({
 
 const convert = (transformation, field) => fieldDescriptor({
   parser(name, body, req) {
+    const fieldValue = field.parse(name, body, req);
     return TransformFieldValue.from(
-      { transformation, field: field.parse(name, body, req) },
+      { transformation, wrapped: fieldValue },
       this
     );
   },
   deserializer(name, values, req) {
+    const fieldValue = field.deserialize(name, values, req);
     return TransformFieldValue.from(
-      { transformation, field: field.deserialize(name, values, req) },
+      { transformation, wrapped: fieldValue },
       this
     );
   }
