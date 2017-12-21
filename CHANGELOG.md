@@ -1,3 +1,41 @@
+<a name="2.0.0"></a>
+# 2.0.0 (2017-12-21)
+
+* Add a list field that wraps other fields ([f2a8743](https://github.com/hmcts/one-per-page/commit/f2a8743))
+* Add bool.default for setting the default value ([9cf17e0](https://github.com/hmcts/one-per-page/commit/9cf17e0))
+* Add convert to map values from one form to another ([e2bfa8c](https://github.com/hmcts/one-per-page/commit/e2bfa8c))
+* Allow only running specific tests (it.only) ([0238b34](https://github.com/hmcts/one-per-page/commit/0238b34))
+* Allow users of FieldDescriptor to change what value field it produces ([628e1df](https://github.com/hmcts/one-per-page/commit/628e1df))
+* Collect FieldValue classes in same module ([e5d6efb](https://github.com/hmcts/one-per-page/commit/e5d6efb))
+* Collect some common reduce and map operations to reuse them easier ([b05e394](https://github.com/hmcts/one-per-page/commit/b05e394))
+* Consume new fields for all basic fields ([a47b691](https://github.com/hmcts/one-per-page/commit/a47b691))
+* Demo validating a fields converted value ([c0a6eb7](https://github.com/hmcts/one-per-page/commit/c0a6eb7))
+* Enable object field validation and mapping errors ([7ae9660](https://github.com/hmcts/one-per-page/commit/7ae9660))
+* Ensure that transformed object fields still expose their child fields ([ad1821e](https://github.com/hmcts/one-per-page/commit/ad1821e))
+* Expose new field interfaces ([2bbd1d6](https://github.com/hmcts/one-per-page/commit/2bbd1d6))
+* Prevent mutating the base field descriptor ([744f7a4](https://github.com/hmcts/one-per-page/commit/744f7a4))
+* Provide mappedErrors needed for summarising the errors ([f56c80a](https://github.com/hmcts/one-per-page/commit/f56c80a))
+* Refactor compoundField to subclass from FieldDescriptor ([61a74a2](https://github.com/hmcts/one-per-page/commit/61a74a2))
+* Refactor fieldDescriptor so you can return FieldValue from your functions ([e4fb96d](https://github.com/hmcts/one-per-page/commit/e4fb96d))
+* Reimplement compoundField as object fieldDescriptor ([34e8046](https://github.com/hmcts/one-per-page/commit/34e8046))
+* Reimplement date field using new convert and object fields ([0e7ec76](https://github.com/hmcts/one-per-page/commit/0e7ec76))
+* Reimplement Form to support new field approach ([cc69e6b](https://github.com/hmcts/one-per-page/commit/cc69e6b))
+* Reimplement ref field in new approach ([b34f89b](https://github.com/hmcts/one-per-page/commit/b34f89b))
+* Remove complexity from mapping the entries in an object ([a771d17](https://github.com/hmcts/one-per-page/commit/a771d17))
+* Remove now unused formProxyHandler ([854f20f](https://github.com/hmcts/one-per-page/commit/854f20f))
+* Remove value from answers block as its not used anymore ([b20a352](https://github.com/hmcts/one-per-page/commit/b20a352))
+* Rename underlying field to better describe it ([18d78ae](https://github.com/hmcts/one-per-page/commit/18d78ae))
+* Replace old form interface with our new one ([f199ce9](https://github.com/hmcts/one-per-page/commit/f199ce9))
+* Rewrite fields to separate declaration of a field and the parsed value ([0cd434e](https://github.com/hmcts/one-per-page/commit/0cd434e))
+* Simplify cloning a field descriptor ([e55de7b](https://github.com/hmcts/one-per-page/commit/e55de7b))
+* Split fieldValue.test.js as it was too long ([340ca08](https://github.com/hmcts/one-per-page/commit/340ca08))
+* Split FilledForm and Form in to their own packages ([17888e6](https://github.com/hmcts/one-per-page/commit/17888e6))
+* Test date field ([009cfec](https://github.com/hmcts/one-per-page/commit/009cfec))
+* Update list to parse from BodyParsers output ([66e5e2c](https://github.com/hmcts/one-per-page/commit/66e5e2c))
+* Fix: Moment accepts months 0-indexed but parses them as you'd expect ([0f91129](https://github.com/hmcts/one-per-page/commit/0f91129))
+
+
+
 <a name="2.0.0-5"></a>
 # 2.0.0-5 (2017-12-13)
 
