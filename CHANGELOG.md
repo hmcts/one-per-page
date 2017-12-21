@@ -1,3 +1,43 @@
+<a name="2.0.1"></a>
+## 2.0.1 (2017-12-21)
+
+* Add a list field that wraps other fields ([5006551](https://github.com/hmcts/one-per-page/commit/5006551))
+* Add bool.default for setting the default value ([f812ef0](https://github.com/hmcts/one-per-page/commit/f812ef0))
+* Add convert to map values from one form to another ([1c3f9d7](https://github.com/hmcts/one-per-page/commit/1c3f9d7))
+* Allow only running specific tests (it.only) ([3f240a2](https://github.com/hmcts/one-per-page/commit/3f240a2))
+* Allow users of FieldDescriptor to change what value field it produces ([36c1678](https://github.com/hmcts/one-per-page/commit/36c1678))
+* Collect FieldValue classes in same module ([267e0ae](https://github.com/hmcts/one-per-page/commit/267e0ae))
+* Collect some common reduce and map operations to reuse them easier ([0f01577](https://github.com/hmcts/one-per-page/commit/0f01577))
+* Consume new fields for all basic fields ([7a91fff](https://github.com/hmcts/one-per-page/commit/7a91fff))
+* Demo validating a fields converted value ([fa220c8](https://github.com/hmcts/one-per-page/commit/fa220c8))
+* Enable object field validation and mapping errors ([3a1ec04](https://github.com/hmcts/one-per-page/commit/3a1ec04))
+* Ensure that transformed object fields still expose their child fields ([8984622](https://github.com/hmcts/one-per-page/commit/8984622))
+* Expose new field interfaces ([7eaaa4f](https://github.com/hmcts/one-per-page/commit/7eaaa4f))
+* Fix bug caused by renaming the underlying field to wrapped ([17bc754](https://github.com/hmcts/one-per-page/commit/17bc754))
+* Prevent mutating the base field descriptor ([d392918](https://github.com/hmcts/one-per-page/commit/d392918))
+* Provide mappedErrors needed for summarising the errors ([8f162a3](https://github.com/hmcts/one-per-page/commit/8f162a3))
+* Refactor compoundField to subclass from FieldDescriptor ([fe12091](https://github.com/hmcts/one-per-page/commit/fe12091))
+* Refactor fieldDescriptor so you can return FieldValue from your functions ([4dbdb12](https://github.com/hmcts/one-per-page/commit/4dbdb12))
+* Reimplement compoundField as object fieldDescriptor ([72f8004](https://github.com/hmcts/one-per-page/commit/72f8004))
+* Reimplement date field using new convert and object fields ([4a942bb](https://github.com/hmcts/one-per-page/commit/4a942bb))
+* Reimplement Form to support new field approach ([8521504](https://github.com/hmcts/one-per-page/commit/8521504))
+* Reimplement ref field in new approach ([1c2c7fc](https://github.com/hmcts/one-per-page/commit/1c2c7fc))
+* Release 2.0.0 ([e96e295](https://github.com/hmcts/one-per-page/commit/e96e295))
+* Remove complexity from mapping the entries in an object ([2e86d3b](https://github.com/hmcts/one-per-page/commit/2e86d3b))
+* Remove now unused formProxyHandler ([22afd4c](https://github.com/hmcts/one-per-page/commit/22afd4c))
+* Remove value from answers block as its not used anymore ([c1acadd](https://github.com/hmcts/one-per-page/commit/c1acadd))
+* Rename underlying field to better describe it ([7670eec](https://github.com/hmcts/one-per-page/commit/7670eec))
+* Replace old form interface with our new one ([7a1e352](https://github.com/hmcts/one-per-page/commit/7a1e352))
+* Rewrite fields to separate declaration of a field and the parsed value ([1d6b5d4](https://github.com/hmcts/one-per-page/commit/1d6b5d4))
+* Simplify cloning a field descriptor ([da91f94](https://github.com/hmcts/one-per-page/commit/da91f94))
+* Split fieldValue.test.js as it was too long ([13d7531](https://github.com/hmcts/one-per-page/commit/13d7531))
+* Split FilledForm and Form in to their own packages ([c4af07f](https://github.com/hmcts/one-per-page/commit/c4af07f))
+* Test date field ([4b2b8ab](https://github.com/hmcts/one-per-page/commit/4b2b8ab))
+* Update list to parse from BodyParsers output ([0e66179](https://github.com/hmcts/one-per-page/commit/0e66179))
+* Fix: Moment accepts months 0-indexed but parses them as you'd expect ([d8e8ec2](https://github.com/hmcts/one-per-page/commit/d8e8ec2))
+
+
+
 <a name="2.0.0"></a>
 # 2.0.0 (2017-12-21)
 
