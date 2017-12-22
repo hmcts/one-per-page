@@ -141,23 +141,25 @@ bool.default = defaultValue => fieldDescriptor({
   }
 });
 
-const ref = (step, field) => fieldDescriptor({
-  parser(name, _, req) {
-    return option
-      .fromNullable(req.session)
-      .flatMap(session => option.fromNullable(session[step.name]))
-      .flatMap(values => field.deserializer(name, values));
-  },
-  deserializer(name, _, req) {
-    return option
-      .fromNullable(req.session)
-      .flatMap(session => option.fromNullable(session[step.name]))
-      .flatMap(values => field.deserializer(name, values));
-  },
-  serializer() {
+const ref = (step, field) => {
+  const returnNothing = () => {
     return {};
-  }
-});
+  };
+  const fetchFromStepInSession = (name, _, req) => {
+    const values = option
+      .fromNullable(req.session)
+      .flatMap(session => option.fromNullable(session[step.name]))
+      .valueOrElse({});
+    return field
+      .deserialize(name, values, req)
+      .clone({ serializer: returnNothing });
+  };
+  return fieldDescriptor({
+    parser: fetchFromStepInSession,
+    deserializer: fetchFromStepInSession,
+    serializer: returnNothing
+  });
+};
 
 const convert = (transformation, field) => fieldDescriptor({
   parser(name, body, req) {
