@@ -4,6 +4,7 @@ const EntryPoint = require('./EntryPoint');
 const ExitPoint = require('./ExitPoint');
 const Page = require('./Page');
 const Redirect = require('./Redirect');
+const AddAnother = require('./AddAnother');
 
 module.exports = {
   BaseStep,
@@ -11,5 +12,6 @@ module.exports = {
   EntryPoint,
   ExitPoint,
   Page,
-  Redirect
+  Redirect,
+  AddAnother
 };
