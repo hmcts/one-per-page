@@ -8,7 +8,7 @@ const {
   convert,
   date
 } = require('../../src/forms/fields');
-const { isObject } = require('../../src/util/checks');
+const { isObject, isEmptyObject } = require('../../src/util/checks');
 
 const readable = value => {
   if (typeof value === 'object') return JSON.stringify(value);
@@ -27,9 +27,10 @@ const fieldTest = (field, tests) => {
   }) => {
     const fromStr = readable(from);
     const toStr = readable(value);
+    const reqStr = isEmptyObject(req) ? '' : ` with request ${readable(req)}`;
     const mochaTest = only ? it.only : it;
 
-    mochaTest(`deserializes ${toStr} from ${fromStr}`, () => {
+    mochaTest(`deserializes ${toStr} from ${fromStr}${reqStr}`, () => {
       const session = isObject(from) ? from : { [key]: from };
       const fieldValue = field.deserialize(key, session, req);
       return assertions({ fieldValue, field });
@@ -43,9 +44,10 @@ const fieldTest = (field, tests) => {
   }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
+    const reqStr = isEmptyObject(req) ? '' : ` with request ${readable(req)}`;
     const mochaTest = only ? it.only : it;
 
-    mochaTest(`parses ${toStr} from ${fromStr}`, () => {
+    mochaTest(`parses ${toStr} from ${fromStr}${reqStr}`, () => {
       const body = isObject(from) ? from : { [key]: from };
       const fieldValue = field.parse(key, body, req);
       return assertions({ fieldValue, field });
@@ -60,9 +62,10 @@ const fieldTest = (field, tests) => {
   }) => {
     const fromStr = readable(from);
     const toStr = readable(to);
+    const reqStr = isEmptyObject(req) ? '' : ` with request ${readable(req)}`;
     const mochaTest = only ? it.only : it;
 
-    mochaTest(`serializes ${toStr} from ${fromStr}`, () => {
+    mochaTest(`serializes ${toStr} from ${fromStr}${reqStr}`, () => {
       const values = isObject(from) ? from : { [key]: from };
       const fieldValue = field.deserialize(key, values, req);
       const serializedValue = fieldValue.serialize();
