@@ -112,8 +112,8 @@ class ObjectFieldValue extends FieldValue {
     if (childrenAreValid) {
       return super.validate();
     }
-    this._validated = true;
-    this._valid = false;
+    this[validatedProp] = true;
+    this[validProp] = false;
     return false;
   }
 
