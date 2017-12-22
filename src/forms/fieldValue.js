@@ -50,8 +50,16 @@ class FieldValue {
     }));
   }
 
-  serialize() {
-    return this.serializer(this);
+  serialize(values) {
+    return this.serializer(this, values);
+  }
+
+  serializedValues(existingValues) {
+    const serialized = this.serialize(existingValues);
+    if (serialized === {}) {
+      return undefined;
+    }
+    return serialized[this.name];
   }
 
   validate() {
@@ -148,7 +156,7 @@ class TransformFieldValue extends FieldValue {
     super({
       name: wrapped.name,
       id: wrapped.id,
-      serializer: defined(serializer) ? serializer : wrapped.serializer,
+      serializer,
       filledCheck: defined(filledCheck) ? filledCheck : wrapped.filledCheck
     });
     this.wrapped = wrapped;
