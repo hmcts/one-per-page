@@ -2,6 +2,7 @@ const option = require('option');
 const { FieldValue } = require('./fieldValue');
 const Joi = require('joi');
 const { validator, parseErrorTarget } = require('./validator');
+const { defined } = require('../util/checks');
 
 
 const getValue = (name, body) => option
@@ -13,6 +14,7 @@ class FieldDescriptor {
   constructor({
     parser = getValue,
     deserializer = getValue,
+    filledCheck = defined,
     serializer,
     validations = []
   } = {}) {
@@ -20,6 +22,7 @@ class FieldDescriptor {
     this.deserializer = deserializer;
     this.serializer = serializer;
     this.validations = validations;
+    this.filledCheck = filledCheck;
   }
 
   clone(overrides) {

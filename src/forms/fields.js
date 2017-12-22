@@ -76,11 +76,17 @@ const list = field => fieldDescriptor({
 
     return ListFieldValue.from({ name, fields }, this);
   },
-  serializer(f) {
-    if (f.value.length === 0) {
+  serializer(f, values) {
+    const value = Object.values(f.fields)
+      .map(fieldValue => fieldValue.serializedValues(values));
+
+    if (value.length === 0) {
       return {};
     }
-    return { [f.name]: f.value };
+    return { [f.name]: value };
+  },
+  filledCheck(value) {
+    return Array.isArray(value) && value.length > 0;
   }
 });
 
@@ -175,6 +181,9 @@ const convert = (transformation, field) => fieldDescriptor({
       { transformation, wrapped: fieldValue },
       this
     );
+  },
+  serializer(transformed) {
+    return field.serializer(transformed.wrapped);
   }
 });
 
