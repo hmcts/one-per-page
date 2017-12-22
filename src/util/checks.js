@@ -17,9 +17,13 @@ const hasKeys = (obj, ...keys) => keys.reduce(
 const isObject = maybeObj =>
   typeof maybeObj === 'object' && !Array.isArray(maybeObj);
 
+// Object.keys(new Date()) === 0 so need the constructor check
+const isEmptyObject = obj =>
+  Object.keys(obj).length === 0 && obj.constructor === Object;
+
 module.exports = {
   notDefined, defined,
   ensureArray,
   hasKey, hasKeys,
-  isObject
+  isObject, isEmptyObject
 };
