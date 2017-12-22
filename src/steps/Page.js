@@ -23,10 +23,10 @@ const notLocals = [
 const allProperties = (obj, arr = []) => {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   const props = [
-    ...arr,
     ...Object.keys(descriptors).map(key => {
       return { key, descriptor: descriptors[key] };
-    })
+    }),
+    ...arr
   ];
   if (obj.name === 'BaseStep') {
     return props;
