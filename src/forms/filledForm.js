@@ -3,6 +3,7 @@ const {
   andWise, orWise,
   flattenArray, flattenObject
 } = require('../util/ops');
+const option = require('option');
 
 const fieldsProp = Symbol('fields');
 
@@ -23,8 +24,12 @@ class FilledForm {
     if (notDefined(req.session)) {
       throw new Error('Session not initialized');
     }
+    const existingValues = option
+      .fromNullable(req.session[stepName])
+      .valueOrElse({});
+
     const values = Object.values(this.fields)
-      .map(field => field.serialize())
+      .map(field => field.serialize(existingValues))
       .reduce(flattenObject, {});
 
     if (values !== {}) {

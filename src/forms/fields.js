@@ -32,11 +32,11 @@ const object = childFields => fieldDescriptor({
 
     return ObjectFieldValue.from({ name, fields }, this);
   },
-  serializer(field) {
-    const serialized = mapEntries(field.fields, (key, childField) => {
-      const fieldName = `${field.name}.${key}`;
-      return childField.serialize()[fieldName];
-    });
+  serializer(field, existingValues) {
+    const serialized = mapEntries(
+      field.fields,
+      (key, childField) => childField.serializedValues(existingValues)
+    );
 
     if (Object.keys(serialized).length === 0) {
       return {};
@@ -183,7 +183,7 @@ const convert = (transformation, field) => fieldDescriptor({
     );
   },
   serializer(transformed) {
-    return field.serializer(transformed.wrapped);
+    return transformed.wrapped.serialize(transformed.wrapped);
   }
 });
 
