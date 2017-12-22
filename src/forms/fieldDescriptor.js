@@ -10,12 +10,20 @@ const getValue = (name, body) => option
   .valueOrElse(undefined); // eslint-disable-line no-undefined
 
 
+const omitIfUndefined = field => {
+  if (defined(field.value)) {
+    return { [field.name]: field.value };
+  }
+  return {};
+};
+
+
 class FieldDescriptor {
   constructor({
     parser = getValue,
     deserializer = getValue,
     filledCheck = defined,
-    serializer,
+    serializer = omitIfUndefined,
     validations = []
   } = {}) {
     this.parser = parser;

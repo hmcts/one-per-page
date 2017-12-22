@@ -35,16 +35,6 @@ describe('forms/fieldValue', () => {
       });
     }
 
-    describe('#serialize', () => {
-      it('calls field.serialize', () => {
-        const transformation = f => f;
-        const wrapped = { serialize: sinon.stub().returns({}) };
-        const t = new TransformFieldValue({ transformation, wrapped });
-        expect(t.serialize()).to.eql({});
-        expect(wrapped.serialize).calledOnce;
-      });
-    });
-
     describe('#validate', () => {
       beforeEach(() => {
         sinon.spy(Array, 'isArray');
