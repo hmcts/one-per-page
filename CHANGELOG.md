@@ -1,3 +1,24 @@
+<a name="2.1.0-1"></a>
+# 2.1.0-1 (2017-12-22)
+
+* Add a step type that allows you to capture mutliple of a complex field ([69f0c24](https://github.com/hmcts/one-per-page/commit/69f0c24))
+* added error pages ([87948a2](https://github.com/hmcts/one-per-page/commit/87948a2))
+* Allow filledForms to declare if the user has filled any field ([feec6fa](https://github.com/hmcts/one-per-page/commit/feec6fa))
+* Allow serializers access to existing session values ([09462ae](https://github.com/hmcts/one-per-page/commit/09462ae))
+* Allow steps to customise which url a questions form will post to ([4836d08](https://github.com/hmcts/one-per-page/commit/4836d08))
+* Allow subclasses of BaseStep to customise the path to listen on ([cf6ea23](https://github.com/hmcts/one-per-page/commit/cf6ea23))
+* Demo AddAnother in the example app ([096c651](https://github.com/hmcts/one-per-page/commit/096c651))
+* Ensure correct order of locals ([5a3ab39](https://github.com/hmcts/one-per-page/commit/5a3ab39))
+* Ensure ObjectFieldValues declare themselves as validated ([2cf4d84](https://github.com/hmcts/one-per-page/commit/2cf4d84))
+* Ensure refs actually don't store their values in the session ([2429162](https://github.com/hmcts/one-per-page/commit/2429162))
+* Ensure transformedFieldValues report that validations are run correctly ([6aaf52e](https://github.com/hmcts/one-per-page/commit/6aaf52e))
+* extra tests for error pages and bug fixes ([3cfc4dc](https://github.com/hmcts/one-per-page/commit/3cfc4dc))
+* remove duplication from tests and fix some formatting ([695c08f](https://github.com/hmcts/one-per-page/commit/695c08f))
+* Rename list item to item, makes more sense from developer perspective ([2bedc61](https://github.com/hmcts/one-per-page/commit/2bedc61))
+* replaced manual strings with i18n files ([9a63595](https://github.com/hmcts/one-per-page/commit/9a63595))
+
+
+
 <a name="2.0.1"></a>
 ## 2.0.1 (2017-12-21)
 
