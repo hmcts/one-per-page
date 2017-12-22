@@ -177,6 +177,7 @@ class TransformFieldValue extends FieldValue {
       return super.validate();
     }
     this[validProp] = false;
+    this[validatedProp] = true;
     return false;
   }
 
@@ -191,7 +192,7 @@ class TransformFieldValue extends FieldValue {
     return super.valid && this.wrapped.valid;
   }
   get validated() {
-    return this[validatedProp] && this.wrapped.validated;
+    return super.validated || this.wrapped.validated;
   }
   get isFilled() {
     return this.filledCheck(this.wrapped.value);
