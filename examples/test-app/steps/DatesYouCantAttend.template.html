@@ -1,0 +1,40 @@
+{% extends "question-globals.njk" %}
+{% extends "look-and-feel/layouts/add_another.html" %}
+{% from "look-and-feel/components/fields.njk" import date %}
+
+{% set title %}
+{{ "Tell us when you can’t go to a hearing" if isListMode }}
+{{ "Enter a date you can’t go to a hearing" if isEditMode }}
+{% endset %}
+
+{% set pageContent = {
+  addAnotherLink: "Add another date you can't attend",
+  itemLabel: "date you can't attend",
+  noItemsMessage: "No dates added yet",
+  itemsListLabel: "Dates you can't attend",
+  editItemLabel: "Date you can't attend"
+} %}
+
+
+{% block item %}
+  {{ field.value.format('dddd, D MMMM YYYY') }}
+{% endblock %}
+
+
+{% block listItems %}
+  <p>
+    It’s important that you make yourself available for a hearing. If you don’t
+    show up, your appeal could go ahead in your absence or be delayed by several
+    months.
+  </p>
+  {{ super() }}
+{% endblock %}
+
+
+{% block editItem %}
+  <p>
+    Don’t include weekends, bank holidays or any date before 12 December or
+    after 12 April 2018.
+  </p>
+  {{ date(fields.item, "Date you can't attend") }}
+{% endblock %}
