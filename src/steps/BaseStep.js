@@ -53,10 +53,16 @@ class BaseStep {
     );
     return `/${pathSlug}`;
   }
+  static get pathToBind() {
+    return this.path;
+  }
 
   // allow step to access it's path
   get path() {
     return this.constructor.path;
+  }
+  get pathToBind() {
+    return this.constructor.pathToBind;
   }
 
   get middleware() {
@@ -70,20 +76,20 @@ class BaseStep {
 
     this._router = expressRouter();
     this.middleware.forEach(middleware => {
-      this._router.all(this.path, middleware);
+      this._router.all(this.pathToBind, middleware);
     });
-    this._router.all(this.path, this.handler.bind(this));
+    this._router.all(this.pathToBind, this.handler.bind(this));
     return this._router;
   }
 
   static bind(app) {
-    app.all(this.path, (req, res, next) => {
+    app.all(new RegExp(this.pathToBind), (req, res, next) => {
       const instance = req.journey.instance(this);
       req.currentStep = instance;
       instance.router.handle(req, res, next);
     });
     const logger = logging.getLogger(this.name);
-    logger.info(`${this.name} registered to ${this.path}`);
+    logger.info(`${this.name} registered to ${this.pathToBind}`);
   }
 }
 
