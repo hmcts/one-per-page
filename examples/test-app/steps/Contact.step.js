@@ -21,7 +21,7 @@ class Contact extends Question {
   }
 
   next() {
-    return goTo(this.journey.steps.CheckYourAnswers);
+    return goTo(this.journey.steps.DatesYouCantAttend);
   }
 
   get contactMethods() {
