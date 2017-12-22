@@ -61,6 +61,10 @@ class Question extends Page {
     return form();
   }
 
+  get postUrl() {
+    return this.path;
+  }
+
   next() {
     const logger = logging.getLogger(this.name);
     const message = `No next() defined for ${this.name}`;
