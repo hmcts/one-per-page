@@ -29,6 +29,7 @@ class FieldValue {
   constructor({
     id, name, value,
     validations = [],
+    filledCheck = defined,
     serializer = omitIfUndefined
   }) {
     this.id = defined(id) ? id : name;
@@ -36,6 +37,7 @@ class FieldValue {
     if (defined(value)) this.value = value;
     this.validations = validations;
     this.serializer = serializer;
+    this.filledCheck = filledCheck;
 
     this[validatedProp] = false;
     this[errorsProp] = [];
@@ -73,6 +75,9 @@ class FieldValue {
   get mappedErrors() {
     return this.errors.map(error => new FieldError(this, error));
   }
+  get isFilled() {
+    return this.filledCheck(this.value);
+  }
 
   clone(overrides) {
     return new this.constructor(Object.assign({}, this, overrides));
@@ -81,9 +86,12 @@ class FieldValue {
 
 
 class ObjectFieldValue extends FieldValue {
-  constructor({ id, name, serializer, validations = [], fields = [] }) {
+  constructor({
+    id, name, serializer, filledCheck,
+    validations = [], fields = []
+  }) {
     const myValidations = validations.filter(v => v.target === 'no-target');
-    super({ id, name, serializer, validations: myValidations });
+    super({ id, name, serializer, filledCheck, validations: myValidations });
 
     this.fields = mapEntries(fields, (key, field) => {
       const fieldsValidations = validations
@@ -133,32 +141,27 @@ class ListFieldValue extends ObjectFieldValue {
 }
 
 class TransformFieldValue extends FieldValue {
-  constructor({ transformation, wrapped, validations = [] }) {
+  constructor({
+    transformation, wrapped,
+    validations = [], serializer, filledCheck
+  }) {
     super({
       name: wrapped.name,
       id: wrapped.id,
-      serializer: wrapped.serializer
+      serializer: defined(serializer) ? serializer : wrapped.serializer,
+      filledCheck: defined(filledCheck) ? filledCheck : wrapped.filledCheck
     });
     this.wrapped = wrapped;
     this.transformation = transformation;
     this.validations = validations;
 
     if (defined(this.wrapped.fields)) {
+      this.fields = this.wrapped.fields;
       Object.entries(this.wrapped.fields)
         .forEach(([key, childField]) => {
           this[key] = childField;
         });
     }
-  }
-
-  static from(args, descriptor) {
-    return new this(
-      Object.assign({}, args, { validations: descriptor.validations })
-    );
-  }
-
-  serialize() {
-    return this.wrapped.serialize();
   }
 
   validate() {
@@ -181,6 +184,9 @@ class TransformFieldValue extends FieldValue {
   }
   get validated() {
     return this[validatedProp] && this.wrapped.validated;
+  }
+  get isFilled() {
+    return this.filledCheck(this.wrapped.value);
   }
 }
 

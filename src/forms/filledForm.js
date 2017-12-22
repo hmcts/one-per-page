@@ -54,6 +54,11 @@ class FilledForm {
     return !Object.values(this.fields)
       .some(field => !field.valid);
   }
+
+  get isFilled() {
+    return Object.values(this.fields)
+      .some(field => field.isFilled);
+  }
 }
 
 const filledForm = (...args) => new FilledForm(...args);
