@@ -1,6 +1,9 @@
-const ErrorPages = require('../../src/errors/errorPages');
-const { expect, sinon } = require('../util/chai');
-const { supertest, testApp, wrapWithResponseAssertions } = require('../util/supertest');
+const { expect } = require('../util/chai');
+const {
+  supertest,
+  testApp,
+  wrapWithResponseAssertions
+} = require('../util/supertest');
 const { journey } = require('../../src/flow');
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const Page = require('../../src/steps/Page');
@@ -60,8 +63,7 @@ describe('errors/errorPages', () => {
         it('should contain default body', () => {
           return testEndpointWithExpectedResponseAndText(
             app, '/some-random-page', NOT_FOUND,
-            'could be because you\'ve followed a ' +
-            'broken or outdated link, or there\'s an error on our site.'
+            'could be because you\'ve followed a broken or outdated link'
           );
         });
 
@@ -98,17 +100,15 @@ describe('errors/errorPages', () => {
             NOT_FOUND, customNotFound.notFound.nextSteps[2]);
         });
       });
-
     });
 
     describe('500 Server error', () => {
-
       const failurePage = class extends Page {
         get name() {
           return 'TestPage';
         }
-        handler(req, res) {
-          throw 'an error occurred :(';
+        handler(/* req, res */) {
+          throw new Error('an error occurred :(');
         }
       };
 
@@ -124,8 +124,11 @@ describe('errors/errorPages', () => {
           return testEndpointWithExpectedResponseAndText(
             app, failurePage.path,
             INTERNAL_SERVER_ERROR,
-            'Sorry, we\'re having technical problems\n' +
-            'Please try again in a few minutes.');
+            [
+              "Sorry, we're having technical problems",
+              'Please try again in a few minutes.'
+            ].join('\n')
+          );
         });
 
         it('should not show error message', () => {
@@ -141,7 +144,9 @@ describe('errors/errorPages', () => {
 
       describe('custom page', () => {
         const app = journey(testApp(), options({
-          steps: [failurePage], errorPages: customServerError }));
+          steps: [failurePage],
+          errorPages: customServerError
+        }));
 
         it('should contain default header', () => {
           return testEndpointWithExpectedResponseAndText(
