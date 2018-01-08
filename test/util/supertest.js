@@ -143,16 +143,17 @@ class TestStepDSL {
     return new TestStepDSL(this.step, this.body, middleware);
   }
 
-  execute(method) {
-    const testExecution = supertestInstance(this)[method](this.step.path);
+  execute(method, maybePath) {
+    const path = defined(maybePath) ? maybePath : this.step.path;
+    const testExecution = supertestInstance(this)[method](path);
     return wrapWithResponseAssertions(testExecution);
   }
 
-  get() {
-    return this.execute('get');
+  get(maybePath) {
+    return this.execute('get', maybePath);
   }
-  post() {
-    const postRequest = this.execute('post');
+  post(maybePath) {
+    const postRequest = this.execute('post', maybePath);
     if (Object.keys(this.body).length !== 0) {
       return postRequest
         .type('form')
@@ -160,14 +161,14 @@ class TestStepDSL {
     }
     return postRequest;
   }
-  patch() {
-    return this.execute('patch');
+  patch(maybePath) {
+    return this.execute('patch', maybePath);
   }
-  put() {
-    return this.execute('put');
+  put(maybePath) {
+    return this.execute('put', maybePath);
   }
-  delete() {
-    return this.execute('delete');
+  delete(maybePath) {
+    return this.execute('delete', maybePath);
   }
 }
 
