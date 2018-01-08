@@ -8,16 +8,15 @@ const keyParseError = (key, filepath) =>
   `top level key: ${key} in ${filepath} not a country code`;
 
 
-const translationMapper = (contents, filepath) => {
-  return Object.keys(contents)
-    .map(key => {
-      if (defined(key.match(langRegex))) {
-        return [{ lang: key, translations: contents[key] }];
-      }
-      throw new Error(keyParseError(key, filepath));
-    })
-    .reduce((acc, arr) => [...acc, ...arr], []);
-};
+const translationMapper = (contents, filepath) => Object
+  .keys(contents)
+  .map(key => {
+    if (defined(key.match(langRegex))) {
+      return [{ lang: key, translations: contents[key] }];
+    }
+    throw new Error(keyParseError(key, filepath));
+  })
+  .reduce((acc, arr) => [...acc, ...arr], []);
 
 const parseI18N = (filepath, contents) => {
   const match = filepath.match(langInFilepathRegex);
@@ -30,8 +29,8 @@ const parseI18N = (filepath, contents) => {
 };
 
 const loadFileContents = (filePath, i18Next) => {
-  const addResourceBundles = (contents, i18Next, filepath) => {
-    const bundles = translationMapper(contents, filepath);
+  const addResourceBundles = contents => {
+    const bundles = translationMapper(contents, filePath);
     bundles.forEach(({ lang, translations }) => {
       const deep = true;
       const overwrite = true;
@@ -48,9 +47,7 @@ const loadFileContents = (filePath, i18Next) => {
 
   return fileExists(filePath)
     .then(readJson)
-    .then((contents) => {
-      return addResourceBundles(contents, i18Next, filePath);
-    });
+    .then(addResourceBundles);
 };
 
 const loadStepContent = (step, i18Next) => {

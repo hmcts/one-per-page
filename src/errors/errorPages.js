@@ -4,19 +4,21 @@ const i18next = require('i18next');
 const path = require('path');
 const { i18NextInstance } = require('../i18n/i18Next');
 const { loadFileContents } = require('../i18n/loadStepContent');
+const { isArray, defined } = require('../util/checks');
 
 class ErrorPages {
-  constructor() {
-  }
-
   /** bind 404 and 500's to the app */
   static bind(app, userOpts) {
     loadFileContents(
       path.join(__dirname, 'errorPages.content.en.json'), i18NextInstance)
-      .then((i18Next) => {
-
+      .then(i18Next => {
         const opts = userOpts || {};
 
+        // express requires "error handling" functions to accept 4 args
+        // and uses that to identify it as an error handler. So we need to
+        // declare next even though we don't use it.
+        //
+        // eslint-disable-next-line no-unused-vars
         app.use((errors, req, res, next) => {
           const serverError = opts.serverError || {};
           res.status(INTERNAL_SERVER_ERROR).render(
@@ -27,15 +29,15 @@ class ErrorPages {
               error: errors,
               assets: serverError.assets || i18next.t(
                 'serverError.assets',
-                { path: req.app.locals.asset_path + 'main.css' })
+                { path: `${req.app.locals.asset_path}main.css` }
+              )
             }
           );
         });
 
-        app.use((req, res, next) => {
+        app.use((req, res) => {
           const notFound = opts.notFound || {};
-          if (typeof notFound.nextSteps !== 'undefined'
-            && !Array.isArray(notFound.nextSteps)) {
+          if (defined(notFound.nextSteps) && !isArray(notFound.nextSteps)) {
             throw new TypeError('nextSteps is expected to be an array');
           }
           res.status(NOT_FOUND).render(
@@ -44,10 +46,12 @@ class ErrorPages {
               title: notFound.title || i18Next.t('notFound.title'),
               message: notFound.message || i18Next.t('notFound.message'),
               nextSteps: notFound.nextSteps || i18Next.t(
-                'notFound.nextSteps', { returnObjects: true }),
+                'notFound.nextSteps', { returnObjects: true }
+              ),
               assets: notFound.assets || i18next.t(
                 'notFound.assets',
-                { path: req.app.locals.asset_path + 'main.css' })
+                { path: `${req.app.locals.asset_path}main.css` }
+              )
             }
           );
         });
