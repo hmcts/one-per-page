@@ -1,6 +1,6 @@
 const { notDefined, defined } = require('../util/checks');
 const FieldError = require('./fieldError');
-const { mapEntries, andWise } = require('../util/ops');
+const { mapEntries, andWise, flattenArray } = require('../util/ops');
 const { validator } = require('./validator');
 
 const failOnFirstFailure = (field, validators) => {
@@ -196,6 +196,12 @@ class TransformFieldValue extends FieldValue {
   }
   get isFilled() {
     return this.filledCheck(this.wrapped.value);
+  }
+  get mappedErrors() {
+    return [
+      this.wrapped.mappedErrors,
+      super.errors.map(error => new FieldError(this, error))
+    ].reduce(flattenArray);
   }
 }
 

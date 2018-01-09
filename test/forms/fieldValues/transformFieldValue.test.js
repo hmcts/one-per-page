@@ -131,6 +131,7 @@ describe('forms/fieldValue', () => {
           value: 'John Smith',
           validate: sinon.stub().returns(true)
         };
+        field.mappedErrors = [new FieldError(field, 'from field')];
         const transformedErr = validator('f', 'from transformed', () => false);
         const t = new TransformFieldValue({
           transformation: sinon.stub().returns('foo'),
@@ -139,7 +140,7 @@ describe('forms/fieldValue', () => {
         });
         t.validate();
         expect(t.mappedErrors).to.eql([
-          new FieldError(t, 'from field'),
+          new FieldError(field, 'from field'),
           new FieldError(t, 'from transformed')
         ]);
       });
