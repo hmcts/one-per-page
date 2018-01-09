@@ -21,6 +21,11 @@ describe('forms/fieldValue', () => {
         const f = new FieldValue({ name: 'name', value: 'value' });
         expect(f.serialize()).to.eql({ name: 'value' });
       });
+
+      it('returns {} if the field.value is undefined', () => {
+        const f = new FieldValue({ name: 'name' });
+        expect(f.serialize()).to.eql({});
+      });
     });
 
     describe('#validate', () => {
