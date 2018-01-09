@@ -1,3 +1,12 @@
+<a name="2.1.0-2"></a>
+# 2.1.0-2 (2018-01-09)
+
+* Ensure convert returns the wrapped fields mappedErrors instead of mapping it's own errors ([b1cd4b4](https://github.com/hmcts/one-per-page/commit/b1cd4b4))
+* Fix linter errors ([2312cd4](https://github.com/hmcts/one-per-page/commit/2312cd4))
+* Update yarn.lock ([ad68985](https://github.com/hmcts/one-per-page/commit/ad68985))
+
+
+
 <a name="2.1.0-1"></a>
 # 2.1.0-1 (2017-12-22)
 
