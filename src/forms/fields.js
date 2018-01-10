@@ -221,4 +221,46 @@ date.required = ({
     })
   );
 
-module.exports = { nonEmptyText, text, bool, list, object, ref, date, convert };
+const appendToList = (collectionKey, index, field) => fieldDescriptor({
+  parser(name, body, req) {
+    const fieldValue = field.parse(name, body, req);
+
+    return TransformFieldValue.from({
+      transformation: t => t,
+      wrapped: fieldValue
+    }, this);
+  },
+  deserializer(name, values) {
+    const arr = option
+      .fromNullable(values[collectionKey])
+      .valueOrElse([]);
+    const extracted = arr.length > index ? { [name]: arr[index] } : {};
+    const fieldValue = field.deserialize(name, extracted);
+
+    return TransformFieldValue.from({
+      transformation: t => t,
+      wrapped: fieldValue
+    }, this);
+  },
+  serializer(fieldValue, values) {
+    const listOfItems = list(field)
+      .deserialize(collectionKey, values)
+      .serializedValues(values) || [];
+
+    const newItem = field.serializer(fieldValue, values);
+
+    if (defined(newItem[fieldValue.name])) {
+      if (listOfItems.length > index) {
+        listOfItems[index] = newItem[fieldValue.name];
+      } else {
+        listOfItems.push(newItem[fieldValue.name]);
+      }
+    }
+    return { [collectionKey]: listOfItems };
+  }
+});
+
+module.exports = {
+  nonEmptyText, text, bool, list, object, ref,
+  date, convert, appendToList
+};

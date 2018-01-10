@@ -76,9 +76,9 @@ class BaseStep {
 
     this._router = expressRouter();
     this.middleware.forEach(middleware => {
-      this._router.all(this.pathToBind, middleware);
+      this._router.all(new RegExp(this.pathToBind), middleware);
     });
-    this._router.all(this.pathToBind, this.handler.bind(this));
+    this._router.all(new RegExp(this.pathToBind), this.handler.bind(this));
     return this._router;
   }
 
