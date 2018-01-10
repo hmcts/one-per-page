@@ -46,7 +46,8 @@ class FieldValue {
   static from(args, fieldDesc) {
     return new this(Object.assign({}, args, {
       validations: fieldDesc.validations,
-      serializer: fieldDesc.serializer
+      serializer: fieldDesc.serializer,
+      filledCheck: fieldDesc.filledCheck
     }));
   }
 
