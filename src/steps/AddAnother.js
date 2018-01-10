@@ -7,6 +7,7 @@ const { filledForm } = require('../forms/filledForm');
 const { form, list } = require('../forms');
 const option = require('option');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
+const { expectImplemented } = require('../errors/expectImplemented');
 
 const addAnother = (collectionKey, index, field) => fieldDescriptor({
   parser(name, body, req) {
@@ -49,6 +50,10 @@ const addAnother = (collectionKey, index, field) => fieldDescriptor({
 
 
 class AddAnother extends Question {
+  constructor(...args) {
+    super(...args);
+    expectImplemented(this, 'field');
+  }
   get form() {
     if (this.isListMode || this.isDeleteMode) {
       return form({ items: this.validateList(list(this.field)) });
@@ -56,6 +61,10 @@ class AddAnother extends Question {
       return form({ item: addAnother('items', this.index, this.field) });
     }
     return form();
+  }
+
+  validateList(items) {
+    return items;
   }
 
   deleteUrl(index) {
@@ -82,10 +91,10 @@ class AddAnother extends Question {
         return 'edit';
       }
     }
-    return 'list-items';
+    return 'list';
   }
   get isListMode() {
-    return this.mode === 'list-items';
+    return this.mode === 'list';
   }
   get isEditMode() {
     return this.mode === 'edit';
@@ -122,7 +131,7 @@ class AddAnother extends Question {
 
   renderPage() {
     this.retrieve();
-    if (this.fields.filled) {
+    if (this.fields.isFilled) {
       this.validate();
     }
     this.res.render(this.template, this.locals);
