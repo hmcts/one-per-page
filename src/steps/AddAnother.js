@@ -1,53 +1,10 @@
 const Question = require('./Question');
-const { fieldDescriptor } = require('../forms/fieldDescriptor');
 const { defined } = require('../util/checks');
 const { flattenObject } = require('../util/ops');
-const { TransformFieldValue } = require('../forms/fieldValue');
 const { filledForm } = require('../forms/filledForm');
-const { form, list } = require('../forms');
-const option = require('option');
+const { form, list, appendToList } = require('../forms');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const { expectImplemented } = require('../errors/expectImplemented');
-
-const addAnother = (collectionKey, index, field) => fieldDescriptor({
-  parser(name, body, req) {
-    const fieldValue = field.parse(name, body, req);
-
-    return TransformFieldValue.from({
-      transformation: t => t,
-      wrapped: fieldValue
-    }, this);
-  },
-  deserializer(name, values) {
-    const arr = option
-      .fromNullable(values[collectionKey])
-      .valueOrElse([]);
-    const extracted = arr.length > index ? { [name]: arr[index] } : {};
-    const fieldValue = field.deserialize(name, extracted);
-
-    return TransformFieldValue.from({
-      transformation: t => t,
-      wrapped: fieldValue
-    }, this);
-  },
-  serializer(fieldValue, values) {
-    const listOfItems = list(field)
-      .deserialize(collectionKey, values)
-      .serializedValues(values) || [];
-
-    const newItem = field.serializer(fieldValue, values);
-
-    if (defined(newItem[fieldValue.name])) {
-      if (listOfItems.length > index) {
-        listOfItems[index] = newItem[fieldValue.name];
-      } else {
-        listOfItems.push(newItem[fieldValue.name]);
-      }
-    }
-    return { [collectionKey]: listOfItems };
-  }
-});
-
 
 class AddAnother extends Question {
   constructor(...args) {
@@ -58,7 +15,7 @@ class AddAnother extends Question {
     if (this.isListMode || this.isDeleteMode) {
       return form({ items: this.validateList(list(this.field)) });
     } else if (this.isEditMode) {
-      return form({ item: addAnother('items', this.index, this.field) });
+      return form({ item: appendToList('items', this.index, this.field) });
     }
     return form();
   }
