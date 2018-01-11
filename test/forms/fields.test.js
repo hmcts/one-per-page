@@ -213,6 +213,20 @@ describe('forms/fields', () => {
           session: { items: ['from session'] }
         }
       });
+      it.serializes({
+        to: { items: ['from session'] },
+        req: {
+          body: {},
+          session: { items: ['from session'] }
+        }
+      });
+      it.serializes({
+        to: { items: ['from body'] },
+        req: {
+          body: { foo: 'from body' },
+          session: {}
+        }
+      });
     })
   );
 
