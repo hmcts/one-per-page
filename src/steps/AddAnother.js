@@ -12,12 +12,10 @@ class AddAnother extends Question {
     expectImplemented(this, 'field');
   }
   get form() {
-    if (this.isListMode || this.isDeleteMode) {
-      return form({ items: this.validateList(list(this.field)) });
-    } else if (this.isEditMode) {
+    if (this.isEditMode) {
       return form({ item: appendToList('items', this.index, this.field) });
     }
-    return form();
+    return form({ items: this.validateList(list(this.field)) });
   }
 
   validateList(items) {
@@ -40,13 +38,11 @@ class AddAnother extends Question {
   }
 
   get mode() {
-    if (defined(this.req.params)) {
-      if (defined(this.req.params['0'])) {
-        if (defined(this.req.params['1'])) {
-          return 'delete';
-        }
-        return 'edit';
+    if (defined(this.req.params) && defined(this.req.params['0'])) {
+      if (defined(this.req.params['1'])) {
+        return 'delete';
       }
+      return 'edit';
     }
     return 'list';
   }
@@ -82,7 +78,7 @@ class AddAnother extends Question {
     } else if (this.isDeleteMode) {
       this.deleteModeHandler(req, res);
     } else {
-      throw new Error(`${this.mode} not recognised`);
+      throw new Error(`mode: ${this.mode} not recognised`);
     }
   }
 

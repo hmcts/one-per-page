@@ -1,7 +1,11 @@
 const { expect, sinon } = require('../util/chai');
 const AddAnother = require('./../../src/steps/AddAnother');
 const { testStep } = require('../util/supertest');
-const { OK, MOVED_TEMPORARILY } = require('http-status-codes');
+const {
+  OK,
+  MOVED_TEMPORARILY,
+  METHOD_NOT_ALLOWED
+} = require('http-status-codes');
 const { text } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 
@@ -127,6 +131,26 @@ describe('steps/AddAnother', () => {
       sinon.stub(addAnother, 'mode').get(() => 'edit');
       sinon.stub(addAnother, 'index').get(() => 0);
       expect(addAnother.postUrl).to.eql('/add-a-text/item-0');
+    });
+  });
+
+  describe('#deleteUrl', () => {
+    const req = { journey: {} };
+    const res = {};
+    const addAText = new AddAText(req, res);
+
+    it('returns /[step name]/item-[index]/delete', () => {
+      expect(addAText.deleteUrl(1)).to.eql('/add-a-text/item-1/delete');
+    });
+  });
+
+  describe('#editUrl', () => {
+    const req = { journey: {} };
+    const res = {};
+    const addAText = new AddAText(req, res);
+
+    it('returns /[step name]/item-[index]', () => {
+      expect(addAText.editUrl(1)).to.eql('/add-a-text/item-1');
     });
   });
 
@@ -308,6 +332,17 @@ describe('steps/AddAnother', () => {
           .expect('location', '/next-step');
       });
     });
+
+    ['put', 'patch', 'delete'].forEach(method => {
+      describe(method.toUpperCase(), () => {
+        it('returns 405 method not allowed', () => {
+          return testStep(AddAText)
+            .withSession({})
+            .execute(method)
+            .expect(METHOD_NOT_ALLOWED);
+        });
+      });
+    });
   });
 
   describe('Edit mode', () => {
@@ -391,6 +426,18 @@ describe('steps/AddAnother', () => {
           });
       });
     });
+
+    ['put', 'patch', 'delete'].forEach(method => {
+      describe(method.toUpperCase(), () => {
+        it('redirects to list mode', () => {
+          return testStep(AddAText)
+            .withSession({})
+            .execute(method, '/add-a-text/item-0')
+            .expect(MOVED_TEMPORARILY)
+            .expect('location', '/add-a-text');
+        });
+      });
+    });
   });
 
   describe('Delete mode', () => {
@@ -449,6 +496,32 @@ describe('steps/AddAnother', () => {
           .session(session => {
             expect(session.AddAText.items).to.eql(items);
           });
+      });
+    });
+
+    ['put', 'patch', 'delete'].forEach(method => {
+      describe(method.toUpperCase(), () => {
+        it('redirects to list mode', () => {
+          return testStep(AddAText)
+            .withSession({})
+            .execute(method, '/add-a-text/item-0/delete')
+            .expect(MOVED_TEMPORARILY)
+            .expect('location', '/add-a-text');
+        });
+      });
+    });
+  });
+
+  describe('errors during request', () => {
+    describe('mode not recognised', () => {
+      const req = { journey: {} };
+      const res = {};
+
+      it('throws an error', () => {
+        const addAText = new AddAText(req, res);
+        sinon.stub(addAText, 'mode').get(() => 'blah');
+        const willThrow = () => addAText.handler(req, res);
+        expect(willThrow).throw(/mode: blah not recognised/);
       });
     });
   });
