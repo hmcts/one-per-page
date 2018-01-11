@@ -76,14 +76,14 @@ class BaseStep {
 
     this._router = expressRouter();
     this.middleware.forEach(middleware => {
-      this._router.all(new RegExp(this.pathToBind), middleware);
+      this._router.all(this.pathToBind, middleware);
     });
-    this._router.all(new RegExp(this.pathToBind), this.handler.bind(this));
+    this._router.all(this.pathToBind, this.handler.bind(this));
     return this._router;
   }
 
   static bind(app) {
-    app.all(new RegExp(this.pathToBind), (req, res, next) => {
+    app.all(this.pathToBind, (req, res, next) => {
       const instance = req.journey.instance(this);
       req.currentStep = instance;
       instance.router.handle(req, res, next);
