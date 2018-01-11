@@ -2,13 +2,13 @@ const { expect } = require('../util/chai');
 const {
   text, nonEmptyText,
   bool,
-  list,
+  list, appendToList,
   object,
   ref,
   convert,
   date
 } = require('../../src/forms/fields');
-const { isObject, isEmptyObject } = require('../../src/util/checks');
+const { defined, isObject, isEmptyObject } = require('../../src/util/checks');
 
 const readable = value => {
   if (typeof value === 'object') return JSON.stringify(value);
@@ -54,7 +54,7 @@ const fieldTest = (field, tests) => {
     });
   };
   const serializes = ({
-    from = {}, to, key = 'foo', only = false, req = {},
+    from, to, key = 'foo', only = false, req = {},
     assertions = ({ serializedValue }) => {
       const serialized = isObject(to) ? to : { [key]: to };
       expect(serializedValue).to.eql(serialized);
@@ -66,9 +66,17 @@ const fieldTest = (field, tests) => {
     const mochaTest = only ? it.only : it;
 
     mochaTest(`serializes ${toStr} from ${fromStr}${reqStr}`, () => {
-      const values = isObject(from) ? from : { [key]: from };
-      const fieldValue = field.deserialize(key, values, req);
-      const serializedValue = fieldValue.serialize();
+      let fieldValue = {};
+      if (defined(from)) {
+        const values = isObject(from) ? from : { [key]: from };
+        fieldValue = field.deserialize(key, values, req);
+      } else if (defined(req.body)) {
+        fieldValue = field.parse(key, req.body, req);
+      } else {
+        throw new Error('Provide req.body to parse or from to deserialize');
+      }
+      const existingValues = defined(req.session) ? req.session : {};
+      const serializedValue = fieldValue.serialize(existingValues);
       return assertions({ fieldValue, field, serializedValue });
     });
   };
@@ -138,7 +146,7 @@ describe('forms/fields', () => {
     it.deserializes({ value: true, from: true });
     it.deserializes({ value: false, from: false });
 
-    it.serializes({ to: {}, from: undefined });
+    it.serializes({ to: {}, from: {} });
     it.serializes({ to: true, from: true });
     it.serializes({ to: false, from: false });
   }));
@@ -191,6 +199,23 @@ describe('forms/fields', () => {
     it.serializes({ to: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
   }));
 
+  describe('appendToList([list], [index], text)', fieldTest(
+    appendToList('items', 1, text), it => {
+      it.parses({ to: 'foo', from: 'foo' });
+      it.deserializes({
+        value: 'target from session',
+        from: { items: ['other', 'target from session'] }
+      });
+      it.serializes({
+        to: { items: ['from session', 'from body'] },
+        req: {
+          body: { foo: 'from body' },
+          session: { items: ['from session'] }
+        }
+      });
+    })
+  );
+
   const objectWithChildren = object({ a: text, b: bool });
   describe('object({ a: text, b: bool })', fieldTest(objectWithChildren, it => {
     it.parses({ to: {}, from: {} });
@@ -241,7 +266,7 @@ describe('forms/fields', () => {
 
     it.parses({ to: 'From another step', req });
     it.deserializes({ value: 'From another step', req });
-    it.serializes({ to: {}, req });
+    it.serializes({ to: {}, from: {}, req });
   }));
 
   const toUpper = convert(str => str.toUpperCase(), text);
