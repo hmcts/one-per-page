@@ -140,6 +140,10 @@ class ObjectFieldValue extends FieldValue {
       ...Object.values(this.fields).map(field => field.mappedErrors)
     ].reduce((left, right) => [...left, ...right], []);
   }
+
+  get isFilled() {
+    return Object.values(this.fields).some(field => field.isFilled);
+  }
 }
 
 
@@ -196,7 +200,7 @@ class TransformFieldValue extends FieldValue {
     return super.validated || this.wrapped.validated;
   }
   get isFilled() {
-    return this.filledCheck(this.wrapped.value);
+    return this.wrapped.isFilled;
   }
   get mappedErrors() {
     return [
