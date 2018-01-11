@@ -260,6 +260,7 @@ const appendToList = (collectionKey, index, field) => fieldDescriptor({
   }
 });
 
+
 module.exports = {
   nonEmptyText, text, bool, list, object, ref,
   date, convert, appendToList
