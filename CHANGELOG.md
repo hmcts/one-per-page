@@ -1,3 +1,16 @@
+<a name="2.1.0-3"></a>
+# 2.1.0-3 (2018-01-12)
+
+* Ensure objectFields declare themselves as filled if their children are filled ([54b1fe1](https://github.com/hmcts/one-per-page/commit/54b1fe1))
+* Increase coverage in forms package ([8d907b3](https://github.com/hmcts/one-per-page/commit/8d907b3))
+* Increase coverage over AddAnother and appendToList ([362c13d](https://github.com/hmcts/one-per-page/commit/362c13d))
+* Move the appendToList field in to forms package and test it ([773d9f2](https://github.com/hmcts/one-per-page/commit/773d9f2))
+* Test the AddAnother step ([a090720](https://github.com/hmcts/one-per-page/commit/a090720))
+* Update to latest eslint config ([97f4198](https://github.com/hmcts/one-per-page/commit/97f4198))
+* Fix: new RegExp(/) will match any url ([efb795b](https://github.com/hmcts/one-per-page/commit/efb795b))
+
+
+
 <a name="2.1.0-2"></a>
 # 2.1.0-2 (2018-01-09)
 
