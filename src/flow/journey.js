@@ -19,6 +19,7 @@ const constructorFrom = step => {
   if (defined(step.prototype)) {
     return step;
   }
+
   const { constructor, name } = step;
   logger.warn(`Deprecated: Pass ${name} to journey as class not instance.`);
   return constructor;
