@@ -30,11 +30,15 @@ make
 > to see whats happening with this command see the `Makefile`.
 
 ### Install dependencies
-```yarn install```
+```
+yarn install
+```
 
 ### Build the library
 Once in the docker container shell, to build the library you can run: 
-```yarn```
+```
+yarn
+```
 
 ### Example application
 There is a straw man application in [examples/test-app] in this repository that you can use to manually test as you change this repository. When doing this it is recommended you use link this repository to the example using yarn link.
