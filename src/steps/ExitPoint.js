@@ -1,35 +1,42 @@
 const Page = require('./Page');
 const destroySession = require('../session/destroySession');
 const { stopHere } = require('../flow');
+const deepEqual = require('deep-equal');
 
-storeState = (req, res, next) => {
-  if(req.url == req.route.path) {
-    req.query = req.currentStep.values();
-    req.params["Hey"] = "there";
-    req.url = '/done?something=askldnas';
-    res.req.params["Hey"] = "there";
-    res.req.url = '/done?something=askldnas';
-	  
-	  res.redirect('/done?something=askldnas');
-  // } else {
+storeStateInUrl = (req, res, next) => {
+  if (!deepEqual(req.query, req.currentStep.values())) {
+    const params = Object.entries(req.currentStep.values())
+      .map(([key, val]) => `${key}=${val}`)
+      .join('&');
+    res.redirect(`${req.route.path}?${params}`);
   } else {
-	  next();
+    next();
   }
-  
 };
 
 class ExitPoint extends Page {
   get middleware() {
-    return [this.journey.collectSteps, ...super.middleware, storeState, destroySession];
+    // this.params()
+    return [
+      this.journey.collectSteps,
+      ...super.middleware,
+      storeStateInUrl,
+      destroySession
+    ];
+
   }
 
   get flowControl() {
     return stopHere(this);
   }
-  //
-  // values() {
-  //   console.log("parent");
-  // }
+
+  values() {
+    return {};
+  }
+
+  get params() {
+    return this.req.query;
+  }
 }
 
 module.exports = ExitPoint;

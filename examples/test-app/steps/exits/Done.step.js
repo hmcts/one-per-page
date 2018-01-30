@@ -6,10 +6,10 @@ class Done extends ExitPoint {
   }
 
   values() {
-    console.log("child");
     return {
-      something: "donkey",
-      country: this.journey.answers.filter(s => s.id== "Country")[0].answer
+      referenceNumber: 'HDJ2123F',
+      husbandOrWife: this.journey.answers
+        .filter(s => s.id == 'RespondentTitle')[0].answer
     };
   }
 }
