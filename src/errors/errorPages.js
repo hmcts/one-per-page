@@ -21,6 +21,9 @@ class ErrorPages {
         // eslint-disable-next-line no-unused-vars
         app.use((errors, req, res, next) => {
           const serverError = opts.serverError || {};
+
+          console.log(errors);
+
           res.status(INTERNAL_SERVER_ERROR).render(
             serverError.template || i18Next.t('serverError.template'),
             {
