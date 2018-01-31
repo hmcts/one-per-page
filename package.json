@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@hmcts/eslint-config": "^1.3.0",
-    "@hmcts/tech-docs": "^0.2.4",
+    "@hmcts/tech-docs": "^0.3.0",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
     "chai-jq": "^0.0.9",
