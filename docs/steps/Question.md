@@ -70,7 +70,7 @@ class Name extends Question {
 In the example above we declare a form that captures two fields, firstName and
 lastName, which will be treated as strings.
 
-> Read [fields] for more information about field types.
+> Read [field types] for more information about field types.
 
 While handling a POST request the Question will use your form to parse the
 url-encoded data sent by the [inputs you declare in the template][behaviour-binding].
@@ -403,11 +403,12 @@ Executes the validations declared on the questions [`form`]. Will throw if
 [behaviour-errors]: #render-errors
 [Page]: /docs/steps/Page
 [forms]: /docs/forms
-[`FilledForm`]: /docs/forms/FilledForm
-[`FieldValue`]: /docs/forms/FieldValue
+[`FilledForm`]: /docs/forms/internal-api/FilledForm
+[`form`]: /docs/forms/internal-api/Form
+[`FieldValue`]: /docs/forms/internal-api/FieldValue
 [flow]: /docs/flow
 [validate fields]: /docs/forms/validation
-[fields]: /docs/forms/fields
+[field types]: /docs/forms/field-types
 [`get form()`]: #get-form
 [`fields`]: #fields
 [`next()`]: #next
