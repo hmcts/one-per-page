@@ -17,6 +17,7 @@
     "callsites": "^2.0.0",
     "config": "^1.29.2",
     "connect-redis": "^3.3.3",
+    "deep-equal": "^1.0.1",
     "deepmerge": "^2.0.1",
     "express": "^4.16.2",
     "express-nunjucks": "^2.2.3",

@@ -16,14 +16,15 @@ storeStateInUrl = (req, res, next) => {
 
 class ExitPoint extends Page {
   get middleware() {
-    // this.params()
-    return [
-      this.journey.collectSteps,
-      ...super.middleware,
-      storeStateInUrl,
-      destroySession
-    ];
-
+    if (this.req.session.active()) {
+      return [
+        this.journey.collectSteps,
+        ...super.middleware,
+        storeStateInUrl,
+        destroySession
+      ];
+    }
+    return [...super.middleware];
   }
 
   get flowControl() {
