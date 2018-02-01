@@ -1,3 +1,42 @@
+<a name="2.2.0"></a>
+# 2.2.0 (2018-02-01)
+
+* Add a step type that allows you to capture mutliple of a complex field ([a1d8f63](https://github.com/hmcts/one-per-page/commit/a1d8f63))
+* added error pages ([87948a2](https://github.com/hmcts/one-per-page/commit/87948a2))
+* Allow filledForms to declare if the user has filled any field ([e3013ca](https://github.com/hmcts/one-per-page/commit/e3013ca))
+* Allow serializers access to existing session values ([3f198d4](https://github.com/hmcts/one-per-page/commit/3f198d4))
+* Allow steps to customise which url a questions form will post to ([ecfefda](https://github.com/hmcts/one-per-page/commit/ecfefda))
+* Allow subclasses of BaseStep to customise the path to listen on ([3daf371](https://github.com/hmcts/one-per-page/commit/3daf371))
+* Demo AddAnother in the example app ([511ffc6](https://github.com/hmcts/one-per-page/commit/511ffc6))
+* Deploy documentation to heroku ([f54e21e](https://github.com/hmcts/one-per-page/commit/f54e21e))
+* Document the AddAnother step ([8069a58](https://github.com/hmcts/one-per-page/commit/8069a58))
+* Document the forms package ([e496952](https://github.com/hmcts/one-per-page/commit/e496952))
+* Documenting the Question, Page and BaseStep steps ([3acc3f8](https://github.com/hmcts/one-per-page/commit/3acc3f8))
+* Ensure convert returns the wrapped fields mappedErrors instead of mapping it's own errors ([3f00530](https://github.com/hmcts/one-per-page/commit/3f00530))
+* Ensure correct order of locals ([375ec7a](https://github.com/hmcts/one-per-page/commit/375ec7a))
+* Ensure objectFields declare themselves as filled if their children are filled ([6b7cc71](https://github.com/hmcts/one-per-page/commit/6b7cc71))
+* Ensure ObjectFieldValues declare themselves as validated ([c2a233d](https://github.com/hmcts/one-per-page/commit/c2a233d))
+* Ensure refs actually don't store their values in the session ([ed60a83](https://github.com/hmcts/one-per-page/commit/ed60a83))
+* Ensure transformedFieldValues report that validations are run correctly ([e2e8dfe](https://github.com/hmcts/one-per-page/commit/e2e8dfe))
+* extra tests for error pages and bug fixes ([3cfc4dc](https://github.com/hmcts/one-per-page/commit/3cfc4dc))
+* Fix linter errors ([f8f2485](https://github.com/hmcts/one-per-page/commit/f8f2485))
+* Increase coverage in forms package ([5119eee](https://github.com/hmcts/one-per-page/commit/5119eee))
+* Increase coverage over AddAnother and appendToList ([784b806](https://github.com/hmcts/one-per-page/commit/784b806))
+* Move the appendToList field in to forms package and test it ([1d65cae](https://github.com/hmcts/one-per-page/commit/1d65cae))
+* Release 2.1.0-1 ([eddda46](https://github.com/hmcts/one-per-page/commit/eddda46))
+* Release 2.1.0-2 ([4b6c34c](https://github.com/hmcts/one-per-page/commit/4b6c34c))
+* Release 2.1.0-3 ([d251247](https://github.com/hmcts/one-per-page/commit/d251247))
+* Remove conflicting lockfile ([782e443](https://github.com/hmcts/one-per-page/commit/782e443))
+* remove duplication from tests and fix some formatting ([695c08f](https://github.com/hmcts/one-per-page/commit/695c08f))
+* Rename list item to item, makes more sense from developer perspective ([80be308](https://github.com/hmcts/one-per-page/commit/80be308))
+* replaced manual strings with i18n files ([9a63595](https://github.com/hmcts/one-per-page/commit/9a63595))
+* Switch postInstall to use yarn ([5e38f13](https://github.com/hmcts/one-per-page/commit/5e38f13))
+* Test the AddAnother step ([4832a27](https://github.com/hmcts/one-per-page/commit/4832a27))
+* Update yarn.lock ([5e63085](https://github.com/hmcts/one-per-page/commit/5e63085))
+* Fix: new RegExp(/) will match any url ([f5a05b0](https://github.com/hmcts/one-per-page/commit/f5a05b0))
+
+
+
 <a name="2.1.0-3"></a>
 # 2.1.0-3 (2018-01-12)
 

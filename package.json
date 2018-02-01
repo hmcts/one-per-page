@@ -1,9 +1,16 @@
 {
   "name": "@hmcts/one-per-page",
   "description": "One question per page apps made easy",
-  "version": "2.1.0-3",
+  "homepage": "https://github.com/hmcts/one-per-page#readme",
+  "version": "2.2.0",
   "main": "./src/main.js",
-  "repository": "hmcts/one-per-page",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmcts/one-per-page.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hmcts/one-per-page/issues"
+  },
   "dependencies": {
     "@log4js-node/log4js-api": "^1.0.0",
     "body-parser": "^1.18.2",
@@ -48,10 +55,10 @@
   },
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
-    "lint": "eslint .",
-    "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha --exit 'test/**/*.test.js'",
     "docs": "tech-docs --use-http --watch",
-    "heroku-postbuild": "yarn add @hmcts/tech-docs"
+    "heroku-postbuild": "yarn add @hmcts/tech-docs",
+    "lint": "eslint .",
+    "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha --exit 'test/**/*.test.js'"
   },
   "license": "MIT",
   "publishConfig": {
