@@ -63,6 +63,34 @@ class MyStep extends BaseStep {
 }
 ```
 
+### Custom step timeouts
+
+Registering a promise may cause a step to take longer than the standard timeout.
+
+You can set a timeout to wait for a specific step by overriding
+[`get timeoutDelay()`](#get-timeoutdelay):
+
+```js
+class MyStep extends BaseStep {
+  constructor(...args) {
+    super(...args);
+    this.waitFor(veryLongRunningProcess);
+  }
+  get timeoutDelay() {
+    return 500;
+  }
+}
+```
+
+You can set a global timeout delay when creating your journey:
+
+```js
+journey(app, {
+  steps: [ ... ],
+  timeoutDelay: 500
+});
+```
+
 -------------------------------------------------------------------------------
 
 ## API
@@ -109,6 +137,33 @@ steps created by `collectSteps` will not handle the request.
 
 Anything you need to execute for each request and when being collected for
 Check your Answers should be implemented as a Promise.
+
+### `get timeoutDelay()`
+
+- __Returns__ a number, the milliseconds to wait for promises to resolve
+
+Used in [`ready()`](#ready) to wait until promises resolve or to timeout.
+
+Will return `50` if no global `timeoutDelay` is set. You can set a global
+timeout delay when creating your journey:
+
+```js
+journey(app, {
+  steps: [ ... ],
+  timeoutDelay: 500
+});
+```
+
+Overriding this function allows you to set a step specific timeout:
+
+```js
+class MyStep extends BaseStep {
+  get timeoutDelay() {
+    return 500;
+  }
+}
+```
+
 
 ### `ready()`
 

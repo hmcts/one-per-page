@@ -1,7 +1,7 @@
 const BaseStep = require('./../../src/steps/BaseStep');
 const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const { testStep } = require('../util/supertest');
-const { expect } = require('../util/chai');
+const { expect, sinon } = require('../util/chai');
 
 const { NotImplemented } = require('../../src/errors/expectImplemented');
 
@@ -172,6 +172,16 @@ describe('steps/BaseStep', () => {
     const step = new class extends BaseStep {
       handler() { /* intentionally blank */ }
     }(req, res);
+    const stubTimeout = sinon.stub().returns(50);
+
+    beforeEach(() => {
+      step.promises = [];
+      sinon.stub(step, 'timeoutDelay').get(stubTimeout);
+    });
+
+    afterEach(() => {
+      stubTimeout.reset();
+    });
 
     it('resolves when the steps promises resolve', () => {
       const willResolve = new Promise(resolve => resolve('Done'));
@@ -189,6 +199,32 @@ describe('steps/BaseStep', () => {
       const tooLong = new Promise(() => { /* intentionally blank */ });
       step.promises = [tooLong];
       return expect(step.ready()).to.be.rejected;
+    });
+
+    it('calls step.timeoutDelay to get the time to wait', () => {
+      return step.ready().then(() => {
+        expect(stubTimeout).calledOnce;
+      });
+    });
+  });
+
+  describe('#timeoutDelay', () => {
+    it('returns 50 if no global timeoutDelay set', () => {
+      const journey = {};
+      const step = new class extends BaseStep {
+        handler() { /* intentionally blank */ }
+      }({ journey }, {});
+
+      expect(step.timeoutDelay).to.eql(50);
+    });
+
+    it('returns the global timeoutDelay', () => {
+      const journey = { settings: { timeoutDelay: 100 } };
+      const step = new class extends BaseStep {
+        handler() { /* intentionally blank */ }
+      }({ journey }, {});
+
+      expect(step.timeoutDelay).to.eql(100);
     });
   });
 });
