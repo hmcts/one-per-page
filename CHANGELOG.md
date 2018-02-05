@@ -1,3 +1,12 @@
+<a name="2.3.0"></a>
+# 2.3.0 (2018-02-05)
+
+* Allow developers to set custom timeouts ([0740d62](https://github.com/hmcts/one-per-page/commit/0740d62))
+* Document how we develop one-per-page ([751a236](https://github.com/hmcts/one-per-page/commit/751a236))
+* Improve readme to describe project and direct to documentation ([17e90d9](https://github.com/hmcts/one-per-page/commit/17e90d9))
+
+
+
 <a name="2.2.0"></a>
 # 2.2.0 (2018-02-01)
 
