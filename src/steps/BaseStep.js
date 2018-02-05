@@ -7,8 +7,9 @@ const { defined, notDefined } = require('../util/checks');
 const logging = require('@log4js-node/log4js-api');
 const { timeout } = require('../util/promises');
 const errorIfNotReady = require('../middleware/errorIfNotReady');
+const { fromNullable } = require('option');
 
-const MAX_WAIT_MS = 50;
+const DEFAULT_WAIT_MS = 50;
 
 const findChildClassFilePath = step => {
   const callsite = callsites();
@@ -36,8 +37,14 @@ class BaseStep {
     this.promises.push(promise);
   }
 
+  get timeoutDelay() {
+    return fromNullable(this.journey.settings)
+      .flatMap(settings => fromNullable(settings.timeoutDelay))
+      .valueOrElse(DEFAULT_WAIT_MS);
+  }
+
   ready() {
-    return timeout(MAX_WAIT_MS, Promise.all(this.promises))
+    return timeout(this.timeoutDelay, Promise.all(this.promises))
       .then(() => this);
   }
 
