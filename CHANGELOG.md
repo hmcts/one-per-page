@@ -1,3 +1,14 @@
+<a name="2.4.0-1"></a>
+# 2.4.0-1 (2018-02-09)
+
+* Allow tests to customise the views dir ([911b2bf](https://github.com/hmcts/one-per-page/commit/911b2bf))
+* Encapsulate answer rendering, to allow for overriding ([1fa7f12](https://github.com/hmcts/one-per-page/commit/1fa7f12))
+* Nest answer inside it's module ([aca52d3](https://github.com/hmcts/one-per-page/commit/aca52d3))
+* Render templates from answers that have one ([f0ee5a7](https://github.com/hmcts/one-per-page/commit/f0ee5a7))
+* Update example apps dependencies ([b1d9312](https://github.com/hmcts/one-per-page/commit/b1d9312))
+
+
+
 <a name="2.3.0"></a>
 # 2.3.0 (2018-02-05)
 
