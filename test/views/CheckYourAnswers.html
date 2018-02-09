@@ -5,8 +5,12 @@
 
   {% for answer in section.answers %}
   <div id="{{ answer.id }}">
-    <span class="question">{{ answer.question }}</span>
-    <span class="answer">{{ answer.answer }}</span>
+    {% if answer.html %}
+      {{ answer.html | safe }}
+    {% else %}
+      <span class="question">{{ answer.question }}</span>
+      <span class="answer">{{ answer.answer }}</span>
+    {% endif %}
   </div>
   {% endfor %}
 
