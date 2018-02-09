@@ -34,7 +34,7 @@ const _middleware = Symbol('middleware');
 const supertestInstance = stepDSL => {
   if (stepDSL[_supertest]) return stepDSL[_supertest];
 
-  const app = testApp();
+  const app = testApp(stepDSL.viewsDirs);
   stepDSL[_app] = app;
 
   app.use((req, res, next) => {
@@ -112,6 +112,7 @@ class TestStepDSL {
     this.step = constructorFrom(step);
     this.body = body;
     this[_middleware] = middleware;
+    this.viewDirs = [];
   }
 
   static create(step) {
@@ -136,6 +137,11 @@ class TestStepDSL {
       setup(req, res);
       next();
     });
+  }
+
+  withViews(...viewDirs) {
+    this.viewsDirs = [...viewDirs, ...this.viewDirs];
+    return this;
   }
 
   withMiddleware(newMiddleware) {
