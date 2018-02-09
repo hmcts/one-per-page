@@ -1,4 +1,4 @@
-const answer = require('./answer');
+const { answer } = require('./answer');
 const { section } = require('./section');
 const CheckYourAnswers = require('./CheckYourAnswers');
 
