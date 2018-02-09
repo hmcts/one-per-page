@@ -1,9 +1,6 @@
 const { expect } = require('../../util/chai');
 const { testApp } = require('../../util/supertest');
-const {
-  answer,
-  renderAnswer
-} = require('../../../src/steps/check-your-answers/answer');
+const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { section } = require('../../../src/steps/check-your-answers/section');
 const { textField } = require('../../../src/forms');
 const path = require('path');
@@ -127,7 +124,7 @@ describe('steps/check-your-answers/answer', () => {
     });
   });
 
-  describe('renderAnswer', () => {
+  describe('answer.render', () => {
     const firstName = textField('firstName');
     const lastName = textField('lastName');
     firstName.value = 'John';
@@ -146,7 +143,7 @@ describe('steps/check-your-answers/answer', () => {
 
     it('resolves to the given answer if no template given', () => {
       const ans = answer(fakeStep, {});
-      return expect(renderAnswer(ans)).eventually.eql(ans);
+      return expect(ans.render(app)).eventually.eql(ans);
     });
 
     it('can render html', () => {
@@ -163,7 +160,7 @@ describe('steps/check-your-answers/answer', () => {
 
     it('resolves with an extra html parameter if template path given', () => {
       const ans = answer(fakeStep, { template: 'name.answer.html' });
-      return renderAnswer(ans, app).then(rendered => {
+      return ans.render(app).then(rendered => {
         expect(rendered.html).to.eql([
           '<span class="firstName">John</span>',
           '<span class="lastName">Smith</span>',

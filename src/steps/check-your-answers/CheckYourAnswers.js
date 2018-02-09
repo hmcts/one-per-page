@@ -1,6 +1,5 @@
 const Question = require('../Question');
 const { section } = require('./section');
-const { renderAnswer } = require('./answer');
 const { defined } = require('../../../src/util/checks');
 const { validateThenStopHere } = require('../../flow');
 const { form, boolField } = require('../../forms');
@@ -35,7 +34,7 @@ class CheckYourAnswers extends Question {
 
   handler(req, res, next) {
     Promise
-      .all(this.journey.answers.map(ans => renderAnswer(ans, req.app)))
+      .all(this.journey.answers.map(ans => ans.render(req.app)))
       .then(answers => {
         this._sections = [
           ...this.sections().map(s => s.filterAnswers(answers)),
