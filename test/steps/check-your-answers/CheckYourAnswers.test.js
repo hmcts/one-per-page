@@ -5,6 +5,7 @@ const { form, field } = require('../../../src/forms');
 const { goTo } = require('../../../src/flow');
 const { testStep } = require('../../util/supertest');
 const Question = require('../../../src/steps/Question');
+const path = require('path');
 
 describe('steps/CheckYourAnswers', () => {
   it('defines a default #path', () => {
@@ -18,6 +19,14 @@ describe('steps/CheckYourAnswers', () => {
       const Name = class extends Question {
         get form() {
           return form(field('firstName'), field('lastName'));
+        }
+        next() {
+          return goTo(this.journey.steps.TemplatedAnswer);
+        }
+      };
+      const TemplatedAnswer = class extends Question {
+        answers() {
+          return answer(this, { template: 'fixtures/templated.answer.html' });
         }
         next() {
           return goTo(this.journey.steps.Gender);
@@ -34,7 +43,7 @@ describe('steps/CheckYourAnswers', () => {
           return goTo(this.journey.steps.CheckYourAnswers);
         }
       };
-      const steps = { Name, Gender, CheckYourAnswers };
+      const steps = { Name, Gender, CheckYourAnswers, TemplatedAnswer };
       const session = {
         entryPoint: Name.name,
         Name: { firstName: 'Michael', lastName: 'Allen' },
@@ -46,15 +55,15 @@ describe('steps/CheckYourAnswers', () => {
         .withSetup(req => {
           req.journey.steps = steps;
         })
+        .withViews(path.join(__dirname, './fixtures'))
         .get()
-        .html($ => {
-          return Promise.all([
-            expect($('#Name .question')).has.$text('Name'),
-            expect($('#Name .answer')).has.$text('Michael Allen'),
-            expect($('#Gender .question')).has.$text('Your gender'),
-            expect($('#Gender .answer')).has.$text('Male')
-          ]);
-        });
+        .html($ => Promise.all([
+          expect($('#Name .question')).has.$text('Name'),
+          expect($('#Name .answer')).has.$text('Michael Allen'),
+          expect($('#TemplatedAnswer .html')).has.$text('Rendered template'),
+          expect($('#Gender .question')).has.$text('Your gender'),
+          expect($('#Gender .answer')).has.$text('Male')
+        ]));
     });
   });
 

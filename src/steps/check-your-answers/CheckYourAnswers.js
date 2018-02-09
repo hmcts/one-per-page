@@ -1,5 +1,6 @@
 const Question = require('../Question');
 const { section } = require('./section');
+const { renderAnswer } = require('./answer');
 const { defined } = require('../../../src/util/checks');
 const { validateThenStopHere } = require('../../flow');
 const { form, boolField } = require('../../forms');
@@ -32,14 +33,18 @@ class CheckYourAnswers extends Question {
     return validateThenStopHere(this);
   }
 
-  handler(req, res) {
-    const answers = this.journey.answers;
-    this._sections = [
-      ...this.sections().map(s => s.filterAnswers(answers)),
-      section.default.filterAnswers(answers)
-    ];
+  handler(req, res, next) {
+    Promise
+      .all(this.journey.answers.map(ans => renderAnswer(ans, req.app)))
+      .then(answers => {
+        this._sections = [
+          ...this.sections().map(s => s.filterAnswers(answers)),
+          section.default.filterAnswers(answers)
+        ];
 
-    super.handler(req, res);
+        super.handler(req, res, next);
+      })
+      .catch(error => next(error));
   }
 
   sections() {

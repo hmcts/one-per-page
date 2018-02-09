@@ -9,9 +9,9 @@ const { i18nMiddleware } = require('../../src/i18n/i18Next');
 const { defined } = require('../../src/util/checks');
 const { RequestBoundJourney } = require('../../src/flow');
 
-function testApp() {
+function testApp(views = []) {
   const app = express();
-  app.set('views', ['lib/', 'test/views']);
+  app.set('views', ['lib/', 'test/views', ...views]);
 
   nunjucks(app, {
     autoescape: true,
