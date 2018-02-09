@@ -82,4 +82,4 @@ const answer = (step, args = {}) => {
   };
 };
 
-module.exports = answer;
+module.exports = { answer };

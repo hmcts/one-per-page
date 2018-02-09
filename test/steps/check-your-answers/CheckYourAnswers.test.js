@@ -1,6 +1,6 @@
 const { expect } = require('../../util/chai');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
-const answer = require('../../../src/steps/check-your-answers/answer');
+const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { form, field } = require('../../../src/forms');
 const { goTo } = require('../../../src/flow');
 const { testStep } = require('../../util/supertest');

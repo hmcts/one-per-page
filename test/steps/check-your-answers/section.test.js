@@ -3,7 +3,7 @@ const {
   section,
   Section
 } = require('../../../src/steps/check-your-answers/section');
-const answer = require('../../../src/steps/check-your-answers/answer');
+const { answer } = require('../../../src/steps/check-your-answers/answer');
 
 const completeAnswer = answer({ fields: { valid: true, url: '/good' } });
 const incompleteAnswer = answer({ fields: { valid: false, url: '/bad' } });

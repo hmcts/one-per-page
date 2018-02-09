@@ -1,5 +1,5 @@
 const { expect } = require('../../util/chai');
-const answer = require('../../../src/steps/check-your-answers/answer');
+const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { section } = require('../../../src/steps/check-your-answers/section');
 const { textField } = require('../../../src/forms');
 
