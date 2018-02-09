@@ -10,30 +10,6 @@ const resolveTemplate = (name, directories) => {
   return fallback(templatePaths.map(fileExists));
 };
 
-const renderAnswer = (answer, app) => new Promise((resolve, reject) => {
-  if (typeof answer.template === 'string') {
-    const directories = [
-      answer.step.dirname,
-      ...app.get('views')
-    ];
-    resolveTemplate(answer.template, directories).then(
-      resolvedPath => {
-        app.render(resolvedPath, answer.step.locals, (error, html) => {
-          if (error) {
-            reject(error);
-          } else {
-            answer.html = html;
-            resolve(answer);
-          }
-        });
-      },
-      () => reject(new Error(`Failed to locate ${answer.template}`))
-    );
-  } else {
-    resolve(answer);
-  }
-});
-
 const getAnswer = (step, { answer }) => {
   if (defined(answer)) {
     return answer;
@@ -114,18 +90,42 @@ const getTemplate = ({
   return template;
 };
 
-const answer = (step, args = {}) => {
-  return {
-    id: getId(step, args),
-    section: getSection(args),
-    question: getQuestion(step, args),
-    answer: getAnswer(step, args),
-    url: getUrl(step, args),
-    complete: getComplete(step),
-    hide: getHide(args),
-    template: getTemplate(args),
-    step
-  };
-};
+class Answer {
+  constructor(step, args = {}) {
+    this.id = getId(step, args);
+    this.section = getSection(args);
+    this.question = getQuestion(step, args);
+    this.answer = getAnswer(step, args);
+    this.url = getUrl(step, args);
+    this.complete = getComplete(step);
+    this.hide = getHide(args);
+    this.template = getTemplate(args);
+    this.step = step;
+  }
 
-module.exports = { answer, renderAnswer };
+  render(app) {
+    if (typeof this.template === 'string') {
+      const directories = [
+        this.step.dirname,
+        ...app.get('views')
+      ];
+      return resolveTemplate(this.template, directories).then(
+        resolvedPath => new Promise((resolve, reject) => {
+          app.render(resolvedPath, this.step.locals, (error, html) => {
+            if (error) {
+              reject(error);
+            }
+            this.html = html;
+            resolve(this);
+          });
+        }),
+        () => Promise.reject(new Error(`Failed to locate ${this.template}`))
+      );
+    }
+    return Promise.resolve(this);
+  }
+}
+
+const answer = (step, args = {}) => new Answer(step, args);
+
+module.exports = { answer, Answer };
