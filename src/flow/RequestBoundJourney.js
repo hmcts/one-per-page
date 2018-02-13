@@ -85,6 +85,10 @@ class RequestBoundJourney {
       .map(ensureArray)
       .reduce((left, right) => [...left, ...right], []);
   }
+
+  getField(fieldName, step) {
+    return this.instance(step).retrieve().fields[fieldName].value;
+  }
 }
 
 module.exports = RequestBoundJourney;

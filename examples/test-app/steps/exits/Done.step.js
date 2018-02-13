@@ -8,8 +8,7 @@ class Done extends ExitPoint {
   values() {
     return {
       referenceNumber: 'HDJ2123F',
-      husbandOrWife: this.journey.answers
-        .filter(s => s.id == 'RespondentTitle')[0].answer
+      husbandOrWife: this.journey.getField('husbandOrWife', this.journey.steps.RespondentTitle)
     };
   }
 }

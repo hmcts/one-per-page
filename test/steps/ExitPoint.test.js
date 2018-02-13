@@ -21,7 +21,8 @@ describe('steps/ExitPoint', () => {
       }
       values() {
         return {
-          name: this.journey.answers.filter(s => s.id === 'Name')[0].answer
+          name: this.journey.getField('firstName', this.journey.steps.Name)
+          // this.journey.answers.filter(s => s.id === 'Name')[0].answer
         };
       }
       get template() {
@@ -29,7 +30,7 @@ describe('steps/ExitPoint', () => {
       }
     };
 
-    const expectedPath = '/exit-step?name=Enda%20McCormack';
+    const expectedPath = '/exit-step?name=Enda';
 
     describe('when theres a session', () => {
       const Name = class extends Question {
@@ -48,7 +49,7 @@ describe('steps/ExitPoint', () => {
 
       const steps = { Name, ExitStep };
 
-      it('returns adds values to path', () => {
+      it('adds values to path', () => {
         return testStep(ExitStep)
           .withSession(session)
           .withSetup(req => {
@@ -66,7 +67,7 @@ describe('steps/ExitPoint', () => {
           .get(expectedPath)
           .expect(OK)
           .html($ => {
-            return expect($('body')).to.contain.$text('Enda McCormack');
+            return expect($('body')).to.contain.$text('Enda');
           });
       });
     });
