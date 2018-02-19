@@ -7,6 +7,7 @@ const { form, field } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 
 describe('steps/ExitPoint', () => {
+
   describe('GET', () => {
     it('destroys a session if there is one and cookie is not set', () => {
       return testStep(ExitPoint)
@@ -22,8 +23,16 @@ describe('steps/ExitPoint', () => {
       values() {
         return {
           name: this.journey.getField('firstName', this.journey.steps.Name)
-          // this.journey.answers.filter(s => s.id === 'Name')[0].answer
         };
+      }
+      get template() {
+        return 'exit_views/exit';
+      }
+    };
+
+    const ExitStepWithoutValues = class extends ExitPoint {
+      static get path() {
+        return '/exit-step';
       }
       get template() {
         return 'exit_views/exit';
@@ -58,6 +67,28 @@ describe('steps/ExitPoint', () => {
           .get()
           .expect('Location', expectedPath)
           .expect(302);
+      });
+
+      it('destroys sessions if values are in path', () => {
+        return testStep(ExitStep)
+          .withSession(session)
+          .withSetup(req => {
+            req.query = { name: 'Enda' };
+            req.journey.steps = steps;
+          })
+          .get()
+          .expect(shouldNotSetCookie(/session/));
+      });
+
+      it('should not populate query if values is not overridden', () => {
+        // will not redirect if no values
+        return testStep(ExitStepWithoutValues)
+          .withSession(session)
+          .withSetup(req => {
+            req.journey.steps = { Name, ExitStepWithoutValues };
+          })
+          .get()
+          .expect(200);
       });
     });
 

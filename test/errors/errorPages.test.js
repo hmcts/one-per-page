@@ -31,6 +31,15 @@ describe('errors/errorPages', () => {
     }
   };
 
+  const customNotFoundWithNextStepsException = {
+    notFound: {
+      template: 'errors/error.html',
+      title: 'some not found title',
+      message: 'some not found message',
+      nextSteps: '1'
+    }
+  };
+
   const customServerError = {
     serverError: {
       template: 'errors/error.html',
@@ -99,6 +108,19 @@ describe('errors/errorPages', () => {
             app, '/some-random-page',
             NOT_FOUND, customNotFound.notFound.nextSteps[2]);
         });
+      });
+    });
+
+    describe('404 throws exception', () => {
+      const appException = journey(testApp(),
+        options({ errorPages: customNotFoundWithNextStepsException }));
+
+      it('should throw an exception if steps is not an array', () => {
+        return testEndpointWithExpectedResponseAndText(
+          appException,
+          '/some-random-page',
+          INTERNAL_SERVER_ERROR,
+          'nextSteps is expected to be an array');
       });
     });
 
