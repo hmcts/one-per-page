@@ -1,3 +1,18 @@
+<a name="2.4.0"></a>
+# 2.4.0 (2018-02-20)
+
+* Allow tests to customise the views dir ([516bc19](https://github.com/hmcts/one-per-page/commit/516bc19))
+* Document CheckYourAnswers and the html answers option ([dd4d45e](https://github.com/hmcts/one-per-page/commit/dd4d45e))
+* Encapsulate answer rendering, to allow for overriding ([54e316b](https://github.com/hmcts/one-per-page/commit/54e316b))
+* Increase coverage over answer.js ([8893fb9](https://github.com/hmcts/one-per-page/commit/8893fb9))
+* Increase coverage over CheckYourAnswers ([1053e97](https://github.com/hmcts/one-per-page/commit/1053e97))
+* Nest answer inside it's module ([eed7088](https://github.com/hmcts/one-per-page/commit/eed7088))
+* Release 2.4.0-1 ([64d5bf1](https://github.com/hmcts/one-per-page/commit/64d5bf1))
+* Render templates from answers that have one ([60abe2a](https://github.com/hmcts/one-per-page/commit/60abe2a))
+* Update example apps dependencies ([0cfbb51](https://github.com/hmcts/one-per-page/commit/0cfbb51))
+
+
+
 <a name="2.4.0-1"></a>
 # 2.4.0-1 (2018-02-09)
 
