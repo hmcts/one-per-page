@@ -1,6 +1,7 @@
 const { expect } = require('../../util/chai');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
 const { answer } = require('../../../src/steps/check-your-answers/answer');
+const { section } = require('../../../src/steps/check-your-answers/section');
 const { form, field } = require('../../../src/forms');
 const { goTo } = require('../../../src/flow');
 const { testStep } = require('../../util/supertest');
@@ -63,6 +64,103 @@ describe('steps/CheckYourAnswers', () => {
           expect($('#TemplatedAnswer .html')).has.$text('Rendered template'),
           expect($('#Gender .question')).has.$text('Your gender'),
           expect($('#Gender .answer')).has.$text('Male')
+        ]));
+    });
+
+    it('responds with 500 if an answer fails to render', () => {
+      const TemplateFails = class extends Question {
+        answers() {
+          return {
+            render() {
+              return Promise.reject(new Error('Failed to render'));
+            }
+          };
+        }
+        next() {
+          return goTo(this.journey.steps.CheckYourAnswers);
+        }
+      };
+
+      const steps = { TemplateFails, CheckYourAnswers };
+      const session = { entryPoint: TemplateFails.name };
+
+      return testStep(CheckYourAnswers)
+        .withSession(session)
+        .withSetup(req => {
+          req.journey.steps = steps;
+        })
+        .get()
+        .expect(500);
+    });
+
+    it('sections answers', () => {
+      const NoSection = class extends Question {
+        answers() {
+          return answer(this, { answer: 'Default Answer' });
+        }
+        next() {
+          return goTo(this.journey.steps.Sectioned);
+        }
+      };
+      const Sectioned = class extends Question {
+        answers() {
+          return answer(this, {
+            answer: 'Sectioned Answer',
+            section: 'a'
+          });
+        }
+        next() {
+          return goTo(this.journey.steps.MultiSectioned);
+        }
+      };
+      const MultiSectioned = class extends Question {
+        answers() {
+          return [
+            answer(this, {
+              id: 'multi-1',
+              question: 'MultiSection Question 1',
+              answer: 'MultiSectioned Answer 1',
+              section: 'a'
+            }),
+            answer(this, {
+              id: 'multi-2',
+              question: 'MultiSection Question 2',
+              answer: 'MultiSectioned Answer 2',
+              section: 'b'
+            })
+          ];
+        }
+        next() {
+          return goTo(this.journey.steps.CYA);
+        }
+      };
+      const CYA = class extends CheckYourAnswers {
+        get name() {
+          return 'CheckYourAnswers';
+        }
+        sections() {
+          return [
+            section('a', { title: 'Section A' }),
+            section('b', { title: 'Section B' })
+          ];
+        }
+      };
+
+      const steps = { NoSection, Sectioned, MultiSectioned, CYA };
+      const session = { entryPoint: NoSection.name };
+
+      return testStep(CYA)
+        .withSession(session)
+        .withSetup(req => {
+          req.journey.steps = steps;
+        })
+        .withViews(path.join(__dirname, './fixtures'))
+        .get()
+        .html($ => Promise.all([
+          expect($('#a #Sectioned .answer')).has.$text('Sectioned Answer'),
+          expect($('#a #multi-1 .answer')).has.$text('MultiSectioned Answer 1'),
+          expect($('#b #multi-2 .answer')).has.$text('MultiSectioned Answer 2'),
+          expect($('#default #NoSection .answer')).has.$text('Default Answer')
         ]));
     });
   });
