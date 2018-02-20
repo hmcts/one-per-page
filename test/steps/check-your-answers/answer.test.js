@@ -76,6 +76,16 @@ describe('steps/check-your-answers/answer', () => {
         expect(question).to.eql('Name');
       });
 
+      it('falls back to "No question defined"', () => {
+        const question = answer({ fields }).question;
+        expect(question).to.eql('No question defined');
+      });
+
+      it('falls back to "No question defined"', () => {
+        const question = answer({ name: '', fields }).question;
+        expect(question).to.eql('No question defined');
+      });
+
       it('titleises class names', () => {
         const question = answer({ name: 'AboutTheMarriage', fields }).question;
         expect(question).to.eql('About the marriage');
@@ -167,6 +177,18 @@ describe('steps/check-your-answers/answer', () => {
           ''
         ].join('\n'));
       });
+    });
+
+    it('rejects if the template cannot be located', () => {
+      const ans = answer(fakeStep, { template: 'missing.template.html' });
+      const templateMissingMessage = `Failed to locate ${ans.template}`;
+
+      return expect(ans.render(app)).rejectedWith(templateMissingMessage);
+    });
+
+    it('rejects if the rendering fails', () => {
+      const ans = answer(fakeStep, { template: 'broken.answer.html' });
+      return expect(ans.render(app)).rejectedWith(/Template render error/);
     });
   });
 });

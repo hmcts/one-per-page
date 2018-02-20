@@ -27,7 +27,7 @@ const getAnswer = (step, { answer }) => {
 
 const titleise = string => {
   if (string.length < 1) {
-    return string;
+    return 'No question defined';
   }
   const firstChar = string[0].toUpperCase();
   const rest = string.slice(1)
@@ -113,7 +113,7 @@ class Answer {
         resolvedPath => new Promise((resolve, reject) => {
           app.render(resolvedPath, this.step.locals, (error, html) => {
             if (error) {
-              reject(error);
+              reject(new Error(error));
             }
             this.html = html;
             resolve(this);
