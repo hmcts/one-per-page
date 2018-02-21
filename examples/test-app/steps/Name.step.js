@@ -14,7 +14,10 @@ class Name extends Question {
         this.content.fields.lastName.required,
         Joi.string().required()
       ),
-      husbandOrWife: ref(this.journey.steps.RespondentTitle, text),
+      husbandOrWife: text.ref(
+        this.journey.steps.RespondentTitle,
+        'husbandOrWife'
+      ),
       respondentFirstName: text.joi(
         this.content.fields.respondentFirstName.required,
         Joi.string().required()
