@@ -1,3 +1,13 @@
+<a name="2.5.0"></a>
+# 2.5.0 (2018-02-21)
+
+* Attach .ref functions to basic field types ([d195670](https://github.com/hmcts/one-per-page/commit/d195670))
+* Document the new ref functions ([9888f2f](https://github.com/hmcts/one-per-page/commit/9888f2f))
+* Fix linting errors ([4fcd0e0](https://github.com/hmcts/one-per-page/commit/4fcd0e0))
+* Switch example app to use new ref approach ([90996fb](https://github.com/hmcts/one-per-page/commit/90996fb))
+
+
+
 <a name="2.4.0"></a>
 # 2.4.0 (2018-02-20)
 
