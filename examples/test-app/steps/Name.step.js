@@ -1,5 +1,5 @@
 const { Question, goTo } = require('@hmcts/one-per-page');
-const { form, text, ref } = require('@hmcts/one-per-page/forms');
+const { form, text } = require('@hmcts/one-per-page/forms');
 const { answer } = require('@hmcts/one-per-page/checkYourAnswers');
 const Joi = require('joi');
 

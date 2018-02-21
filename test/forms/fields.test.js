@@ -345,7 +345,6 @@ describe('forms/fields', () => {
       it.deserializes({ value: true, req });
       it.serializes({ to: {}, from: {}, req });
     }));
-
   }
 
   const toUpper = convert(str => str.toUpperCase(), text);
