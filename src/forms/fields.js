@@ -10,6 +10,26 @@ const { mapEntries, flattenObject } = require('../util/ops');
 const { errorFor } = require('./validator');
 const Joi = require('joi');
 
+const ref = (step, fieldType, fieldName) => {
+  const returnNothing = () => {
+    return {};
+  };
+  const fetchFromStepInSession = (name, _, req) => {
+    const values = option
+      .fromNullable(req.session)
+      .flatMap(session => option.fromNullable(session[step.name]))
+      .valueOrElse({});
+    return fieldType
+      .deserialize(fieldName || name, values, req)
+      .clone({ serializer: returnNothing });
+  };
+  return fieldDescriptor({
+    parser: fetchFromStepInSession,
+    deserializer: fetchFromStepInSession,
+    serializer: returnNothing
+  });
+};
+
 const object = childFields => fieldDescriptor({
   parser(name, body) {
     const fields = mapEntries(childFields, (key, field) => {
@@ -44,6 +64,7 @@ const object = childFields => fieldDescriptor({
     return { [field.name]: serialized };
   }
 });
+object.ref = (step, fieldName, fields) => ref(step, object(fields), fieldName);
 
 const list = field => fieldDescriptor({
   parser(name, body) {
@@ -89,6 +110,7 @@ const list = field => fieldDescriptor({
     return Array.isArray(value) && value.length > 0;
   }
 });
+list.ref = (step, fieldName, field) => ref(step, list(field), fieldName);
 
 const nonEmptyText = fieldDescriptor({
   parser(name, body) {
@@ -104,6 +126,7 @@ const nonEmptyText = fieldDescriptor({
       .valueOrElse('');
   }
 });
+nonEmptyText.ref = (step, fieldName) => ref(step, nonEmptyText, fieldName);
 
 const text = fieldDescriptor({
   parser(name, body) {
@@ -119,6 +142,7 @@ const text = fieldDescriptor({
       .valueOrElse(undefined); // eslint-disable-line no-undefined
   }
 });
+text.ref = (step, fieldName) => ref(step, text, fieldName);
 
 const truthy = ['yes', 'y', 'true', 't', '1'];
 const falsey = ['no', 'n', 'false', 'f', '0'];
@@ -146,26 +170,7 @@ bool.default = defaultValue => fieldDescriptor({
     return defaultValue;
   }
 });
-
-const ref = (step, field) => {
-  const returnNothing = () => {
-    return {};
-  };
-  const fetchFromStepInSession = (name, _, req) => {
-    const values = option
-      .fromNullable(req.session)
-      .flatMap(session => option.fromNullable(session[step.name]))
-      .valueOrElse({});
-    return field
-      .deserialize(name, values, req)
-      .clone({ serializer: returnNothing });
-  };
-  return fieldDescriptor({
-    parser: fetchFromStepInSession,
-    deserializer: fetchFromStepInSession,
-    serializer: returnNothing
-  });
-};
+bool.ref = (step, fieldName) => ref(step, bool, fieldName);
 
 const convert = (transformation, field) => fieldDescriptor({
   parser(name, body, req) {
