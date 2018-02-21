@@ -274,14 +274,79 @@ describe('forms/fields', () => {
     });
   }));
 
-  const myStep = { name: 'MyStep' };
-  describe('ref([step], text)', fieldTest(ref(myStep, text), it => {
-    const req = { session: { MyStep: { foo: 'From another step' } } };
+  {
+    const myStep = { name: 'MyStep' };
+    const session = {
+      MyStep: {
+        listKey: ['Foo', 'Bar', 'Baz'],
+        objectKey: {
+          a: 'A text field',
+          b: true
+        },
+        nonEmptyKey: 'From another step',
+        textKey: 'From another step',
+        boolKey: true
+      }
+    };
 
-    it.parses({ to: 'From another step', req });
-    it.deserializes({ value: 'From another step', req });
-    it.serializes({ to: {}, from: {}, req });
-  }));
+    describe('ref([step], text)', fieldTest(ref(myStep, text), it => {
+      const req = { session: { MyStep: { foo: 'From another step' } } };
+
+      it.parses({ to: 'From another step', req });
+      it.deserializes({ value: 'From another step', req });
+      it.serializes({ to: {}, from: {}, req });
+    }));
+
+    const objectRef = object.ref(myStep, 'objectKey', { a: text, b: bool });
+    describe('object.ref([step], [key], [fields])', fieldTest(objectRef, it => {
+      const req = { session };
+      it.parses({ to: { a: 'A text field', b: true }, req });
+      it.deserializes({ value: { a: 'A text field', b: true }, req });
+      it.serializes({ to: {}, from: {}, req });
+    }));
+
+    const listRef = list.ref(myStep, 'listKey', text);
+    describe('list.ref([step], [key], text)', fieldTest(listRef, it => {
+      const req = { session };
+
+      it.parses({ to: ['Foo', 'Bar', 'Baz'], req });
+      it.deserializes({ value: ['Foo', 'Bar', 'Baz'], req });
+      it.serializes({ to: {}, from: {}, req });
+    }));
+
+    const nonEmptyRef = nonEmptyText.ref(myStep, 'nonEmptyKey');
+    describe('nonEmptyText.ref([step], [key])', fieldTest(nonEmptyRef, it => {
+      const req = { session };
+      it.parses({ to: 'From another step', req });
+      it.parses({ to: '', req: {} });
+
+      it.deserializes({ value: 'From another step', req });
+      it.deserializes({ value: '', req: {} });
+
+      it.serializes({ to: {}, from: {}, req });
+    }));
+
+    const textRef = text.ref(myStep, 'textKey');
+    describe('text.ref([step], [key])', fieldTest(textRef, it => {
+      const req = { session };
+      it.parses({ to: 'From another step', req });
+      it.parses({ to: undefined, req: {} });
+
+      it.deserializes({ value: 'From another step', req });
+      it.deserializes({ value: undefined, req: {} });
+
+      it.serializes({ to: {}, from: {}, req });
+    }));
+
+    const boolRef = bool.ref(myStep, 'boolKey');
+    describe('bool.ref([step], [key])', fieldTest(boolRef, it => {
+      const req = { session };
+      it.parses({ to: true, req });
+      it.deserializes({ value: true, req });
+      it.serializes({ to: {}, from: {}, req });
+    }));
+
+  }
 
   const toUpper = convert(str => str.toUpperCase(), text);
   describe('convert(() => {}, text)', fieldTest(toUpper, it => {
