@@ -18,6 +18,18 @@ form({
 });
 ```
 
+### `text.ref(step, fieldName)`
+
+Loads a text field from another step.
+
+> See [`ref(step, field, fieldName)`] for more information.
+
+```js
+form({
+  appType: text.ref(this.journey.steps.ApplicationType, 'applicationType')
+});
+```
+
 ## `nonEmptyText`
 
 > `const { nonEmptyText } = require('@hmcts/one-per-page/forms');`
@@ -27,9 +39,25 @@ NonEmptyText fields are fields that will parse a missing key to an empty string
 
 ```js
 form({
-  isCitizen: ref(this.journey.steps.CitizenCheck, 'isCitizen')
+  firstName: nonEmptyText,
+  lastName: nonEmptyText
 });
 ```
+
+### `nonEmptyText.ref(step, fieldName)`
+
+Loads a nonEmptyText field from another step.
+
+> See [`ref(step, field, fieldName)`] for more information.
+
+```js
+form({
+  appType: nonEmptyText.ref(this.journey.steps.ApplicationType, 'applicationType')
+});
+```
+
+This will load `applicationType` from the `ApplicationType` step and will be
+available to you on `this.fields.appType`.
 
 ## `bool`
 
@@ -62,7 +90,19 @@ form({
 });
 ```
 
-## `ref(step, fieldName)`
+### `bool.ref(step, fieldName)`
+
+Loads a bool field from another step.
+
+> See [`ref(step, field, fieldName)`] for more information.
+
+```js
+form({
+  contact: bool.ref(this.journey.steps.ContactPreference, 'contactMe')
+});
+```
+
+## `ref(step, field, fieldName)`
 
 > `const { ref } = require('@hmcts/one-per-page/forms');`
 
@@ -92,6 +132,18 @@ validations to the wrapped field type.
 form({
   names: list(text)
 })
+```
+
+### `list.ref(step, fieldName, fieldType)`
+
+Loads a list field from another step.
+
+> See [`ref(step, field, fieldName)`] for more information.
+
+```js
+form({
+  names: list.ref(this.journey.steps.NameStep, 'names', text)
+});
 ```
 
 ## `object({ [name]: [field type] })`
@@ -134,6 +186,21 @@ filled.nested.value
 filled.nested.field.value
 // 'foo'
 
+```
+
+### `object.ref(step, fieldName, { [field name]: [field type] })`
+
+Loads a object field from another step.
+
+> See [`ref(step, field, fieldName)`] for more information.
+
+```js
+form({
+  petitioner: object.ref(this.journey.steps.PetitionerDetails, 'peitioner', {
+    firstName: text,
+    lastName: text
+  })
+});
 ```
 
 ## `convert(transformation, field)`
@@ -202,3 +269,4 @@ messages:
 
 [`FieldDescriptor`]: /docs/forms/internal-api/FieldDescriptor
 [date-pattern]: https://govuk-elements.herokuapp.com/form-elements/example-date/
+[`ref(step, field, fieldName)`]: #ref-step-field-fieldname
