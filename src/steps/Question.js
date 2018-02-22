@@ -8,6 +8,7 @@ const { form } = require('../forms');
 const { Reference } = require('../forms/ref');
 const logging = require('@log4js-node/log4js-api');
 const { ifCompleteThenContinue } = require('../flow/treeWalker');
+const preventCaching = require('../middleware/preventCaching');
 
 class Question extends Page {
   constructor(...args) {
@@ -19,7 +20,8 @@ class Question extends Page {
     return [
       ...super.middleware,
       bodyParser.urlencoded({ extended: true }),
-      requireSession
+      requireSession,
+      preventCaching
     ];
   }
 
