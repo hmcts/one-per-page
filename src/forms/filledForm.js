@@ -33,7 +33,7 @@ class FilledForm {
       .reduce(flattenObject, {});
 
     if (values !== {}) {
-      Object.assign(req.session, { [stepName]: values });
+      Object.assign(req.session, { [stepName]: values, temp: {} });
     }
   }
 

@@ -82,14 +82,6 @@ class AddAnother extends Question {
     }
   }
 
-  renderPage() {
-    this.retrieve();
-    if (this.fields.isFilled) {
-      this.validate();
-    }
-    this.res.render(this.template, this.locals);
-  }
-
   listModeHandler(req, res) {
     if (req.method === 'GET') {
       this.renderPage();
