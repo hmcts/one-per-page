@@ -23,7 +23,15 @@ class Form {
     if (notDefined(req.session)) {
       throw new Error('Session not initialized');
     }
-    const values = option.fromNullable(req.session[stepName]).valueOrElse({});
+    const tempValues = option
+      .fromNullable(req.session.temp)
+      .flatMap(temp => option.fromNullable(temp[stepName]));
+    const storedValues = option
+      .fromNullable(req.session[stepName]);
+    const values = tempValues
+      .orElse(storedValues)
+      .valueOrElse({});
+
     const fieldValues = mapEntries(
       this.fields,
       (key, field) => field.deserialize(key, values, req)
