@@ -2,7 +2,7 @@ const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
 const { section } = require('../../src/steps/check-your-answers/section');
-const { field, form, textField } = require('../../src/forms');
+const { field, form, text, textField } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const Joi = require('joi');
@@ -53,6 +53,22 @@ describe('steps/Question', () => {
             return expect($('#name')).has.$val('Michael Allen');
           });
       });
+
+      it('validates stored values and renders any errors', () => {
+        const errorMessage = 'Error message';
+        const returnIsInvalid = sinon.stub().returns(false);
+        const InvalidQuestion = class extends SimpleQuestion {
+          get form() {
+            return form({ name: text.check(errorMessage, returnIsInvalid) });
+          }
+        };
+        return testStep(InvalidQuestion)
+          .withSession({ temp: { InvalidQuestion: { name: 'Invalid value' } } })
+          .get()
+          .html($ => {
+            return expect($('.error-message')).to.contain.$text(errorMessage);
+          });
+      });
     });
 
     describe('POST', () => {
@@ -83,14 +99,13 @@ describe('steps/Question', () => {
             );
           }
         };
-        it('renders step with error message', () => {
+        it('redirects to GET', () => {
           return testStep(InvalidQuestion)
             .withSetup(req => req.session.generate())
             .withField('name', 'Invalid Answer')
             .post()
-            .html($ => {
-              return expect($('.error-message')).to.contain.$text(errorMessage);
-            });
+            .expect(302)
+            .expect('Location', InvalidQuestion.path);
         });
       });
 

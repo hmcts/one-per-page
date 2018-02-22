@@ -23,10 +23,17 @@ class Question extends Page {
     ];
   }
 
+  renderPage() {
+    this.retrieve();
+    if (this.fields.isFilled) {
+      this.validate();
+    }
+    this.res.render(this.template, this.locals);
+  }
+
   handler(req, res) {
     if (req.method === 'GET') {
-      this.retrieve();
-      super.handler(req, res);
+      this.renderPage();
     } else if (req.method === 'POST') {
       this.parse();
       this.validate();
@@ -35,7 +42,8 @@ class Question extends Page {
         this.store();
         this.next().redirect(req, res);
       } else {
-        res.render(this.template, this.locals);
+        this.storeErrors();
+        res.redirect(this.path);
       }
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
@@ -88,6 +96,11 @@ class Question extends Page {
 
   store() {
     this.fields.store(this.name, this.req);
+    return this;
+  }
+
+  storeErrors() {
+    this.fields.tempStore(this.name, this.req);
     return this;
   }
 

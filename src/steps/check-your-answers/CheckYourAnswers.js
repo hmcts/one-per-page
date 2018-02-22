@@ -2,7 +2,7 @@ const Question = require('../Question');
 const { section } = require('./section');
 const { defined } = require('../../../src/util/checks');
 const { validateThenStopHere } = require('../../flow');
-const { form, boolField } = require('../../forms');
+const { form, bool } = require('../../forms');
 const Joi = require('joi');
 
 class CheckYourAnswers extends Question {
@@ -20,12 +20,12 @@ class CheckYourAnswers extends Question {
   }
 
   get form() {
-    return form(
-      boolField('statementOfTruth').joi(
+    return form({
+      statementOfTruth: bool.joi(
         this.errorMessage,
         Joi.required().valid(true)
       )
-    );
+    });
   }
 
   get flowControl() {
