@@ -101,6 +101,43 @@ describe('forms/form', () => {
         expect(filled.fields).to.have.property('bar')
           .that.has.property('value', 'Another text value');
       });
+
+      it('fetches temporary values from the session', () => {
+        const f = new Form({ foo: text, bar: text });
+        const req = {
+          session: {
+            temp: {
+              StepName: {
+                foo: 'A temporary value',
+                bar: 'Another temporary value'
+              }
+            }
+          }
+        };
+        const filled = f.retrieve('StepName', req);
+
+        expect(filled.fields)
+          .to.have.property('foo')
+          .that.has.property('value', 'A temporary value');
+        expect(filled.fields)
+          .to.have.property('bar')
+          .that.has.property('value', 'Another temporary value');
+      });
+
+      it('prefers temporary values over stored session values', () => {
+        const f = new Form({ foo: text });
+        const req = {
+          session: {
+            temp: { StepName: { foo: 'A temporary value' } },
+            StepName: { foo: 'A stored value' }
+          }
+        };
+        const filled = f.retrieve('StepName', req);
+
+        expect(filled.fields)
+          .to.have.property('foo')
+          .that.has.property('value', 'A temporary value');
+      });
     });
   });
 });
