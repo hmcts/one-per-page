@@ -65,6 +65,26 @@ describe('forms/filledForm', () => {
       });
     });
 
+    describe('#tempStore', () => {
+      const fields = {
+        foo: text.parse('foo', { foo: 'A text value' }),
+        bar: text.parse('bar', { bar: 'Another text value' })
+      };
+
+      it('stores the serialized fields in the temp session', () => {
+        const f = new FilledForm(fields);
+        const req = { session: {} };
+
+        f.tempStore('StepName', req);
+
+        expect(req.session.temp).has.property('StepName');
+        expect(req.session.temp.StepName)
+          .has.property('foo', 'A text value');
+        expect(req.session.temp.StepName)
+          .has.property('bar', 'Another text value');
+      });
+    });
+
     describe('#validate', () => {
       const isValid = sinon.stub().returns(true);
       const isInvalid = sinon.stub().returns(false);

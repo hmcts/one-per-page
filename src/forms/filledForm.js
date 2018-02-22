@@ -37,6 +37,23 @@ class FilledForm {
     }
   }
 
+  tempStore(stepName, req) {
+    if (notDefined(req.session)) {
+      throw new Error('Session not initialized');
+    }
+    const existingValues = option
+      .fromNullable(req.session[stepName])
+      .valueOrElse({});
+
+    const values = Object.values(this.fields)
+      .map(field => field.serialize(existingValues))
+      .reduce(flattenObject, {});
+
+    if (values !== {}) {
+      Object.assign(req.session, { temp: { [stepName]: values } });
+    }
+  }
+
   validate() {
     return Object.values(this.fields)
       .map(field => field.validate())
