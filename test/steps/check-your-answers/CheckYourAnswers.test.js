@@ -16,7 +16,7 @@ describe('steps/CheckYourAnswers', () => {
   });
 
   describe('GET', () => {
-    it('renders an answer for each answered question in the journey', () => {
+    {
       const Name = class extends Question {
         get form() {
           return form(field('firstName'), field('lastName'));
@@ -51,21 +51,32 @@ describe('steps/CheckYourAnswers', () => {
         Gender: { gender: 'Male' }
       };
 
-      return testStep(CheckYourAnswers)
-        .withSession(session)
-        .withSetup(req => {
-          req.journey.steps = steps;
-        })
-        .withViews(path.join(__dirname, './fixtures'))
-        .get()
-        .html($ => Promise.all([
-          expect($('#Name .question')).has.$text('Name'),
-          expect($('#Name .answer')).has.$text('Michael Allen'),
-          expect($('#TemplatedAnswer .html')).has.$text('Rendered template'),
-          expect($('#Gender .question')).has.$text('Your gender'),
-          expect($('#Gender .answer')).has.$text('Male')
-        ]));
-    });
+
+      it('renders an answer for each answered question in the journey', () => {
+        return testStep(CheckYourAnswers)
+          .withSession(session)
+          .withSetup(req => {
+            req.journey.steps = steps;
+          })
+          .withViews(path.join(__dirname, './fixtures'))
+          .get()
+          .html($ => Promise.all([
+            expect($('#Name .question')).has.$text('Name'),
+            expect($('#Name .answer')).has.$text('Michael Allen'),
+            expect($('#TemplatedAnswer .html')).has.$text('Rendered template'),
+            expect($('#Gender .question')).has.$text('Your gender'),
+            expect($('#Gender .answer')).has.$text('Male')
+          ]));
+      });
+
+      it('requires that a session exists', () => {
+        return testStep(CheckYourAnswers)
+          .get()
+          .expect(302)
+          .expect('Location', '/');
+      });
+    }
+
 
     it('responds with 500 if an answer fails to render', () => {
       const TemplateFails = class extends Question {
