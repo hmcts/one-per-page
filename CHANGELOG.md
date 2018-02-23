@@ -1,3 +1,10 @@
+<a name="2.5.1"></a>
+## 2.5.1 (2018-02-23)
+
+* Collect steps after we've required a session exists ([48ecd35](https://github.com/hmcts/one-per-page/commit/48ecd35))
+
+
+
 <a name="2.5.0"></a>
 # 2.5.0 (2018-02-21)
 
