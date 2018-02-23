@@ -5,7 +5,7 @@ const { expectImplemented } = require('../errors/expectImplemented');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const { answer } = require('./check-your-answers/answer');
 const { form } = require('../forms');
-const { Reference } = require('../forms/ref');
+const { RefValue } = require('../forms/fieldValue');
 const logging = require('@log4js-node/log4js-api');
 const { ifCompleteThenContinue } = require('../flow/treeWalker');
 const preventCaching = require('../middleware/preventCaching');
@@ -58,7 +58,7 @@ class Question extends Page {
 
   values() {
     return Object.values(this.fields)
-      .filter(field => !(field instanceof Reference))
+      .filter(field => !(field instanceof RefValue))
       .reduce((values, field) =>
         Object.assign(values, { [field.name]: field.value }), {}
       );

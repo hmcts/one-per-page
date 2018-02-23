@@ -1,13 +1,4 @@
 const { form } = require('./form');
-const { field } = require('./field');
-const { compoundField } = require('./compoundField');
-
-const {
-  arrayField,
-  textField,
-  nonEmptyTextField,
-  boolField
-} = require('./simpleFields');
 
 const {
   nonEmptyText,
@@ -23,8 +14,6 @@ const {
 
 const { errorFor } = require('./validator');
 
-const dateField = require('./complex/dateField');
-
 module.exports = {
   form,
   nonEmptyText,
@@ -36,14 +25,5 @@ module.exports = {
   ref,
   convert,
   date,
-  errorFor,
-
-  // old interfaces, soon to be removed
-  field,
-  arrayField,
-  textField,
-  nonEmptyTextField,
-  boolField,
-  compoundField,
-  dateField
+  errorFor
 };

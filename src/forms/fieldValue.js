@@ -87,6 +87,9 @@ class FieldValue {
   get isFilled() {
     return this.filledCheck(this.value);
   }
+  get canonicalValue() {
+    return this.value;
+  }
 
   clone(overrides) {
     return new this.constructor(Object.assign({}, this, overrides));
@@ -210,11 +213,27 @@ class TransformFieldValue extends FieldValue {
   }
 }
 
+const returnNothing = () => {
+  return {};
+};
+const noTransformation = v => v;
+
+class RefValue extends TransformFieldValue {
+  static wrap(fieldValue) {
+    return new this({
+      transformation: noTransformation,
+      wrapped: fieldValue,
+      serializer: returnNothing
+    });
+  }
+}
+
 const fieldValue = args => new FieldValue(args);
 
 module.exports = {
   FieldValue, fieldValue,
   ObjectFieldValue,
   ListFieldValue,
-  TransformFieldValue
+  TransformFieldValue,
+  RefValue
 };

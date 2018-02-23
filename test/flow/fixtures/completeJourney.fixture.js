@@ -2,7 +2,7 @@ const EntryPoint = require('../../../src/steps/EntryPoint');
 const Question = require('../../../src/steps/Question');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
 const { goTo, RequestBoundJourney } = require('../../../src/flow');
-const { textField, form } = require('../../../src/forms');
+const { text, form } = require('../../../src/forms');
 
 class Entry extends EntryPoint {
   next() {
@@ -11,7 +11,10 @@ class Entry extends EntryPoint {
 }
 class Name extends Question {
   get form() {
-    return form(textField('firstName'), textField('lastName'));
+    return form({
+      firstName: text,
+      lastName: text
+    });
   }
   next() {
     return goTo(this.journey.steps.CheckAnswers);

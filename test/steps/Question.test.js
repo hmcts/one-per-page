@@ -2,7 +2,7 @@ const { expect, sinon } = require('../util/chai');
 const { testStep } = require('../util/supertest');
 const Question = require('../../src/steps/Question');
 const { section } = require('../../src/steps/check-your-answers/section');
-const { field, form, text, textField } = require('../../src/forms');
+const { form, text } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
 const Joi = require('joi');
@@ -21,7 +21,7 @@ describe('steps/Question', () => {
   {
     const SimpleQuestion = class extends Question {
       get form() {
-        return form(field('name'));
+        return form({ name: text });
       }
       get template() {
         return 'question_views/simpleQuestion';
@@ -91,12 +91,10 @@ describe('steps/Question', () => {
 
       describe('is invalid', () => {
         const errorMessage = 'Error message';
-        const returnIsInvalid = sinon.stub().returns(errorMessage);
+        const returnIsInvalid = sinon.stub().returns(false);
         const InvalidQuestion = class extends SimpleQuestion {
           get form() {
-            return form(
-              field('name').validate(returnIsInvalid)
-            );
+            return form({ name: text.check(errorMessage, returnIsInvalid) });
           }
         };
         it('redirects to GET', () => {
@@ -116,9 +114,7 @@ describe('steps/Question', () => {
             return '/next-step';
           }
           get form() {
-            return form(
-              field('name').validate(returnIsValid)
-            );
+            return form({ name: text.check('no error', returnIsValid) });
           }
         };
 
@@ -153,9 +149,7 @@ describe('steps/Question', () => {
             return '/next-step';
           }
           get form() {
-            return form(
-              field('name')
-            );
+            return form({ name: text });
           }
         };
         const req = {
@@ -172,22 +166,20 @@ describe('steps/Question', () => {
       });
 
       it("doesn't include ref fields", () => {
-        const NameStep = class extends SimpleQuestion {
+        const Name = class extends SimpleQuestion {
           static get path() {
             return '/next-step';
           }
           get form() {
-            return form(
-              textField.ref(this.journey.steps.NameStep, 'name')
-            );
+            return form({ name: text.ref(this.journey.steps.Name, 'name') });
           }
         };
         const req = {
-          journey: { steps: { NameStep } },
-          session: { NameStep: { name: 'John' } }
+          journey: { steps: { Name } },
+          session: { Name: { name: 'John' } }
         };
         const res = {};
-        const step = new NameStep(req, res);
+        const step = new Name(req, res);
         step.retrieve().validate();
 
         const _values = step.values();
@@ -203,9 +195,7 @@ describe('steps/Question', () => {
             return '/next-step';
           }
           get form() {
-            return form(
-              field('name')
-            );
+            return form({ name: text });
           }
         };
         const req = {
@@ -234,9 +224,12 @@ describe('steps/Question', () => {
       }
 
       get form() {
-        return form(
-          field('name').joi(Joi.string().required())
-        );
+        return form({
+          name: text.joi(
+            'error message',
+            Joi.string().required()
+          )
+        });
       }
 
       template() { /* intentionally blank */ }

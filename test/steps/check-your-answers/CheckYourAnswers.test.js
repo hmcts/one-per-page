@@ -2,7 +2,7 @@ const { expect } = require('../../util/chai');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
 const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { section } = require('../../../src/steps/check-your-answers/section');
-const { form, field } = require('../../../src/forms');
+const { form, text } = require('../../../src/forms');
 const { goTo } = require('../../../src/flow');
 const { testStep } = require('../../util/supertest');
 const Question = require('../../../src/steps/Question');
@@ -19,7 +19,7 @@ describe('steps/CheckYourAnswers', () => {
     {
       const Name = class extends Question {
         get form() {
-          return form(field('firstName'), field('lastName'));
+          return form({ firstName: text, lastName: text });
         }
         next() {
           return goTo(this.journey.steps.TemplatedAnswer);
@@ -35,7 +35,7 @@ describe('steps/CheckYourAnswers', () => {
       };
       const Gender = class extends Question {
         get form() {
-          return form(field('gender'));
+          return form({ gender: text });
         }
         answers() {
           return answer(this, { question: 'Your gender' });

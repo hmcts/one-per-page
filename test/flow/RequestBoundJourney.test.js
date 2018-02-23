@@ -5,7 +5,7 @@ const EntryPoint = require('../../src/steps/EntryPoint');
 const Question = require('../../src/steps/Question');
 const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
 const { goTo, RequestBoundJourney } = require('../../src/flow');
-const { textField, form } = require('../../src/forms');
+const { text, form } = require('../../src/forms');
 const Joi = require('joi');
 
 describe('journey/RequestBoundJourney', () => {
@@ -135,7 +135,11 @@ describe('journey/RequestBoundJourney', () => {
     }
     class Name extends Question {
       get form() {
-        return form(textField('notPresent').joi(Joi.string().required()));
+        return form({
+          notPresent: text.joi(
+            'required',
+            Joi.string().required())
+        });
       }
       next() {
         return goTo(this.journey.steps.CheckAnswers);
