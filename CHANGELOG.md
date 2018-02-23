@@ -1,3 +1,14 @@
+<a name="3.0.0-1"></a>
+# 3.0.0-1 (2018-02-23)
+
+* Make form capable of retrieving values from a temp storage ([7cea8f2](https://github.com/hmcts/one-per-page/commit/7cea8f2))
+* Prevent caching of questions ([8f357a4](https://github.com/hmcts/one-per-page/commit/8f357a4))
+* Provide a way to temporarily store values ([b558a2f](https://github.com/hmcts/one-per-page/commit/b558a2f))
+* Redirect to GET on errors ([0fa6733](https://github.com/hmcts/one-per-page/commit/0fa6733))
+* Remove old field types and underlying classes ([2f384e6](https://github.com/hmcts/one-per-page/commit/2f384e6))
+
+
+
 <a name="2.5.1"></a>
 ## 2.5.1 (2018-02-23)
 
