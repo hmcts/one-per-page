@@ -1,3 +1,13 @@
+<a name="3.0.0-0"></a>
+# 3.0.0-0 (2018-02-23)
+
+* Make form capable of retrieving values from a temp storage ([0dda188](https://github.com/hmcts/one-per-page/commit/0dda188))
+* Prevent caching of questions ([5c93f38](https://github.com/hmcts/one-per-page/commit/5c93f38))
+* Provide a way to temporarily store values ([0a546e3](https://github.com/hmcts/one-per-page/commit/0a546e3))
+* Redirect to GET on errors ([d5bcc7d](https://github.com/hmcts/one-per-page/commit/d5bcc7d))
+
+
+
 <a name="2.5.1"></a>
 ## 2.5.1 (2018-02-23)
 
