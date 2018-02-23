@@ -12,7 +12,7 @@ class CheckYourAnswers extends Question {
   }
 
   get middleware() {
-    return [this.journey.collectSteps, ...super.middleware];
+    return [...super.middleware, this.journey.collectSteps];
   }
 
   get errorMessage() {
