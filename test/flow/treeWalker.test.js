@@ -8,7 +8,7 @@ const {
   continueToNext,
   validateThenStopHere
 } = require('../../src/flow');
-const { form, textField } = require('../../src/forms');
+const { form, text } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
 const RequestBoundJourney = require('../../src/flow/RequestBoundJourney');
 const callsites = require('callsites');
@@ -23,7 +23,7 @@ describe('flow/flowControl', () => {
     {
       const A = class extends Question {
         get form() {
-          return form(textField('a'));
+          return form({ a: text });
         }
         get flowControl() {
           return ifCompleteThenContinue(this);
@@ -34,7 +34,7 @@ describe('flow/flowControl', () => {
       };
       const B = class extends Question {
         get form() {
-          return form(textField('b'));
+          return form({ b: text });
         }
         get flowControl() {
           return ifCompleteThenContinue(this);
@@ -77,7 +77,7 @@ describe('flow/flowControl', () => {
     {
       const A = class extends Question {
         get form() {
-          return form(textField('a'));
+          return form({ a: text });
         }
         get flowControl() {
           return ifCompleteThenContinue(this);
@@ -88,7 +88,7 @@ describe('flow/flowControl', () => {
       };
       const B = class extends Question {
         get form() {
-          return form(textField('b'));
+          return form({ b: text });
         }
         get flowControl() {
           return ifCompleteThenContinue(this);
@@ -99,7 +99,7 @@ describe('flow/flowControl', () => {
       };
       const C = class extends Question {
         get form() {
-          return form(textField('c'));
+          return form({ c: text });
         }
         get flowControl() {
           return ifCompleteThenContinue(this);
@@ -142,7 +142,7 @@ describe('flow/flowControl', () => {
       const res = {};
       class LoopingStep extends Question {
         get form() {
-          return form(textField('a'));
+          return form({ a: text });
         }
         get flowControl() {
           return ifCompleteThenContinue(this);
@@ -212,7 +212,7 @@ describe('flow/flowControl', () => {
       {
         const step = new class TestStep extends Question {
           get form() {
-            return form(textField('a').joi(Joi.string().required()));
+            return form({ a: text.joi('required', Joi.string().required()) });
           }
           get flowControl() {
             return validateThenStopHere(this);
@@ -243,7 +243,7 @@ describe('flow/flowControl', () => {
       {
         const step = new class TestStep extends Question {
           get form() {
-            return form(textField('a').joi(Joi.string().required()));
+            return form({ a: text.joi('required', Joi.string().required()) });
           }
           get flowControl() {
             return ifCompleteThenContinue(this);

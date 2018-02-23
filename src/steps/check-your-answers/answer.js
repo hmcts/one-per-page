@@ -1,5 +1,5 @@
 const { defined } = require('../../util/checks');
-const { Reference } = require('../../forms/ref');
+const { RefValue } = require('../../forms/fieldValue');
 const { section } = require('./section');
 const path = require('path');
 const { fallback } = require('../../util/promises');
@@ -17,7 +17,7 @@ const getAnswer = (step, { answer }) => {
 
   if (defined(step.fields)) {
     return Object.values(step.fields)
-      .filter(field => !(field instanceof Reference))
+      .filter(field => !(field instanceof RefValue))
       .map(field => field.value)
       .join(' ');
   }

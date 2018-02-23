@@ -3,7 +3,8 @@ const option = require('option');
 const {
   ObjectFieldValue,
   ListFieldValue,
-  TransformFieldValue
+  TransformFieldValue,
+  RefValue
 } = require('./fieldValue');
 const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
@@ -19,9 +20,7 @@ const ref = (step, fieldType, fieldName) => {
       .fromNullable(req.session)
       .flatMap(session => option.fromNullable(session[step.name]))
       .valueOrElse({});
-    return fieldType
-      .deserialize(fieldName || name, values, req)
-      .clone({ serializer: returnNothing });
+    return RefValue.wrap(fieldType.deserialize(fieldName || name, values, req));
   };
   return fieldDescriptor({
     parser: fetchFromStepInSession,

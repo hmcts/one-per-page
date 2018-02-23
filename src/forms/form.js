@@ -1,9 +1,7 @@
 const { notDefined } = require('../util/checks');
-const { mapEntries, flattenObject } = require('../util/ops');
-const { FieldDesriptor } = require('./field');
+const { mapEntries } = require('../util/ops');
 const { filledForm } = require('./filledForm');
 const option = require('option');
-const logging = require('@log4js-node/log4js-api');
 
 class Form {
   constructor(fields = {}) {
@@ -40,20 +38,6 @@ class Form {
   }
 }
 
-const form = (...args) => {
-  if (args.some(arg => arg instanceof FieldDesriptor)) {
-    logging
-      .getLogger('forms.form')
-      .warn("Deprecated: form(textField('foo')) syntax will be removed soon");
-    const fields = args
-      .map(field => {
-        return { [field.name]: field };
-      })
-      .reduce(flattenObject, {});
-
-    return new Form(fields);
-  }
-  return new Form(...args);
-};
+const form = (...args) => new Form(...args);
 
 module.exports = { form, Form };

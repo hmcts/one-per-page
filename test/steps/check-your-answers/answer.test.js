@@ -2,17 +2,20 @@ const { expect } = require('../../util/chai');
 const { testApp } = require('../../util/supertest');
 const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { section } = require('../../../src/steps/check-your-answers/section');
-const { textField } = require('../../../src/forms');
+const { text } = require('../../../src/forms');
 const path = require('path');
 
 describe('steps/check-your-answers/answer', () => {
   describe('#answer', () => {
-    const firstName = textField('firstName');
-    const lastName = textField('lastName');
-    const ref = textField.ref('aRef');
-    firstName.value = 'John';
-    lastName.value = 'Smith';
-    ref.value = 'ShouldNotBeOutput';
+    const values = {
+      firstName: 'John',
+      lastName: 'Smith'
+    };
+    const req = { session: { RefStep: { aRef: 'ShouldNotBeOutput' } } };
+    const RefStep = { name: 'RefStep' };
+    const firstName = text.parse('firstName', values);
+    const lastName = text.parse('lastName', values);
+    const ref = text.ref(RefStep, 'aRef').parse('aRef', values, req);
 
     const fields = { firstName, lastName, ref };
     const fakeStep = { name: 'AboutYou', path: '/name', fields };
@@ -135,10 +138,12 @@ describe('steps/check-your-answers/answer', () => {
   });
 
   describe('answer.render', () => {
-    const firstName = textField('firstName');
-    const lastName = textField('lastName');
-    firstName.value = 'John';
-    lastName.value = 'Smith';
+    const values = {
+      firstName: 'John',
+      lastName: 'Smith'
+    };
+    const firstName = text.parse('firstName', values);
+    const lastName = text.parse('lastName', values);
 
     const fakeStep = {
       name: 'AboutYou',
