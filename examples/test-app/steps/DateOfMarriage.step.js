@@ -19,10 +19,6 @@ class DateOfMarriage extends Question {
     });
   }
 
-  get today() {
-    return moment().format('D M YYYY');
-  }
-
   next() {
     const oneYearAgo = moment().subtract(1, 'year');
     const marriedLessThan1Year = this.fields.date.value.isAfter(oneYearAgo);

@@ -11,6 +11,7 @@
 	<div class="phase-banner-alpha">
     <p>
       <strong class="phase-tag">{{ content.title }}</strong>
+
       <span>{{ content.subTitle | safe }}</span>
     </p>
   </div>
@@ -24,7 +25,7 @@
 
         <p>
           {{ content.yourRefNumber }}<br>
-          <strong class="heading-medium">HDJ2123F</strong>
+          <strong class="heading-medium">{{ params.referenceNumber }}</strong>
         </p>
 
 			</div>

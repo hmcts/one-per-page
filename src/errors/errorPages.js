@@ -5,6 +5,8 @@ const path = require('path');
 const { i18NextInstance } = require('../i18n/i18Next');
 const { loadFileContents } = require('../i18n/loadStepContent');
 const { isArray, defined } = require('../util/checks');
+const logger = require('@log4js-node/log4js-api')
+  .getLogger('one-per-page.errorPages');
 
 class ErrorPages {
   /** bind 404 and 500's to the app */
@@ -21,6 +23,9 @@ class ErrorPages {
         // eslint-disable-next-line no-unused-vars
         app.use((errors, req, res, next) => {
           const serverError = opts.serverError || {};
+
+          logger.error(errors);
+
           res.status(INTERNAL_SERVER_ERROR).render(
             serverError.template || i18Next.t('serverError.template'),
             {

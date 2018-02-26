@@ -2,7 +2,7 @@
   "en": {
     "title": "ALPHA",
     "subTitle": "This is a new service – your <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"/feedback\">feedback</a> will help us improve it",
-    "applicationComplete": "Application complete",
+    "applicationComplete": "Application complete for divorce of your {{- params.husbandOrWife }}",
     "yourRefNumber": "Your reference number is ",
     "emailSentTo": "Email confirmation has been sent to ",
     "whatHappensNext": "What happens next",
