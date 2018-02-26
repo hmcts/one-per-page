@@ -5,6 +5,7 @@ const path = require('path');
 const { i18NextInstance } = require('../i18n/i18Next');
 const { loadFileContents } = require('../i18n/loadStepContent');
 const { isArray, defined } = require('../util/checks');
+const log = require('../util/logging')('errorPages');
 
 class ErrorPages {
   /** bind 404 and 500's to the app */
@@ -20,6 +21,7 @@ class ErrorPages {
         //
         // eslint-disable-next-line no-unused-vars
         app.use((errors, req, res, next) => {
+          log.error(req.path, errors);
           const serverError = opts.serverError || {};
           res.status(INTERNAL_SERVER_ERROR).render(
             serverError.template || i18Next.t('serverError.template'),
@@ -40,6 +42,7 @@ class ErrorPages {
           if (defined(notFound.nextSteps) && !isArray(notFound.nextSteps)) {
             throw new TypeError('nextSteps is expected to be an array');
           }
+          log.info(req.path, 'No handler found, rendering 404');
           res.status(NOT_FOUND).render(
             notFound.template || i18Next.t('notFound.template'),
             {
