@@ -3,6 +3,7 @@
 /node_modules/
 yarn-error.log
 /examples/**/node_modules/
+/examples/**/dist/
 /.nyc_output/
 /coverage.lcov
 .idea
