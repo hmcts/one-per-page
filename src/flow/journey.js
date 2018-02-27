@@ -5,8 +5,7 @@ const urlParse = require('url-parse');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { defined } = require('../util/checks');
 const RequestBoundJourney = require('./RequestBoundJourney');
-const logger = require('@log4js-node/log4js-api')
-  .getLogger('one-per-page.journey');
+const log = require('../util/logging')('journey');
 
 const parseUrl = baseUrl => {
   if (typeof baseUrl === 'undefined') {
@@ -20,7 +19,7 @@ const constructorFrom = step => {
     return step;
   }
   const { constructor, name } = step;
-  logger.warn(`Deprecated: Pass ${name} to journey as class not instance.`);
+  log.warn(`Deprecated: Pass ${name} to journey as class not instance.`);
   return constructor;
 };
 
@@ -49,6 +48,8 @@ const options = userOpts => {
 };
 
 const journey = (app, userOpts) => {
+  log.debug('Initialising journey');
+
   const opts = options(userOpts);
   const steps = opts.steps
     .map(step => {
@@ -71,6 +72,7 @@ const journey = (app, userOpts) => {
   opts.steps.forEach(Step => Step.bind(app));
   errorPages.bind(app, userOpts.errorPages);
 
+  log.debug('Finished initialising journey');
   return app;
 };
 
