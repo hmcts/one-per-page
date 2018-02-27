@@ -1,5 +1,5 @@
 const { notDefined } = require('../util/checks');
-const logging = require('@log4js-node/log4js-api');
+const log = require('../util/logging')('action');
 
 class Action {
   constructor(action, nextFlow, errorFlow) {
@@ -8,22 +8,27 @@ class Action {
     this.errorFlow = errorFlow;
   }
 
-  redirect(req, res) {
+  redirect(req, res, next) {
     const promise = this.performAction(req, res);
 
     return promise
       .then(() => {
         if (notDefined(this.nextFlow)) {
-          logging.getLogger(this.name).error('No flow chained to action');
+          const errorMessage = `No flow chained to action from ${req.path}`;
+          log.error(errorMessage);
+          next(errorMessage);
           return;
         }
         this.nextFlow.redirect(req, res);
       })
-      .catch(() => {
+      .catch(error => {
         if (notDefined(this.errorFlow)) {
-          logging.getLogger(this.name).error('No error flow chained to action');
+          const errorMsg = `No error flow chained to action from ${req.path}`;
+          log.error(errorMsg);
+          next(error);
           return;
         }
+        log.error(error);
         this.errorFlow.redirect(req, res);
       });
   }

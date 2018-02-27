@@ -71,13 +71,12 @@ describe('flow/action', () => {
       return promise.then(() => expect(nextStub.redirect).calledOnce);
     });
 
-    it('logs if no nextFlow is given', () => {
-      const errorLogger = sinon.stub();
-      logger.getLogger.returns({ error: errorLogger });
+    it('calls next with an error if no nextFlow is given', () => {
+      const next = sinon.stub();
       return new Action(actionStub)
-        .redirect(req, res)
+        .redirect(req, res, next)
         .then(() =>
-          expect(errorLogger).calledWith('No flow chained to action')
+          expect(next).calledWith(sinon.match(/No flow chained to action/))
         );
     });
 
