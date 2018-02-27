@@ -226,6 +226,12 @@ class RefValue extends TransformFieldValue {
       serializer: returnNothing
     });
   }
+
+  get isFilled() {
+    // Refs shouldn't be considered when asking if the form has any values
+    // as these aren't values produced by this step
+    return false;
+  }
 }
 
 const fieldValue = args => new FieldValue(args);
