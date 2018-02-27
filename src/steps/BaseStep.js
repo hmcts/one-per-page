@@ -4,7 +4,7 @@ const callsites = require('callsites');
 const path = require('path');
 const slug = require('slug');
 const { defined, notDefined } = require('../util/checks');
-const logging = require('@log4js-node/log4js-api');
+const log = require('../util/logging');
 const { timeout } = require('../util/promises');
 const errorIfNotReady = require('../middleware/errorIfNotReady');
 const { fromNullable } = require('option');
@@ -49,9 +49,8 @@ class BaseStep {
   }
 
   static get path() {
-    const logger = logging.getLogger(this.name);
     if (defined(this.prototype.url)) {
-      logger.warn('Deprecated: define static #path instead of #url');
+      log(this.name).warn('Deprecated: define static #path instead of #url');
       return this.prototype.url;
     }
     const pathSlug = slug(
@@ -91,12 +90,13 @@ class BaseStep {
 
   static bind(app) {
     app.all(this.pathToBind, (req, res, next) => {
-      const instance = req.journey.instance(this);
-      req.currentStep = instance;
-      instance.router.handle(req, res, next);
+      log(this.name).time(`${req.method} ${req.path}`, () => {
+        const instance = req.journey.instance(this);
+        req.currentStep = instance;
+        instance.router.handle(req, res, next);
+      });
     });
-    const logger = logging.getLogger(this.name);
-    logger.info(`${this.name} registered to ${this.pathToBind}`);
+    log('BaseStep').info(`${this.name} registered to ${this.pathToBind}`);
   }
 }
 
