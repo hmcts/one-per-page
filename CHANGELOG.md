@@ -1,3 +1,24 @@
+<a name="3.0.0-2"></a>
+# 3.0.0-2 (2018-02-27)
+
+* Add debugging of step instance creation ([0105488](https://github.com/hmcts/one-per-page/commit/0105488))
+* Add logging to BaseStep ([f506cc4](https://github.com/hmcts/one-per-page/commit/f506cc4))
+* Add logging to error pages ([013eecd](https://github.com/hmcts/one-per-page/commit/013eecd))
+* Ensure refs aren't included in checking if an answer has been given ([c4f307d](https://github.com/hmcts/one-per-page/commit/c4f307d))
+* Ignore webpack built assets in example app ([b68cf0f](https://github.com/hmcts/one-per-page/commit/b68cf0f))
+* Make form capable of retrieving values from a temp storage ([7cea8f2](https://github.com/hmcts/one-per-page/commit/7cea8f2))
+* Omit dist folders from eslint ([f489757](https://github.com/hmcts/one-per-page/commit/f489757))
+* Prevent caching of questions ([8f357a4](https://github.com/hmcts/one-per-page/commit/8f357a4))
+* Provide a way to temporarily store values ([b558a2f](https://github.com/hmcts/one-per-page/commit/b558a2f))
+* Redirect to GET on errors ([0fa6733](https://github.com/hmcts/one-per-page/commit/0fa6733))
+* Release 3.0.0-1 ([b75bfce](https://github.com/hmcts/one-per-page/commit/b75bfce))
+* Remove old field types and underlying classes ([2f384e6](https://github.com/hmcts/one-per-page/commit/2f384e6))
+* Shim over @hmcts/nodejs-logging for logging ([9b3a483](https://github.com/hmcts/one-per-page/commit/9b3a483))
+* Switch action logging to new module ([28c00de](https://github.com/hmcts/one-per-page/commit/28c00de))
+* Switch logging in journey to use new logging module ([e6016b0](https://github.com/hmcts/one-per-page/commit/e6016b0))
+
+
+
 <a name="3.0.0-1"></a>
 # 3.0.0-1 (2018-02-23)
 
