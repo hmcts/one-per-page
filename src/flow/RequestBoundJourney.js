@@ -1,5 +1,6 @@
 const { notDefined, defined, ensureArray } = require('../util/checks');
 const deepmerge = require('deepmerge');
+const log = require('../util/logging')('RequestBoundJourney');
 
 const getName = stepOrName => {
   if (typeof stepOrName === 'string') {
@@ -39,9 +40,11 @@ class RequestBoundJourney {
   instance(Step) {
     const name = getName(Step);
     if (defined(this.instances[name])) {
+      log.debug(`Reusing instance of ${name}`);
       return this.instances[name];
     }
     if (defined(this.steps[name])) {
+      log.debug(`Creating instance of ${name}`);
       this.instances[name] = new this.steps[name](this.req, this.res);
       return this.instances[name];
     }
