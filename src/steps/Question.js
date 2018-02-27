@@ -33,7 +33,7 @@ class Question extends Page {
     this.res.render(this.template, this.locals);
   }
 
-  handler(req, res) {
+  handler(req, res, next) {
     if (req.method === 'GET') {
       this.renderPage();
     } else if (req.method === 'POST') {
@@ -42,7 +42,7 @@ class Question extends Page {
 
       if (this.valid) {
         this.store();
-        this.next().redirect(req, res);
+        this.next().redirect(req, res, next);
       } else {
         this.storeErrors();
         res.redirect(this.path);
