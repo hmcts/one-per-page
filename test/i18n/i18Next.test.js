@@ -1,4 +1,4 @@
-const { expect } = require('../util/chai');
+const { expect, sinon } = require('../util/chai');
 const { i18NextInstance, i18nMiddleware } = require('../../src/i18n/i18Next');
 
 describe('i18n/i18Next', () => {
@@ -30,6 +30,38 @@ describe('i18n/i18Next', () => {
     it('attaches i18Next to req.i18Next', () => {
       return executeMiddleware()
         .then(({ req }) => expect(req.i18Next).to.eql(i18NextInstance));
+    });
+
+    it('attaches availableLangs to req', () => {
+      return executeMiddleware()
+        .then(({ req }) => expect(req.availableLangs).to.be.a('function'));
+    });
+
+    describe('req#availableLangs', () => {
+      it('returns all langs that have content for the current step', () => {
+        const i18Next = {
+          t: sinon.stub(),
+          services: {
+            resourceStore: {
+              // eslint-disable-next-line id-blacklist
+              data: {
+                en: { FooStep: {} },
+                cy: { FooStep: {} }
+              }
+            }
+          }
+        };
+        const currentStep = { name: 'FooStep' };
+        const expected = [
+          { code: 'en', name: 'English' },
+          { code: 'cy', name: 'Welsh' }
+        ];
+        i18Next.t.withArgs('en').returns('English');
+        i18Next.t.withArgs('cy').returns('Welsh');
+
+        return executeMiddleware({ req: { i18Next, currentStep } })
+          .then(({ req }) => expect(req.availableLangs()).to.eql(expected));
+      });
     });
   });
 
