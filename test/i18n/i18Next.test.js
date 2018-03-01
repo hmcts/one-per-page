@@ -9,8 +9,8 @@ describe('i18n/i18Next', () => {
     });
 
     const executeMiddleware = ({
-      req = {},
-      res = {}
+      req = { cookies: {} },
+      res = { cookie: sinon.stub() }
     } = {}) => new Promise((resolve, reject) => {
       const next = error => {
         if (error) {
@@ -23,7 +23,8 @@ describe('i18n/i18Next', () => {
     });
 
     it('does nothing if req.i18Next exists', () => {
-      return executeMiddleware({ req: { i18Next: {} } })
+      const fakeI18Next = { changeLanguage: sinon.stub(), language: 'en' };
+      return executeMiddleware({ req: { i18Next: fakeI18Next } })
         .then(({ req }) => expect(req.i18Next).to.not.eql(i18NextInstance));
     });
 
@@ -37,10 +38,58 @@ describe('i18n/i18Next', () => {
         .then(({ req }) => expect(req.availableLangs).to.be.a('function'));
     });
 
+    it('defaults the current language to english', () => {
+      const req = {
+        i18Next: { changeLanguage: sinon.stub(), language: 'en' },
+        cookies: {}
+      };
+      const res = { cookie: sinon.stub() };
+      return executeMiddleware({ req, res }).then(() => {
+        expect(req.i18Next.changeLanguage).calledWith('en');
+      });
+    });
+
+    it('defaults the current language to english if i18n has no lang', () => {
+      const req = {
+        i18Next: { changeLanguage: sinon.stub() },
+        cookies: {}
+      };
+      const res = { cookie: sinon.stub() };
+      return executeMiddleware({ req, res }).then(() => {
+        expect(req.i18Next.changeLanguage).calledWith('en');
+        expect(res.cookie).calledWith('i18n', 'en');
+      });
+    });
+
+    it('sets the current language if req.param.lng is present', () => {
+      const req = {
+        i18Next: { changeLanguage: sinon.stub(), language: 'en' },
+        cookies: {},
+        query: { lng: 'cy' }
+      };
+      const res = { cookie: sinon.stub() };
+      return executeMiddleware({ req, res }).then(() => {
+        expect(req.i18Next.changeLanguage).calledWith('cy');
+      });
+    });
+
+    it('sets the current language i18n cookie is present', () => {
+      const req = {
+        i18Next: { changeLanguage: sinon.stub(), language: 'en' },
+        cookies: { i18n: 'cy' }
+      };
+      const res = { cookie: sinon.stub() };
+      return executeMiddleware({ req, res }).then(() => {
+        expect(req.i18Next.changeLanguage).calledWith('cy');
+      });
+    });
+
     describe('req#availableLangs', () => {
       it('returns all langs that have content for the current step', () => {
         const i18Next = {
           t: sinon.stub(),
+          changeLanguage: sinon.stub(),
+          language: 'en',
           services: {
             resourceStore: {
               // eslint-disable-next-line id-blacklist

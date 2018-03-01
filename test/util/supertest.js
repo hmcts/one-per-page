@@ -8,6 +8,7 @@ const { expect } = require('../util/chai');
 const { i18nMiddleware } = require('../../src/i18n/i18Next');
 const { defined } = require('../../src/util/checks');
 const { RequestBoundJourney } = require('../../src/flow');
+const cookieParser = require('cookie-parser');
 
 function testApp(views = []) {
   const app = express();
@@ -22,10 +23,7 @@ function testApp(views = []) {
   return app;
 }
 
-const cookie = res => {
-  const setCookie = res.headers['set-cookie'];
-  return (setCookie && setCookie[0]) || undefined;
-};
+const cookies = res => res.headers['set-cookie'] || [];
 
 const _supertest = Symbol('supertest');
 const _app = Symbol('app');
@@ -45,6 +43,7 @@ const supertestInstance = stepDSL => {
   });
 
   app.use(session({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
+  app.use(cookieParser());
   app.use(i18nMiddleware);
 
   app.get('/supertest-check-session', (req, res) => {
@@ -73,10 +72,10 @@ const wrapWithResponseAssertions = supertestObj => {
   };
   supertestObj.session = assertions => {
     return supertestObj.then(res => {
-      const sid = cookie(res);
+      // const sid = cookies(res);
       return supertest(supertestObj.app)
         .get('/supertest-check-session')
-        .set('Cookie', sid)
+        .set('Cookie', cookies(res))
         .expect(200);
     }).then(res => {
       const currentSession = JSON.parse(res.text);
@@ -86,11 +85,11 @@ const wrapWithResponseAssertions = supertestObj => {
   return supertestObj;
 };
 
-const shouldNotSetCookie = name => {
-  return res => Promise.all([
-    expect(Object.keys(res.headers)).to.not.include('set-cookie'),
-    expect(res.headers['set-cookie']).to.not.include.match(name)
-  ]);
+const shouldNotSetCookie = name => res => {
+  if (typeof res.headers['set-cookie'] !== 'undefined') {
+    return expect(res.headers['set-cookie']).to.not.include.match(name);
+  }
+  return expect(Object.keys(res.headers)).to.not.include('set-cookie');
 };
 
 const shouldSetCookie = name => {

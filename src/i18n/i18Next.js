@@ -1,5 +1,6 @@
 const i18Next = require('i18next');
 const { defined } = require('../util/checks');
+const defaultIfUndefined = require('../util/defaultIfUndefined');
 
 const i18NextInstance = i18Next.init({ fallbackLng: 'en' });
 
@@ -19,6 +20,20 @@ const i18nMiddleware = (req, res, next) => {
           return { code: lang, name: req.i18Next.t(lang) };
         });
     };
+  }
+
+  if (defined(req.query) && defined(req.query.lng)) {
+    req.i18Next.changeLanguage(req.query.lng);
+  } else if (defined(req.cookies) && defined(req.cookies.i18n)) {
+    req.i18Next.changeLanguage(req.cookies.i18n);
+  } else {
+    req.i18Next.changeLanguage('en');
+  }
+
+  res.cookie('i18n', defaultIfUndefined(req.i18Next.language, 'en'));
+
+  if (!defined(req.currentLang)) {
+    req.currentLang = () => defaultIfUndefined(req.i18Next.language, 'en');
   }
 
   next();

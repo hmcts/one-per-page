@@ -6,6 +6,7 @@ const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { defined } = require('../util/checks');
 const RequestBoundJourney = require('./RequestBoundJourney');
 const log = require('../util/logging')('journey');
+const cookieParser = require('cookie-parser');
 
 const parseUrl = baseUrl => {
   if (typeof baseUrl === 'undefined') {
@@ -65,6 +66,7 @@ const journey = (app, userOpts) => {
     next();
   };
 
+  app.use(cookieParser());
   app.use(setupMiddleware);
   app.use(opts.session);
   app.use(i18nMiddleware);
