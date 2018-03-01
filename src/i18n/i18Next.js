@@ -9,16 +9,22 @@ const i18nMiddleware = (req, res, next) => {
     req.i18Next = i18NextInstance;
   }
 
-  if (!defined(req.availableLangs)) {
-    req.availableLangs = () => {
-      const ns = req.currentStep.name;
-      const allLangs = Object.keys(req.i18Next.services.resourceStore.data);
+  if (!defined(req.i18n)) {
+    req.i18n = {
+      t: i18NextInstance.t.bind(i18NextInstance),
+      get availableLanguages() {
+        const ns = req.currentStep.name;
+        const allLangs = Object.keys(req.i18Next.services.resourceStore.data);
 
-      return allLangs
-        .filter(lang => ns in req.i18Next.services.resourceStore.data[lang])
-        .map(lang => {
-          return { code: lang, name: req.i18Next.t(lang) };
-        });
+        return allLangs
+          .filter(lang => ns in req.i18Next.services.resourceStore.data[lang])
+          .map(lang => {
+            return { code: lang, name: req.i18Next.t(lang) };
+          });
+      },
+      get currentLanguage() {
+        return defaultIfUndefined(req.i18Next.language, 'en');
+      }
     };
   }
 
@@ -31,10 +37,6 @@ const i18nMiddleware = (req, res, next) => {
   }
 
   res.cookie('i18n', defaultIfUndefined(req.i18Next.language, 'en'));
-
-  if (!defined(req.currentLang)) {
-    req.currentLang = () => defaultIfUndefined(req.i18Next.language, 'en');
-  }
 
   next();
 };

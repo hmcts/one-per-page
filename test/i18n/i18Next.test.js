@@ -33,9 +33,11 @@ describe('i18n/i18Next', () => {
         .then(({ req }) => expect(req.i18Next).to.eql(i18NextInstance));
     });
 
-    it('attaches availableLangs to req', () => {
-      return executeMiddleware()
-        .then(({ req }) => expect(req.availableLangs).to.be.a('function'));
+    it('attaches i18n to req', () => {
+      return executeMiddleware().then(({ req }) => {
+        expect(req.i18n).to.be.an('object');
+        expect(req.i18n.t).to.be.a('function');
+      });
     });
 
     it('defaults the current language to english', () => {
@@ -84,7 +86,7 @@ describe('i18n/i18Next', () => {
       });
     });
 
-    describe('req#availableLangs', () => {
+    describe('req.i18n.availableLanguages', () => {
       it('returns all langs that have content for the current step', () => {
         const i18Next = {
           t: sinon.stub(),
@@ -109,7 +111,9 @@ describe('i18n/i18Next', () => {
         i18Next.t.withArgs('cy').returns('Welsh');
 
         return executeMiddleware({ req: { i18Next, currentStep } })
-          .then(({ req }) => expect(req.availableLangs()).to.eql(expected));
+          .then(({ req }) =>
+            expect(req.i18n.availableLanguages).to.eql(expected)
+          );
       });
     });
   });
