@@ -66,12 +66,8 @@ class Page extends BaseStep {
       }, {});
   }
 
-  get availableLangs() {
-    return this.req.availableLangs();
-  }
-
-  get currentLang() {
-    return this.req.currentLang();
+  get i18n() {
+    return this.req.i18n;
   }
 
   handler(req, res) {
