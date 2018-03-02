@@ -59,7 +59,7 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
     "docs": "tech-docs --use-http --watch",
-    "heroku-postbuild": "yarn add @hmcts/tech-docs",
+    "heroku-postbuild": "yarn global add @hmcts/tech-docs",
     "lint": "eslint .",
     "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha --exit 'test/**/*.test.js'"
   },
