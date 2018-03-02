@@ -107,6 +107,41 @@ key/value pairs:
 }
 ```
 
+#### Switching languages in your pages
+
+You can add a language switcher to your pages to allow the user to choose which
+language to view the page in.
+
+The [look-and-feel] package provides a handy macro for switching languages:
+
+![Example of the language switcher](/docs/images/lang-switch.png)
+
+To use this switcher you can import `languageSwitch` from [look-and-feel]:
+
+_MyPage.template.html_
+```djangohtml
+{% extends "look-and-feel/layouts/two_thirds.html" %}
+{% from "look-and-feel/components/i18n.njk" import languageSwitch %}
+
+{% block breadcrumbs %}
+{{ languageSwitch(i18n.availableLanguages, i18n.currentLanguage) }}
+{% endblock %}
+```
+
+And add the following import to your sass file to ensure you get the correct
+styling:
+
+_main.scss_
+```sass
+@import 'look-and-feel/language-switch';
+```
+
+This switcher presents a link for each language that you have made available for
+that particular page.
+
+> The `question.html`, `check_your_answers.html` and `add_another.html` templates
+> provide this language switcher by default
+
 ### Template locals
 
 Properties defined on a Page are automatically exposed to the template.
@@ -188,5 +223,6 @@ class MyPage extends Page {
 
 [BaseStep]: /docs/steps/BaseStep
 [i18Next]: https://www.i18next.com/
+[look-and-feel]: https://github.com/hmcts/look-and-feel
 [IETF language tag]: https://en.wikipedia.org/wiki/IETF_language_tag
 [resolveTemplate]: /docs/middleware/resolveTemplate
