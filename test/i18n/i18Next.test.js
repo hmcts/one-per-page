@@ -116,6 +116,35 @@ describe('i18n/i18Next', () => {
           );
       });
     });
+
+    describe('req.i18n.currentLanguage', () => {
+      it('returns the language currently used by i18Next', () => {
+        const i18Next = {
+          t: sinon.stub(),
+          changeLanguage: sinon.stub(),
+          language: 'cy'
+        };
+        const currentStep = { name: 'FooStep' };
+
+        return executeMiddleware({ req: { i18Next, currentStep } })
+          .then(({ req }) => {
+            expect(req.i18n.currentLanguage).to.eql('cy');
+          });
+      });
+
+      it('defaults to english if no i18Next has no chosen language', () => {
+        const i18Next = {
+          t: sinon.stub(),
+          changeLanguage: sinon.stub()
+        };
+        const currentStep = { name: 'FooStep' };
+
+        return executeMiddleware({ req: { i18Next, currentStep } })
+          .then(({ req }) => {
+            expect(req.i18n.currentLanguage).to.eql('en');
+          });
+      });
+    });
   });
 
 
