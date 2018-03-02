@@ -60,7 +60,7 @@
     "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
     "docs": "tech-docs --use-http --watch",
     "serve-docs": "tech-docs -p $PORT -d $URL",
-    "heroku-postbuild": "npm install --save @hmcts/tech-docs",
+    "heroku-postbuild": "npm install --global @hmcts/tech-docs",
     "lint": "eslint .",
     "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha --exit 'test/**/*.test.js'"
   },
