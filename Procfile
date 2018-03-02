@@ -1,1 +1,1 @@
-web: tech-docs -p $PORT -d $URL
+web: yarn serve-docs
