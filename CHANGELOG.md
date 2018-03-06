@@ -1,3 +1,10 @@
+<a name="3.1.0"></a>
+# 3.1.0 (2018-03-06)
+
+* Only load resource bundles if they haven't been loaded before ([0872db9](https://github.com/hmcts/one-per-page/commit/0872db9))
+
+
+
 <a name="3.0.0"></a>
 # 3.0.0 (2018-03-06)
 
