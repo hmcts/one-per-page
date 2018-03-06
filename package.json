@@ -2,7 +2,7 @@
   "name": "@hmcts/one-per-page",
   "description": "One question per page apps made easy",
   "homepage": "https://github.com/hmcts/one-per-page#readme",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "main": "./src/main.js",
   "repository": {
     "type": "git",
@@ -59,9 +59,9 @@
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | tee coverage.lcov | codacy-coverage",
     "docs": "tech-docs --use-http --watch",
-    "serve-docs": "tech-docs -p $PORT -d $URL",
     "heroku-postbuild": "yarn remove @hmcts/tech-docs; yarn add @hmcts/tech-docs",
     "lint": "eslint .",
+    "serve-docs": "tech-docs -p $PORT -d $URL",
     "test": "NODE_PATH=. NODE_ENV=testing nyc --reporter=text-summary mocha --exit 'test/**/*.test.js'"
   },
   "license": "MIT",
