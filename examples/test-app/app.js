@@ -20,6 +20,7 @@ const ExitDate = require('./steps/exits/ExitDate.step');
 const DateOfMarriage = require('./steps/DateOfMarriage.step');
 const ExampleServerError = require('./steps/errors/ExampleServerError.step');
 const DatesYouCantAttend = require('./steps/DatesYouCantAttend.step');
+const InfoPage = require('./steps/InfoPage.step');
 
 const app = express();
 
@@ -64,7 +65,8 @@ journey(app, {
     ExampleServerError,
     ExitDate,
     DateOfMarriage,
-    DatesYouCantAttend
+    DatesYouCantAttend,
+    InfoPage
   ],
   errorPages: {},
   session: {

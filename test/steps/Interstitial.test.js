@@ -1,6 +1,6 @@
 const Interstitial = require('../../src/steps/Interstitial');
 const { testStep } = require('../util/supertest');
-const { goTo } = require('../../src/flow');
+const { redirectTo } = require('../../src/flow');
 
 describe.only('Interstitial', () => {
   const MyInterstitial = class extends Interstitial {
@@ -8,7 +8,7 @@ describe.only('Interstitial', () => {
       return 'interstitial_views/Interstitial';
     }
     next() {
-      return goTo({ path: '/next-step' });
+      return redirectTo({ path: '/next-step' });
     }
   };
 
