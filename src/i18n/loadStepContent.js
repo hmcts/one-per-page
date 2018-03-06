@@ -34,7 +34,7 @@ const loadFileContents = (filePath, i18Next) => {
     bundles.forEach(({ lang, translations }) => {
       const deep = true;
       const overwrite = true;
-      i18Next.addResourceBundle(
+      i18Next.addBundleIfModified(
         lang,
         'translation',
         translations,
@@ -56,7 +56,7 @@ const loadStepContent = (step, i18Next) => {
     bundles.forEach(({ lang, translations }) => {
       const deep = true;
       const overwrite = true;
-      i18Next.addResourceBundle(
+      i18Next.addBundleIfModified(
         lang,
         step.name,
         translations,

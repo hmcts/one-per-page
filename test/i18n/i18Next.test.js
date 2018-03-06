@@ -155,5 +155,34 @@ describe('i18n/i18Next', () => {
       expect(i18NextInstance)
         .to.have.property('addResourceBundle').that.is.a('function');
     });
+
+    describe('#addBundleIfModified', () => {
+      beforeEach(() => {
+        sinon.spy(i18NextInstance, 'addResourceBundle');
+      });
+
+      afterEach(() => {
+        i18NextInstance.addResourceBundle.restore();
+      });
+
+      it('loads the resource bundle if not recognised', () => {
+        i18NextInstance.contentBundles = {};
+        const args = ['en', 'Step', { my: 'translations' }, true, true];
+
+        i18NextInstance.addBundleIfModified(...args);
+
+        expect(i18NextInstance.addResourceBundle).calledWith(...args);
+      });
+
+      it('wont load the resource bundle already loaded', () => {
+        i18NextInstance.contentBundles = {};
+        const args = ['en', 'Step', { my: 'translations' }, true, true];
+
+        i18NextInstance.addBundleIfModified(...args);
+        i18NextInstance.addBundleIfModified(...args);
+
+        expect(i18NextInstance.addResourceBundle).calledOnce;
+      });
+    });
   });
 });

@@ -1,8 +1,41 @@
 const i18Next = require('i18next');
 const { defined } = require('../util/checks');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
+const log = require('../util/logging')('i18Next');
+const crypto = require('crypto');
 
 const i18NextInstance = i18Next.init({ fallbackLng: 'en' });
+i18NextInstance.contentBundles = {};
+
+const getHash = (namespace, lang) => {
+  const key = `${namespace}.${lang}`;
+  if (defined(i18NextInstance.contentBundles[key])) {
+    return i18NextInstance.contentBundles[key];
+  }
+  return '';
+};
+const saveHash = (namespace, lang, hash) => {
+  i18NextInstance.contentBundles[`${namespace}.${lang}`] = hash;
+};
+
+i18NextInstance.addBundleIfModified = (
+  lang, namespace, translations, deep, overwrite
+) => {
+  const hash = crypto.createHash('sha1')
+    .update(JSON.stringify(translations))
+    .digest('base64');
+
+  const existingHash = getHash(namespace, lang);
+  if (hash === existingHash) {
+    log.debug(`Skipping ${namespace}.${lang} already added. Hash ${hash}`);
+    return;
+  }
+  saveHash(namespace, lang, hash);
+  log.debug(`Adding translations for ${namespace}.${lang}. Hash ${hash}`);
+  i18NextInstance.addResourceBundle(
+    lang, namespace, translations, deep, overwrite
+  );
+};
 
 const i18nMiddleware = (req, res, next) => {
   if (!defined(req.i18Next)) {
