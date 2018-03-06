@@ -1,3 +1,36 @@
+<a name="3.0.0"></a>
+# 3.0.0 (2018-03-06)
+
+* Add a function to list the available languages ([ff32db7](https://github.com/hmcts/one-per-page/commit/ff32db7))
+* Add debugging of step instance creation ([0105488](https://github.com/hmcts/one-per-page/commit/0105488))
+* Add documentation for the language switcher ([dd8b775](https://github.com/hmcts/one-per-page/commit/dd8b775))
+* Add logging to BaseStep ([f506cc4](https://github.com/hmcts/one-per-page/commit/f506cc4))
+* Add logging to error pages ([013eecd](https://github.com/hmcts/one-per-page/commit/013eecd))
+* Ensure refs aren't included in checking if an answer has been given ([c4f307d](https://github.com/hmcts/one-per-page/commit/c4f307d))
+* Fix heroku deployments ([94bf3d6](https://github.com/hmcts/one-per-page/commit/94bf3d6))
+* Fix heroku deployments ([e434590](https://github.com/hmcts/one-per-page/commit/e434590))
+* Fix heroku deployments ([520243c](https://github.com/hmcts/one-per-page/commit/520243c))
+* Fix heroku deployments ([4a0808b](https://github.com/hmcts/one-per-page/commit/4a0808b))
+* Fix heroku deployments ([e143c28](https://github.com/hmcts/one-per-page/commit/e143c28))
+* Ignore webpack built assets in example app ([b68cf0f](https://github.com/hmcts/one-per-page/commit/b68cf0f))
+* Include the language switcher styles in example app ([4f3dde7](https://github.com/hmcts/one-per-page/commit/4f3dde7))
+* Increase coverage over i18Next.js ([cbbe369](https://github.com/hmcts/one-per-page/commit/cbbe369))
+* Make form capable of retrieving values from a temp storage ([7cea8f2](https://github.com/hmcts/one-per-page/commit/7cea8f2))
+* Move currentLang / availableLangs to req.i18n ([fb2c82a](https://github.com/hmcts/one-per-page/commit/fb2c82a))
+* Omit dist folders from eslint ([f489757](https://github.com/hmcts/one-per-page/commit/f489757))
+* Prevent caching of questions ([8f357a4](https://github.com/hmcts/one-per-page/commit/8f357a4))
+* Provide a way to temporarily store values ([b558a2f](https://github.com/hmcts/one-per-page/commit/b558a2f))
+* Redirect to GET on errors ([0fa6733](https://github.com/hmcts/one-per-page/commit/0fa6733))
+* Release 2.6.0 ([302e691](https://github.com/hmcts/one-per-page/commit/302e691))
+* Remove old field types and underlying classes ([2f384e6](https://github.com/hmcts/one-per-page/commit/2f384e6))
+* Shim over @hmcts/nodejs-logging for logging ([9b3a483](https://github.com/hmcts/one-per-page/commit/9b3a483))
+* Switch action logging to new module ([28c00de](https://github.com/hmcts/one-per-page/commit/28c00de))
+* Switch language based on url params ([8e19bae](https://github.com/hmcts/one-per-page/commit/8e19bae))
+* Switch logging in journey to use new logging module ([e6016b0](https://github.com/hmcts/one-per-page/commit/e6016b0))
+* Update tech-docs and fix issue where it couldn't see css-loader in heroku ([b01e78c](https://github.com/hmcts/one-per-page/commit/b01e78c))
+
+
+
 <a name="2.6.0"></a>
 # 2.6.0 (2018-03-06)
 
