@@ -1,3 +1,11 @@
+<a name="3.2.0"></a>
+# 3.2.0 (2018-03-07)
+
+* Add new SmartRedirector that uses the treewalking to skip complete steps ([9b21216](https://github.com/hmcts/one-per-page/commit/9b21216))
+* Switch goTo to use the SmartRedirector by default ([41c7dbc](https://github.com/hmcts/one-per-page/commit/41c7dbc))
+
+
+
 <a name="3.1.2"></a>
 ## 3.1.2 (2018-03-07)
 
