@@ -1,3 +1,10 @@
+<a name="3.1.1-0"></a>
+## 3.1.1-0 (2018-03-07)
+
+* Fix our usage of nodejs-logging ([9ed8d14](https://github.com/hmcts/one-per-page/commit/9ed8d14))
+
+
+
 <a name="3.1.0"></a>
 # 3.1.0 (2018-03-06)
 
