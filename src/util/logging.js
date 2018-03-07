@@ -9,10 +9,10 @@ const app = 'one-per-page';
 const getLoggingLib = () => {
   try {
     // eslint-disable-next-line global-require
-    const loggingLib = require('@hmcts/nodejs-logging');
+    const { Logger } = require('@hmcts/nodejs-logging');
 
     debug(`${app}.logging`)('Using @hmcts/nodejs-logging for logging');
-    return option.some(loggingLib);
+    return option.some(Logger);
   } catch (moduleMissing) {
     debug(`${app}.logging`)('@hmcts/nodejs-loging not found');
     debug(`${app}.logging`)('Using console.log for logging');
