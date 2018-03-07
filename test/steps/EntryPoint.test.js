@@ -1,7 +1,7 @@
 const { testStep } = require('../util/supertest');
 const { expect } = require('../util/chai');
 const EntryPoint = require('../../src/steps/EntryPoint');
-const { goTo } = require('../../src/flow');
+const { redirectTo } = require('../../src/flow');
 
 describe('steps/EntryPoint', () => {
   it('expects #next to be implemented', () => {
@@ -15,7 +15,7 @@ describe('steps/EntryPoint', () => {
     const fakeStep = { path: '/bar' };
     const redirect = class MyEntryPoint extends EntryPoint {
       next() {
-        return goTo(fakeStep);
+        return redirectTo(fakeStep);
       }
     };
 
@@ -48,7 +48,7 @@ describe('steps/EntryPoint', () => {
       const fakeStep = { path: '/bar' };
       const redirect = class extends EntryPoint {
         next() {
-          return goTo(fakeStep);
+          return redirectTo(fakeStep);
         }
       };
       return testStep(redirect)

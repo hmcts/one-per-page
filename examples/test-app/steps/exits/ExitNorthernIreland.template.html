@@ -1,12 +1,7 @@
+{% extends "question-globals.njk" %}
 {% extends "look-and-feel/layouts/two_thirds.html" %}
 {% from "look-and-feel/components/header.njk" import header %}
-
-{% block head -%}
-<link href="{{ asset_path }}main.css" media="screen" rel="stylesheet" />
-{% endblock %}
-
-{% set phase="ALPHA" %}
-{% set feedbackLink="https://github.com/hmcts/one-per-page/issues/new" %}
+{% from "look-and-feel/components/phase_banner.njk" import phaseBanner %}
 
 {% block breadcrumbs %}
 {{ phaseBanner(phase, feedbackLink) }}
@@ -15,5 +10,9 @@
 {% block two_thirds %}
 
 {{ header(content.title) }}
+
+<p>This is an example exit page. Your session has been removed.</p>
+
+<p>If you click back you'll be redirected back to the start page.</p>
 
 {% endblock %}
