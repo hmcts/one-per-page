@@ -1,6 +1,6 @@
-const { Page } = require('@hmcts/one-per-page');
+const { ExitPoint } = require('@hmcts/one-per-page');
 
-class ExitNorthernIreland extends Page {
+class ExitNorthernIreland extends ExitPoint {
   static get path() {
     return '/exit/northern-ireland';
   }

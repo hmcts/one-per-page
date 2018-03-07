@@ -7,7 +7,7 @@ const {
   METHOD_NOT_ALLOWED
 } = require('http-status-codes');
 const { text } = require('../../src/forms');
-const { goTo } = require('../../src/flow');
+const { redirectTo } = require('../../src/flow');
 
 describe('steps/AddAnother', () => {
   class AddAText extends AddAnother {
@@ -19,7 +19,7 @@ describe('steps/AddAnother', () => {
     }
 
     next() {
-      return goTo({ path: '/next-step' });
+      return redirectTo({ path: '/next-step' });
     }
   }
 

@@ -1,7 +1,7 @@
 const { testStep } = require('../util/supertest');
 const { expect } = require('../util/chai');
 const Redirect = require('../../src/steps/Redirect');
-const { goTo } = require('../../src/flow');
+const { redirectTo } = require('../../src/flow');
 
 describe('steps/Redirect', () => {
   it('expects #next to be implemented', () => {
@@ -16,7 +16,7 @@ describe('steps/Redirect', () => {
       const fakeStep = { path: '/bar' };
       const redirect = class extends Redirect {
         next() {
-          return goTo(fakeStep);
+          return redirectTo(fakeStep);
         }
       };
       return testStep(redirect)
@@ -31,7 +31,7 @@ describe('steps/Redirect', () => {
       const fakeStep = { path: '/bar' };
       const redirect = class extends Redirect {
         next() {
-          return goTo(fakeStep);
+          return redirectTo(fakeStep);
         }
       };
       return testStep(redirect)
