@@ -1,3 +1,10 @@
+<a name="3.1.2"></a>
+## 3.1.2 (2018-03-07)
+
+* Ensure forms filled from temp values are validated on GET requests ([093509f](https://github.com/hmcts/one-per-page/commit/093509f))
+
+
+
 <a name="3.1.1"></a>
 ## 3.1.1 (2018-03-07)
 
