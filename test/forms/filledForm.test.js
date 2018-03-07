@@ -184,5 +184,28 @@ describe('forms/filledForm', () => {
         expect(f.valid).to.eql(false);
       });
     });
+
+    describe('#isFilled', () => {
+      it('returns true if any field has values', () => {
+        const filled = text.parse('foo', { foo: 'A Value' });
+        const f = new FilledForm({ foo: filled });
+
+        expect(f.isFilled).to.be.true;
+      });
+
+      it('returns true if filled from temp', () => {
+        const notFilled = text.parse('foo', {});
+        const f = new FilledForm({ foo: notFilled }, true);
+
+        expect(f.isFilled).to.be.true;
+      });
+
+      it('returns false otherwise', () => {
+        const notFilled = text.parse('foo', {});
+        const f = new FilledForm({ foo: notFilled });
+
+        expect(f.isFilled).to.be.false;
+      });
+    });
   });
 });
