@@ -6,10 +6,12 @@ const {
 const option = require('option');
 
 const fieldsProp = Symbol('fields');
+const filled = Symbol('filledFromTemp');
 
 class FilledForm {
-  constructor(fieldValues = {}) {
+  constructor(fieldValues = {}, filledFromTemp = false) {
     this[fieldsProp] = fieldValues;
+    this[filled] = filledFromTemp;
 
     Object.entries(this.fields).forEach(([key, field]) => {
       this[key] = field;
@@ -78,7 +80,7 @@ class FilledForm {
   }
 
   get isFilled() {
-    return Object.values(this.fields)
+    return this[filled] || Object.values(this.fields)
       .some(field => field.isFilled);
   }
 }
