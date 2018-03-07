@@ -20,6 +20,11 @@ class TreeWalker {
     return this.trampoline(this, step => step);
   }
 
+  last() {
+    const steps = this.walk();
+    return steps[steps.length - 1];
+  }
+
   // Trampolines are a way of doing recursion when your language doesn't support
   // tail call optimisation. Standard recursion would lead to the stack growing
   // to overflow.
