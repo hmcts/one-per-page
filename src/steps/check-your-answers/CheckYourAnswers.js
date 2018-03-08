@@ -36,6 +36,7 @@ class CheckYourAnswers extends Question {
     Promise
       .all(this.journey.answers.map(ans => ans.render(req.app)))
       .then(answers => {
+        this._answers = answers;
         this._sections = [
           ...this.sections().map(s => s.filterAnswers(answers)),
           section.default.filterAnswers(answers)
@@ -55,7 +56,8 @@ class CheckYourAnswers extends Question {
   }
 
   get incomplete() {
-    return this._sections.some(s => s.incomplete);
+    const hasntReachedCYA = !this.journey.completeUpTo(this);
+    return hasntReachedCYA || this._sections.some(s => s.incomplete);
   }
 
   get complete() {
@@ -64,8 +66,7 @@ class CheckYourAnswers extends Question {
   }
 
   get continueUrl() {
-    const nextSection = this._sections.find(s => s.incomplete);
-    return defined(nextSection) ? nextSection.continueUrl : '';
+    return this.journey.continueUrl();
   }
 }
 

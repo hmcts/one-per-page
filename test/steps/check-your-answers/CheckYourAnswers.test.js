@@ -1,4 +1,4 @@
-const { expect } = require('../../util/chai');
+const { expect, sinon } = require('../../util/chai');
 const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
 const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { section } = require('../../../src/steps/check-your-answers/section');
@@ -186,18 +186,29 @@ describe('steps/CheckYourAnswers', () => {
   });
 
   describe('#complete', () => {
-    const req = { journey: {} };
+    const req = { journey: { completeUpTo: sinon.stub() } };
     const res = {};
     const cya = new CheckYourAnswers(req, res);
     const completeSection = { incomplete: false };
     const incompleteSection = { incomplete: true };
+
+    beforeEach(() => {
+      req.journey.completeUpTo.reset();
+    });
 
     it('returns false if no sections', () => {
       // At least 1 section is expected in a journey
       expect(cya.complete).to.be.false;
     });
 
+    it('returns false if the journey is not complete', () => {
+      req.journey.completeUpTo.returns(false);
+      cya._sections = [completeSection];
+      expect(cya.complete).to.be.false;
+    });
+
     it('returns true if all sections are complete', () => {
+      req.journey.completeUpTo.returns(true);
       cya._sections = [completeSection];
       expect(cya.complete).to.be.true;
     });
@@ -209,47 +220,49 @@ describe('steps/CheckYourAnswers', () => {
   });
 
   describe('#incomplete', () => {
-    const req = { journey: {} };
+    const req = { journey: { completeUpTo: sinon.stub() } };
     const res = {};
     const cya = new CheckYourAnswers(req, res);
     const incompleteSection = { incomplete: true };
     const completeSection = { incomplete: false };
 
+    beforeEach(() => {
+      req.journey.completeUpTo.reset();
+    });
+
     it('returns false if no sections', () => {
+      req.journey.completeUpTo.returns(true);
       expect(cya.incomplete).to.be.false;
     });
 
     it('returns true if any section is incomplete', () => {
+      req.journey.completeUpTo.returns(true);
       cya._sections = [incompleteSection, completeSection];
       expect(cya.incomplete).to.be.true;
     });
 
+    it('returns true if the journey is not complete', () => {
+      req.journey.completeUpTo.returns(false);
+      cya._sections = [completeSection];
+      expect(cya.incomplete).to.be.true;
+    });
+
     it('returns false if all sections are complete', () => {
+      req.journey.completeUpTo.returns(true);
       cya._sections = [completeSection];
       expect(cya.incomplete).to.be.false;
     });
   });
 
   describe('#continueUrl', () => {
-    const req = { journey: {} };
-    const res = {};
-    const cya = new CheckYourAnswers(req, res);
-    const incompleteSection = { incomplete: true, continueUrl: '/incomplete' };
-    const completeSection = { incomplete: false, continueUrl: '/complete' };
+    it('calls req.journey.continueUrl', () => {
+      const req = { journey: { continueUrl: sinon.stub() } };
+      const res = {};
+      const cya = new CheckYourAnswers(req, res);
+      req.journey.continueUrl.returns('/foo');
 
-    it('returns the "" if no sections', () => {
-      cya._sections = [];
-      expect(cya.continueUrl).to.eql('');
-    });
-
-    it('returns the "" if all sections are complete', () => {
-      cya._sections = [completeSection];
-      expect(cya.continueUrl).to.eql('');
-    });
-
-    it('returns the continueUrl of the first incomplete section', () => {
-      cya._sections = [completeSection, incompleteSection];
-      expect(cya.continueUrl).to.eql(incompleteSection.continueUrl);
+      expect(cya.continueUrl).to.eql('/foo');
+      expect(req.journey.continueUrl).calledOnce;
     });
   });
 

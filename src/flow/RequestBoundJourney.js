@@ -57,6 +57,23 @@ class RequestBoundJourney {
     next();
   }
 
+  completeUpTo(step) {
+    if (!defined(this.visitedSteps)) {
+      throw new Error('Must collectSteps before using journey.completeUpTo');
+    }
+    return defined(this.visitedSteps.find(v => v.name === step.name));
+  }
+
+  continueUrl() {
+    if (!defined(this.visitedSteps)) {
+      throw new Error('Must collectSteps before using journey.continueUrl');
+    }
+    if (this.visitedSteps.length > 0) {
+      return this.visitedSteps[this.visitedSteps.length - 1].path;
+    }
+    return this.steps[this.entryPoint].path;
+  }
+
   get entryPoint() {
     if (defined(this.req.session.entryPoint)) {
       return this.req.session.entryPoint;
