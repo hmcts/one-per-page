@@ -1,6 +1,5 @@
 const Question = require('../Question');
 const { section } = require('./section');
-const { defined } = require('../../../src/util/checks');
 const { validateThenStopHere } = require('../../flow');
 const { form, bool } = require('../../forms');
 const Joi = require('joi');
