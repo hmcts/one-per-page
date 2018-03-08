@@ -2,7 +2,7 @@ const Interstitial = require('../../src/steps/Interstitial');
 const { testStep } = require('../util/supertest');
 const { redirectTo } = require('../../src/flow');
 
-describe.only('Interstitial', () => {
+describe('Interstitial', () => {
   const MyInterstitial = class extends Interstitial {
     get template() {
       return 'interstitial_views/Interstitial';

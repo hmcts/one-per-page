@@ -1,6 +1,6 @@
 const Page = require('./Page');
 const requireSession = require('./../session/requireSession');
-const { continueToNext } = require('../flow/treeWalker');
+const { stopHereIfNextIsInvalid } = require('../flow/treeWalker');
 
 class Interstitial extends Page {
   get middleware() {
@@ -20,7 +20,7 @@ class Interstitial extends Page {
   }
 
   get flowControl() {
-    return continueToNext(this);
+    return stopHereIfNextIsInvalid(this);
   }
 }
 

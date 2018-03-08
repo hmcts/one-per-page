@@ -98,9 +98,30 @@ const continueToNext = step =>
     return next.flowControl;
   });
 
+const stopHereIfNextIsInvalid = step => new TreeWalker(
+  step,
+  (block, results) => {
+    const next = step.journey.instance(step.next().step);
+    results.push(block(step));
+    const scopedResults = [];
+
+    const resultsOrWalker = next.flowControl.iterate(block, scopedResults);
+
+    if (Array.isArray(resultsOrWalker)) {
+      return results;
+    }
+    if (resultsOrWalker instanceof TreeWalker) {
+      scopedResults.forEach(result => results.push(result));
+      return resultsOrWalker;
+    }
+    throw new Error(`Expected results or TreeWalker, got ${resultsOrWalker}`);
+  }
+);
+
 module.exports = {
   stopHere,
   validateThenStopHere,
   ifCompleteThenContinue,
-  continueToNext
+  continueToNext,
+  stopHereIfNextIsInvalid
 };
