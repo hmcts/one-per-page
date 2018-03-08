@@ -180,6 +180,52 @@ describe('journey/RequestBoundJourney', () => {
       });
     });
 
+    describe('#completeUpTo', () => {
+      const someStep = { name: 'SomeStep' };
+
+      it("throws if steps haven't been collected yet", () => {
+        const _journey = new RequestBoundJourney(req, res, steps, {});
+        expect(() => _journey.completeUpTo(someStep)).to.throw(
+          /Must collectSteps before using journey.completeUpTo/
+        );
+      });
+
+      it('returns true if the given step exists in the visitedSteps', () => {
+        const _journey = new RequestBoundJourney(req, res, steps, {});
+        _journey.visitedSteps = [someStep];
+        expect(_journey.completeUpTo(someStep)).to.be.true;
+      });
+
+      it('returns false if the given step exists in the visitedSteps', () => {
+        const _journey = new RequestBoundJourney(req, res, steps, {});
+        _journey.visitedSteps = [];
+        expect(_journey.completeUpTo(someStep)).to.be.false;
+      });
+    });
+
+    describe('#continueUrl', () => {
+      const someStep = { name: 'SomeStep', path: '/some-step' };
+
+      it("throws if steps haven't been collected yet", () => {
+        const _journey = new RequestBoundJourney(req, res, steps, {});
+        expect(() => _journey.continueUrl()).to.throw(
+          /Must collectSteps before using journey.continueUrl/
+        );
+      });
+
+      it('returns the path of the last step visited', () => {
+        const _journey = new RequestBoundJourney(req, res, steps, {});
+        _journey.visitedSteps = [someStep];
+        expect(_journey.continueUrl()).to.eql(someStep.path);
+      });
+
+      it('returns the path of the entry point if no visitedSteps', () => {
+        const _journey = new RequestBoundJourney(req, res, steps, {});
+        _journey.visitedSteps = [];
+        expect(_journey.continueUrl()).to.eql(Entry.path);
+      });
+    });
+
     describe('#values', () => {
       it("throws if steps haven't been collected yet", () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
