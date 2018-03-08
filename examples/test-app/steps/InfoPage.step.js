@@ -3,7 +3,7 @@ const { goTo } = require('@hmcts/one-per-page/flow');
 
 class InfoPage extends Interstitial {
   next() {
-    return goTo(this.journey.steps.Name);
+    return goTo(this.journey.steps.Country);
   }
 }
 

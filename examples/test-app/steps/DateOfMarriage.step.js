@@ -29,7 +29,7 @@ class DateOfMarriage extends Question {
 
     return branch(
       goTo(this.journey.steps.ExitDate).if(marriedLessThan1Year),
-      goTo(this.journey.steps.Country)
+      goTo(this.journey.steps.InfoPage)
     );
   }
 
