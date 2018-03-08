@@ -6,7 +6,8 @@ const {
   stopHere,
   ifCompleteThenContinue,
   continueToNext,
-  validateThenStopHere
+  validateThenStopHere,
+  stopHereIfNextIsInvalid
 } = require('../../src/flow');
 const { form, text } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
@@ -292,4 +293,55 @@ describe('flow/flowControl', () => {
       }
     });
   }
+
+  describe('#stopHereIfNextIsInvalid', () => {
+    const nextStep = { flowControl: { iterate: sinon.stub() } };
+    const req = {
+      journey: {
+        instance() {
+          return nextStep;
+        }
+      }
+    };
+    const res = {};
+
+    const step = new class TestStep extends Redirect {
+      get flowControl() {
+        return stopHereIfNextIsInvalid(this);
+      }
+      next() {
+        return { step: '' };
+      }
+    }(req, res);
+    const block = s => s;
+
+    beforeEach(() => {
+      nextStep.flowControl.iterate.reset();
+    });
+
+    it('iterates the next steps treewalker', () => {
+      nextStep.flowControl.iterate.returns([]);
+      step.flowControl.iterate(block, []);
+      expect(nextStep.flowControl.iterate).calledWith(block, []);
+    });
+
+    it('continues the chain if the next step returns a treewalker', () => {
+      const expectedFlowControl = stopHere(nextStep);
+      nextStep.flowControl.iterate.returns(expectedFlowControl);
+      const returnedTreeWalker = step.flowControl.iterate(block, []);
+      expect(returnedTreeWalker).to.eql(expectedFlowControl);
+    });
+
+    it('returns results up to it if the next steps returns results', () => {
+      nextStep.flowControl.iterate.returns([nextStep]);
+      const visitedSteps = step.flowControl.iterate(block, []);
+      expect(visitedSteps).to.eql([step]);
+    });
+
+    it('throws if the next steps flowControl returns something mental', () => {
+      nextStep.flowControl.iterate.returns('A string');
+      const willThrow = () => step.flowControl.iterate(block, []);
+      expect(willThrow).to.throw(/Expected results or TreeWalker/);
+    });
+  });
 });
