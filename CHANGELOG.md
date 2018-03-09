@@ -1,3 +1,10 @@
+<a name="3.3.1"></a>
+## 3.3.1 (2018-03-09)
+
+* Stop suppressing errors from the flowControls, such as infinite loops ([4d58571](https://github.com/hmcts/one-per-page/commit/4d58571))
+
+
+
 <a name="3.3.0"></a>
 # 3.3.0 (2018-03-08)
 
