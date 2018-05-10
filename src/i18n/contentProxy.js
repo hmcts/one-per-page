@@ -20,6 +20,10 @@ const contentProxy = (step, prefix) => {
         return isToString || isInspect;
       };
     }
+    if (name === 'keys') {
+      const content = target.getResourceBundle(target.language, `${step.name}`);
+      return Object.keys(content);
+    }
     const key = `${step.name}:${prefix}`;
     if (toStringKeys.includes(name)) {
       if (target.exists(key)) {
