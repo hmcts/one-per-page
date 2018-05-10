@@ -70,6 +70,11 @@ const wrapWithResponseAssertions = supertestObj => {
       return assertions($);
     });
   };
+  supertestObj.text = assertions => {
+    return supertestObj.then(res => {
+      return assertions(res.text);
+    });
+  };
   supertestObj.session = assertions => {
     return supertestObj.then(res => {
       // const sid = cookies(res);
