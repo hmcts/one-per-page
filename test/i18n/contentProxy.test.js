@@ -13,8 +13,13 @@ describe('i18n/contentProxy', () => {
 
     const t = sinon.stub();
     const exists = sinon.stub();
+    const getResourceBundle = sinon.stub().returns({ key: 'key' });
     const fakeStep = { name: 'FakeStep' };
-    const proxy = new Proxy({ t, exists }, contentProxy(fakeStep));
+    const proxy = new Proxy({
+      t,
+      exists,
+      getResourceBundle
+    }, contentProxy(fakeStep));
 
     beforeEach(() => {
       t.reset();
@@ -93,6 +98,12 @@ describe('i18n/contentProxy', () => {
         // used by nunjucks to determine if the last argument in a macro
         // is a dict of keyword args
         expect(proxy.foo.hasOwnProperty('__keywords')).to.be.false;
+      });
+    });
+
+    describe('#keys (used by one-per-page-test-suite)', () => {
+      it('returns all keys for properties', () => {
+        expect(proxy.foo.keys).to.eql(['key']);
       });
     });
   });
