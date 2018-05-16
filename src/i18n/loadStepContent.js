@@ -76,7 +76,7 @@ const loadStepContent = (step, i18Next) => {
   };
 
   const promises = [
-    glob('common/content.json').then(loadContents),
+    glob('common/*.json').then(loadContents),
     glob(`${step.dirname}/content.json`).then(loadContents),
     glob(`${step.dirname}/content.@(*).json`).then(loadContents),
     glob(`${step.dirname}/${step.name}.json`).then(loadContents),
