@@ -15,10 +15,10 @@ const redisOrInMemory = (options = {}) => {
 
 const sessionOptions = userOpts => {
   const userCookie = userOpts.cookie || {};
-  const cookie = Object.assign({}, userCookie, {
+  const cookie = Object.assign({}, {
     secure: defaultIfUndefined(userCookie.secure, !isTest),
     expires: defaultIfUndefined(userCookie.expires, false)
-  });
+  }, userCookie);
 
   return {
     store: userOpts.store || redisOrInMemory(userOpts),
