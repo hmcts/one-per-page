@@ -1,20 +1,20 @@
 sudo: required
 
 services:
-  - docker
+- docker
 
 script:
-  - make build test
+- make build test
 
 after_success:
-  - make coverage
-  - bash <(curl -s https://codecov.io/bash)
+- make coverage
+- bash <(curl -s https://codecov.io/bash)
 
 deploy:
   provider: npm
-  email: michael@allen.digital
+  email: jenkins-reform@hmcts.net
   api_key:
-    secure: cp3aRJW5ht/jVbz/hBXlmd1r0g6B1k+crEIle8KVavh+4Qd0Y6SSe85HJvHmeJmjQoV/yC0l9klTkorSWx+Jg9CIwkRev/jrchKvGjWhn3nsfrL73L5YKCAPaYAQnQSnydpnOGkzjoWS/7Px0Lm3Dl4TUxwcKsI/IcHpzCj56Vam8iVuH/l8EmO678BJcgCcbsionJOYttOmKMSaUdXYLrnLhX2Valu5ZPAP2/wdeRT0L3D3NZJHiReXJ1DVHvJkpSjs5pD4tE5MzRDDW/8Z12bPfR3AbYEYC1Ri8lhNom3YWMzIumlsO8LElllcVmxkxVHQkWIIY7gOUq/25gyx534FJ8S297LYhqWh7vULxyh+/GQEe3oHYUUFod3GOQRAqytwSIFnL6gQMjJL2bGrt1firxZhEhj3oTPm+FFSe6jzXQkbRBUNKYXofra2ONKueA2wwVaVoT2XKtG+T84SlkrcokHGEcycZgP9NSJfc7+hwWdgPkC1p/e9g/omhw2j+qmEL4p35D4/Fr5CzUVuvGmvjmXEznjxxb1jTYp7pzMIgcWXoYQeNba1xjS4Zg4JgpIxpNsxKBuHySQmMhNia3KdZG/xjBPCRnc1+eMAfAF7X586rzJIcZVHEmSMxceqy7OWQrbdw4xCR++UPhvsucHUlEoy9H5TqSHx05FnUQA=
+    secure: Zy0Abiz1RVPZS5giHvkgocvrIRrATEtvsrOuC0OJ4qcnvB0HRrIopVRvMEzcxld3JnHjuBpg9IWKRl35ByHQ+LbYt6ztvpL+JaVpMvUnoX0jG0TacHUDQtsxeNVuCY7rNUFlrytvS/t9CBSrPMz1aPjtYkGqcxE8Cy7YtuEF4Q8FSD+mW5p9TOVK3OCtaSEXslHi4YfJ9PRrGKkk+3Ps1nv6yi89elQLqX+lkH7aSqr1te4SrKFDmH+tnQINkqhk5+MuY7LPr+efa3GPU0frZfEAmsgcWDFTsIwzkv/EixUFl003WATC3lWFfLiuodAfpXKzRkN1qxu10COIEBoydcay/G0UE4m3MhG4lMJacFX2/xPoMgAWr4qoEkbIGHAd/9LaRsCRYssP6UA4axvCZ3v99hkqD7YUpni63aNjKsCMe/6zfS1BNtoGUyeW96HS6SmQP11TbZgO0Ua2ud9n8fKE6xFDcOgqKq8XeNRfeXYumoxe5W0wMO+OSSBGfHNAtme1FNQOom2eqywVmAQYrQ+uiP0oARhYPEBLamg7P4StEQqMb2yuApTZrEPtUSum+C1AP7I9lfxBaEaUeZBGMKW6Z/Ed+rh6oAS7Ch64ulXFWdiYXXHNFfkjnWPVktuuhHaV1P3xalsGnuoO+GCrpDN8DCTt2eGLxCcJnQM9t10=
   on:
     tags: true
     repo: hmcts/one-per-page
