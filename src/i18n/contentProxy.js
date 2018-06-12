@@ -10,7 +10,6 @@ const prefixKey = (prefix, key) => {
 
 const toStringKeys = ['toString', Symbol.toStringTag];
 const inspectKeys = ['inspect', util.inspect.custom];
-const defaultLanguage = 'en';
 
 const contentProxy = (step, prefix) => {
   const get = (target, name) => {
@@ -22,8 +21,9 @@ const contentProxy = (step, prefix) => {
       };
     }
     if (name === 'keys') {
+      const language = target.language || target.options.fallbackLng;
       const content = target
-        .getResourceBundle(target.language || defaultLanguage, `${step.name}`);
+        .getResourceBundle(language, `${step.name}`);
       return Object.keys(content);
     }
     const key = `${step.name}:${prefix}`;
