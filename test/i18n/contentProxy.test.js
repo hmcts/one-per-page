@@ -18,7 +18,8 @@ describe('i18n/contentProxy', () => {
     const proxy = new Proxy({
       t,
       exists,
-      getResourceBundle
+      getResourceBundle,
+      language: 'en'
     }, contentProxy(fakeStep));
 
     beforeEach(() => {
