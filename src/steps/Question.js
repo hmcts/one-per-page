@@ -33,19 +33,33 @@ class Question extends Page {
     this.res.render(this.template, this.locals);
   }
 
+  static acceptsHtml(req) {
+    // there is an express util for this but can't remember which one, so there you go
+    const accept = req.headers.accept;
+    if (!accept) {
+      return false;
+    }
+    return accept.split(',').indexOf('text/html') !== -1;
+  }
+
   handler(req, res, next) {
     if (req.method === 'GET') {
       this.renderPage();
     } else if (req.method === 'POST') {
       this.parse();
       this.validate();
-
       if (this.valid) {
         this.store();
-        this.next().redirect(req, res, next);
+        if (Question.acceptsHtml(req)) {
+          return this.next().redirect(req, res, next);
+        }
+        return res.send(200);
       } else {
-        this.storeErrors();
-        res.redirect(this.path);
+        if (Question.acceptsHtml(req)) {
+          this.storeErrors();
+          return res.redirect(this.path);
+        }
+        return res.send(422);
       }
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
