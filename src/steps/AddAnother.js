@@ -111,7 +111,7 @@ class AddAnother extends Question {
         res.redirect(this.path);
       } else {
         if (req.xhr) {
-          res.send(this.locals);
+          res.json(this.buildValidationErrors(this.locals.fields.item.fields));
         } else {
           res.render(this.template, this.locals);
         }
@@ -140,6 +140,17 @@ class AddAnother extends Question {
       }
     }
     res.redirect(this.path);
+  }
+
+  buildValidationErrors(fields) {
+    const fieldList = Object.keys(fields);
+    const validationErrors = fieldList.map(field => {
+      return {
+        field,
+        errors: fields[field].errors
+      };
+    });
+    return { validationErrors };
   }
 
   static get pathToBind() {
