@@ -110,7 +110,11 @@ class AddAnother extends Question {
         this.store();
         res.redirect(this.path);
       } else {
-        res.render(this.template, this.locals);
+        if (req.xhr) {
+          res.send(this.locals);
+        } else {
+          res.render(this.template, this.locals);
+        }
       }
     } else {
       res.redirect(this.path);
