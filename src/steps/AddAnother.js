@@ -147,7 +147,8 @@ class AddAnother extends Question {
     const validationErrors = fieldList.map(field => {
       return {
         field,
-        errors: fields[field].errors
+        errors: fields[field].errors,
+        value: fields[field].value
       };
     });
     return { validationErrors };
