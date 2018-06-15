@@ -3,7 +3,7 @@ const { defined } = require('../util/checks');
 const { flattenObject } = require('../util/ops');
 const { filledForm } = require('../forms/filledForm');
 const { form, list, appendToList } = require('../forms');
-const { METHOD_NOT_ALLOWED } = require('http-status-codes');
+const { METHOD_NOT_ALLOWED, OK } = require('http-status-codes');
 const { expectImplemented } = require('../errors/expectImplemented');
 
 class AddAnother extends Question {
@@ -108,10 +108,14 @@ class AddAnother extends Question {
 
       if (this.valid) {
         this.store();
-        res.redirect(this.path);
+        if (req.xhr) {
+          res.status(OK).json({ validationErrors: [] });
+        } else {
+          res.redirect(this.path);
+        }
       } else {
         if (req.xhr) {
-          res.json(this.buildValidationErrors(this.locals.fields.item.fields));
+          res.json(this.buildValidationErrors);
         } else {
           res.render(this.template, this.locals);
         }
@@ -142,15 +146,19 @@ class AddAnother extends Question {
     res.redirect(this.path);
   }
 
-  buildValidationErrors(fields) {
-    const fieldList = Object.keys(fields);
-    const validationErrors = fieldList.map(field => {
-      return {
-        field,
-        errors: fields[field].errors,
-        value: fields[field].value
-      };
-    });
+  get buildValidationErrors() {
+    let validationErrors = [];
+    if (this.fields.item) {
+      const fields = this.fields.item.fields;
+      const fieldList = Object.keys(fields);
+      validationErrors = fieldList.map(field => {
+        return {
+          field,
+          errors: fields[field].errors,
+          value: fields[field].value
+        };
+      });
+    }
     return { validationErrors };
   }
 

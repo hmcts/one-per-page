@@ -30,7 +30,11 @@ class Question extends Page {
     if (this.fields.isFilled) {
       this.validate();
     }
-    this.res.render(this.template, this.locals);
+    if (this.req.xhr) {
+      this.res.send(this.fields.items.fields);
+    } else {
+      this.res.render(this.template, this.locals);
+    }
   }
 
   handler(req, res, next) {
