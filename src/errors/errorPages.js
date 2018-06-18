@@ -1,5 +1,5 @@
 // const { Page } = require('@hmcts/one-per-page');
-const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
+const { NOT_FOUND, INTERNAL_SERVER_ERROR, UNPROCESSABLE_ENTITY } = require('http-status-codes');
 const i18next = require('i18next');
 const path = require('path');
 const { i18NextInstance } = require('../i18n/i18Next');
@@ -35,6 +35,13 @@ class ErrorPages {
               )
             }
           );
+        });
+
+        app.use((req, res, next) => {
+          if (res.status === UNPROCESSABLE_ENTITY) {
+            return;
+          }
+          next();
         });
 
         app.use((req, res) => {
