@@ -148,7 +148,7 @@ class AddAnother extends Question {
 
   get buildValidationErrors() {
     let validationErrors = [];
-    if (this.fields.item) {
+    if (this.fields.item && this.fields.item.fields) {
       const fields = this.fields.item.fields;
       const fieldList = Object.keys(fields);
       validationErrors = fieldList.map(field => {
