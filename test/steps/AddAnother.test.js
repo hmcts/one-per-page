@@ -414,9 +414,7 @@ describe('steps/AddAnother', () => {
       it('sends json with empty validation when field is valid and request is an ajax', () => {
         const validationErrors = { validationErrors: [] };
         return testStep(AddAText)
-          .withSetup(req => {
-            req.headers['X-Requested-With'] = 'XMLHttpRequest';
-          })
+          .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
           .withField('item', 'foo')
           .withSession({})
           .post('/add-a-text/item-0')
@@ -456,9 +454,7 @@ describe('steps/AddAnother', () => {
           }
         };
         return testStep(ValidateAText)
-          .withSetup(req => {
-            req.headers['X-Requested-With'] = 'XMLHttpRequest';
-          })
+          .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
           .withField('item', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')
@@ -482,9 +478,7 @@ describe('steps/AddAnother', () => {
           }]
         };
         return testStep(ValidateAText)
-          .withSetup(req => {
-            req.headers['X-Requested-With'] = 'XMLHttpRequest';
-          })
+          .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
           .withField('item.a', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')

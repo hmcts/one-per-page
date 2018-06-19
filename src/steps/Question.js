@@ -30,8 +30,8 @@ class Question extends Page {
     if (this.fields.isFilled) {
       this.validate();
     }
-    if (this.req.xhr) {
-      this.res.send(this.fields.items.fields);
+    if (this.xhr) {
+      this.res.send(this.fields);
     } else {
       this.res.render(this.template, this.locals);
     }
@@ -117,6 +117,10 @@ class Question extends Page {
 
   get valid() {
     return this.fields.valid;
+  }
+
+  get xhr() {
+    return this.req.xhr || this.req.headers['X-Requested-With'] === 'XMLHttpRequest';
   }
 }
 
