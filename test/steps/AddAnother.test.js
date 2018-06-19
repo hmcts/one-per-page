@@ -6,7 +6,8 @@ const {
   MOVED_TEMPORARILY,
   METHOD_NOT_ALLOWED
 } = require('http-status-codes');
-const { text } = require('../../src/forms');
+const { text, object } = require('../../src/forms');
+const { errorFor } = require('../../src/forms/validator');
 const { redirectTo } = require('../../src/flow');
 
 describe('steps/AddAnother', () => {
@@ -410,7 +411,22 @@ describe('steps/AddAnother', () => {
           });
       });
 
-      it('renders the template if not valid', () => {
+      it('sends json with empty validation when field is valid and request is an ajax', () => {
+        const validationErrors = { validationErrors: [] };
+        return testStep(AddAText)
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+          })
+          .withField('item', 'foo')
+          .withSession({})
+          .post('/add-a-text/item-0')
+          .expect(OK)
+          .text(json => {
+            return expect(json).to.equal(JSON.stringify(validationErrors));
+          });
+      });
+
+      it('renders the template if not valid and request is not an ajax', () => {
         const ValidateAText = class ValidateAText extends AddAText {
           get field() {
             return text.check('always fails', () => false);
@@ -423,6 +439,58 @@ describe('steps/AddAnother', () => {
           .expect(OK)
           .html($ => {
             return expect($('#errors')).contains.$text('item: always fails');
+          });
+      });
+
+      it('sends json with the validation errors if field not valid and request is an ajax', () => {
+        const ValidateAText = class ValidateAText extends AddAText {
+          get field() {
+            return text.check('always fails', () => false);
+          }
+        };
+        const validationErrors = {
+          validationErrors: {
+            field: 'item',
+            errors: ['always fails'],
+            value: 'foo'
+          }
+        };
+        return testStep(ValidateAText)
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+          })
+          .withField('item', 'foo')
+          .withSession({})
+          .post('/validate-a-text/item-0')
+          .expect(OK)
+          .text(json => {
+            return expect(json).to.equal(JSON.stringify(validationErrors));
+          });
+      });
+
+      it('sends json with the validation errors if object field not valid and request is an ajax', () => {
+        const ValidateAText = class ValidateAText extends AddAText {
+          get field() {
+            return object({a: text}).check(errorFor('a', 'always fails'), () => false);
+          }
+        };
+        const validationErrors = {
+          validationErrors: [{
+            field: 'a',
+            errors: ['always fails'],
+            value: 'foo'
+          }]
+        };
+        return testStep(ValidateAText)
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+          })
+          .withField('item.a', 'foo')
+          .withSession({})
+          .post('/validate-a-text/item-0')
+          .expect(OK)
+          .text(json => {
+            return expect(json).to.equal(JSON.stringify(validationErrors));
           });
       });
     });
