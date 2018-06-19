@@ -105,16 +105,15 @@ class AddAnother extends Question {
     } else if (req.method === 'POST') {
       this.parse();
       this.validate();
-
       if (this.valid) {
         this.store();
-        if (req.xhr) {
+        if (this.xhr) {
           res.status(OK).json({ validationErrors: [] });
         } else {
           res.redirect(this.path);
         }
       } else {
-        if (req.xhr) {
+        if (this.xhr) {
           res.json(this.buildValidationErrors);
         } else {
           res.render(this.template, this.locals);
@@ -148,18 +147,31 @@ class AddAnother extends Question {
 
   get buildValidationErrors() {
     let validationErrors = [];
-    if (this.fields.item && this.fields.item.fields) {
-      const fields = this.fields.item.fields;
-      const fieldList = Object.keys(fields);
-      validationErrors = fieldList.map(field => {
-        return {
-          field,
-          errors: fields[field].errors,
-          value: fields[field].value
+
+    if (this.fields.item) {
+      if (this.fields.item.fields) {
+        const fields = this.fields.item.fields;
+        const fieldList = Object.keys(fields);
+        validationErrors = fieldList.map(field => {
+          return {
+            field,
+            errors: fields[field].errors,
+            value: fields[field].value
+          };
+        });
+      } else {
+        validationErrors = {
+          field: this.fields.item.name,
+          errors: this.fields.item.errors,
+          value: this.fields.item.value
         };
-      });
+      }
     }
     return { validationErrors };
+  }
+
+  get xhr() {
+    return this.req.xhr || this.req.headers['X-Requested-With'] === 'XMLHttpRequest';
   }
 
   static get pathToBind() {
