@@ -42,6 +42,25 @@ describe('steps/Question', () => {
           });
       });
 
+      it('sends a response on GET when request is an ajax', () => {
+        const fieldsResponse = {
+          name: {
+            id: 'name',
+            name: 'name',
+            validations: []
+          }
+        };
+        return testStep(SimpleQuestion)
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+            req.session.generate();
+          })
+          .get()
+          .text(response => {
+            expect(response).to.equal(JSON.stringify(fieldsResponse));
+          });
+      });
+
       it('loads fields from the session', () => {
         return testStep(SimpleQuestion)
           .withSetup(req => {

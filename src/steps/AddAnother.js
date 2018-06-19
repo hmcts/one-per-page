@@ -170,10 +170,6 @@ class AddAnother extends Question {
     return { validationErrors };
   }
 
-  get xhr() {
-    return this.req.xhr || this.req.headers['X-Requested-With'] === 'XMLHttpRequest';
-  }
-
   static get pathToBind() {
     // return `${super.path}/foo(\\d)/`;
     return `${super.path}(?:/item-(\\d{1,})/?(?:(delete)/?)?)?`;
