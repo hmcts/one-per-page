@@ -21,7 +21,9 @@ const contentProxy = (step, prefix) => {
       };
     }
     if (name === 'keys') {
-      const content = target.getResourceBundle(target.language, `${step.name}`);
+      const language = target.language || target.options.fallbackLng;
+      const content = target
+        .getResourceBundle(language, `${step.name}`);
       return Object.keys(content);
     }
     const key = `${step.name}:${prefix}`;

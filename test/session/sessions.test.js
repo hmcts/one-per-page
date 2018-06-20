@@ -7,6 +7,9 @@ const {
   shouldSetCookie,
   shouldNotSetCookie
 } = require('../util/supertest');
+const sessionStoreSerializer = require(
+  '../../src/session/sessionStoreSerializer'
+);
 const expressSession = require('express-session');
 const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 
@@ -82,8 +85,14 @@ describe('sessions', () => {
   describe('options', () => {
     let spy = null;
     let stubbedSessions = null;
+    let sessionStoreSerializerSpy = null;
+    const req = { originalUrl: '/', headers: { cookie: '' } };
+    const res = {};
+    const next = sinon.stub();
 
     beforeEach(() => {
+      sessionStoreSerializerSpy = sinon
+        .spy(sessionStoreSerializer, 'sessionStoreSerializer');
       spy = sinon.spy(expressSession);
       stubbedSessions = proxyquire(
         '../../src/session',
@@ -91,10 +100,15 @@ describe('sessions', () => {
       );
     });
 
+    afterEach(() => {
+      sessionStoreSerializerSpy.restore();
+    });
+
     describe('options.store', () => {
       it('can override store', () => {
         const store = new MemoryStore();
-        stubbedSessions({ secret: 'foo', store });
+        const s = stubbedSessions({ secret: 'foo', store });
+        s(req, res, next);
         return expect(spy).calledWith(sinon.match({ store }));
       });
     });
@@ -102,11 +116,35 @@ describe('sessions', () => {
     describe('options.cookie.domain', () => {
       it('is passed down to express-session', () => {
         const domain = 'my.awesome.site.com';
-        stubbedSessions({
+        const s = stubbedSessions({
           secret: 'foo',
           cookie: { domain }
         });
+        s(req, res, next);
         return expect(spy).calledWith(sinon.match({ cookie: { domain } }));
+      });
+    });
+
+    describe('options.store.serializer', () => {
+      it('adds session encryption if defined', () => {
+        const domain = 'my.awesome.site.com';
+        const sessionEncryption = sinon.stub().returns('key');
+        const s = stubbedSessions({
+          secret: 'foo',
+          cookie: { domain },
+          sessionEncryption
+        });
+        s(req, res, next);
+        expect(sessionStoreSerializerSpy).calledWith(sessionEncryption());
+      });
+      it('doesnt add session encryption if not defined', () => {
+        const domain = 'my.awesome.site.com';
+        const s = stubbedSessions({
+          secret: 'foo',
+          cookie: { domain }
+        });
+        s(req, res, next);
+        expect(sessionStoreSerializerSpy.notCalled).to.eql(true);
       });
     });
   });

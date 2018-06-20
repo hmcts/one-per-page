@@ -5,6 +5,7 @@ const { isTest } = require('../util/nodeEnv');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { shimSession } = require('../session/sessionShims');
 const { shimSessionStore } = require('../session/sessionStoreShims');
+const { sessionStoreSerializer } = require('../session/sessionStoreSerializer');
 
 const MemoryStore = expressSession.MemoryStore;
 
@@ -13,15 +14,20 @@ const redisOrInMemory = (options = {}) => {
   return isTest ? new MemoryStore() : new RedisStore(redisOptions);
 };
 
-const sessionOptions = userOpts => {
+const sessionOptions = (userOpts, store, req) => {
   const userCookie = userOpts.cookie || {};
   const cookie = Object.assign({}, {
     secure: defaultIfUndefined(userCookie.secure, !isTest),
     expires: defaultIfUndefined(userCookie.expires, false)
   }, userCookie);
 
+  if (userOpts.sessionEncryption) {
+    const encryptionKey = userOpts.sessionEncryption(req);
+    userOpts.serializer = sessionStoreSerializer(encryptionKey);
+  }
+
   return {
-    store: userOpts.store || redisOrInMemory(userOpts),
+    store,
     secret: defaultIfUndefined(userOpts.secret, config.secret),
     resave: defaultIfUndefined(userOpts.resave, false),
     saveUninitialized: defaultIfUndefined(userOpts.saveUninitialized, false),
@@ -49,9 +55,16 @@ const overrides = (req, res, next) => error => {
 };
 
 const sessions = (userOptions = {}) => {
-  const options = sessionOptions(userOptions);
-  const provider = expressSession(options);
-  return (req, res, next) => provider(req, res, overrides(req, res, next));
+  const store = defaultIfUndefined(
+    userOptions.store,
+    redisOrInMemory(userOptions)
+  );
+  const handler = (req, res, next) => {
+    const options = sessionOptions(userOptions, store, req);
+    const provider = expressSession(options);
+    provider(req, res, overrides(req, res, next));
+  };
+  return handler;
 };
 
 module.exports = sessions;
