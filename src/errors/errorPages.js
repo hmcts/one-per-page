@@ -38,7 +38,7 @@ class ErrorPages {
         });
 
         app.use((req, res, next) => {
-          if (res.status === UNPROCESSABLE_ENTITY) {
+          if (res.statusCode === UNPROCESSABLE_ENTITY) {
             return;
           }
           next();
