@@ -118,10 +118,31 @@ const stopHereIfNextIsInvalid = step => new TreeWalker(
   }
 );
 
+const ifCompleteAndNotForceShowThenContinue = step => new TreeWalker(
+  step,
+  (block, results) => {
+    step.retrieve().validate();
+    results.push(block(step));
+
+    const forceShowFor = step.journey.forceShow || [];
+    const forceShow = forceShowFor.some(current =>
+      step instanceof current
+    );
+
+    if (step.valid && !forceShow) {
+      const next = step.journey.instance(step.next().step);
+      return next.flowControl;
+    }
+
+    return results;
+  }
+);
+
 module.exports = {
   stopHere,
   validateThenStopHere,
   ifCompleteThenContinue,
   continueToNext,
-  stopHereIfNextIsInvalid
+  stopHereIfNextIsInvalid,
+  ifCompleteAndNotForceShowThenContinue
 };
