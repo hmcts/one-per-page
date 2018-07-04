@@ -10,7 +10,8 @@ const {
   continueToNext,
   stopHere,
   validateThenStopHere,
-  stopHereIfNextIsInvalid
+  stopHereIfNextIsInvalid,
+  ifCompleteAndNotForceShowThenContinue
 } = require('./treeWalker');
 
 const goTo = step => new SmartRedirector(step);
@@ -31,5 +32,6 @@ module.exports = {
   continueToNext,
   stopHere,
   validateThenStopHere,
-  stopHereIfNextIsInvalid
+  stopHereIfNextIsInvalid,
+  ifCompleteAndNotForceShowThenContinue
 };

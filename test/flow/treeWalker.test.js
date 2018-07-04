@@ -7,7 +7,8 @@ const {
   ifCompleteThenContinue,
   continueToNext,
   validateThenStopHere,
-  stopHereIfNextIsInvalid
+  stopHereIfNextIsInvalid,
+  ifCompleteAndNotForceShowThenContinue
 } = require('../../src/flow');
 const { form, text } = require('../../src/forms');
 const { goTo } = require('../../src/flow');
@@ -266,6 +267,53 @@ describe('flow/flowControl', () => {
         });
 
         it('returns the results if not valid', () => {
+          session.TestStep = {};
+          const _results = step.flowControl.iterate(block, []);
+          expect(_results).to.eql([step]);
+        });
+      }
+    });
+
+    describe('#ifCompleteAndNotForceShowThenContinue', () => {
+      {
+        const step = new class TestStep extends Question {
+          get form() {
+            return form({ a: text.joi('required', Joi.string().required()) });
+          }
+          get flowControl() {
+            return ifCompleteAndNotForceShowThenContinue(this);
+          }
+          next() {
+            return { step: '' };
+          }
+        }(req, res);
+
+        const block = sinon.stub().returns(step);
+        const result = step.flowControl.iterate(block, []);
+
+        it('executes the given block with the step', () => {
+          expect(block).calledWith(step);
+        });
+
+        it('returns the next TreeWalker if valid and no force show', () => {
+          expect(result).to.eql(nextStep.flowControl);
+        });
+
+        it('returns the results if valid and force show', () => {
+          step.journey.forceShow = [Question];
+          const _results = step.flowControl.iterate(block, []);
+          expect(_results).to.eql([step]);
+        });
+
+        it('returns the results if not valid and no force show', () => {
+          step.journey.forceShow = [];
+          session.TestStep = {};
+          const _results = step.flowControl.iterate(block, []);
+          expect(_results).to.eql([step]);
+        });
+
+        it('returns the results if not valid and force show', () => {
+          step.journey.forceShow = [Question];
           session.TestStep = {};
           const _results = step.flowControl.iterate(block, []);
           expect(_results).to.eql([step]);

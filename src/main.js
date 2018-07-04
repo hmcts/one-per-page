@@ -4,6 +4,8 @@ const Question = require('./steps/Question');
 const EntryPoint = require('./steps/EntryPoint');
 const ExitPoint = require('./steps/ExitPoint');
 const Redirect = require('./steps/Redirect');
+// eslint-disable-next-line max-len
+const QuestionWithRequiredNextSteps = require('./steps/QuestionWithRequiredNextSteps');
 
 const requireSession = require('./session/requireSession');
 
@@ -18,6 +20,7 @@ module.exports = {
   BaseStep,
   Page,
   Question,
+  QuestionWithRequiredNextSteps,
   journey,
   middleware: { requireSession },
   field,
