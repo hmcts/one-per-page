@@ -1,5 +1,6 @@
 const i18Next = require('i18next');
 const { defined } = require('../util/checks');
+const { isDev } = require('../util/nodeEnv');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
 const log = require('../util/logging')('i18Next');
 const crypto = require('crypto');
@@ -69,7 +70,11 @@ const i18nMiddleware = (req, res, next) => {
     req.i18Next.changeLanguage('en');
   }
 
-  res.cookie('i18n', defaultIfUndefined(req.i18Next.language, 'en'));
+  res.cookie(
+    'i18n',
+    defaultIfUndefined(req.i18Next.language, 'en'),
+    { secure: !isDev }
+  );
 
   next();
 };
