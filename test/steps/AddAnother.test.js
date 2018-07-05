@@ -4,7 +4,8 @@ const { testStep } = require('../util/supertest');
 const {
   OK,
   MOVED_TEMPORARILY,
-  METHOD_NOT_ALLOWED
+  METHOD_NOT_ALLOWED,
+  UNPROCESSABLE_ENTITY
 } = require('http-status-codes');
 const { text, object } = require('../../src/forms');
 const { errorFor } = require('../../src/forms/validator');
@@ -458,7 +459,7 @@ describe('steps/AddAnother', () => {
           .withField('item', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')
-          .expect(OK)
+          .expect(UNPROCESSABLE_ENTITY)
           .text(json => {
             return expect(json).to.equal(JSON.stringify(validationErrors));
           });
@@ -482,7 +483,7 @@ describe('steps/AddAnother', () => {
           .withField('item.a', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')
-          .expect(OK)
+          .expect(UNPROCESSABLE_ENTITY)
           .text(json => {
             return expect(json).to.equal(JSON.stringify(validationErrors));
           });
