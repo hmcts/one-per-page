@@ -10,6 +10,8 @@ const prefixKey = (prefix, key) => {
 
 const toStringKeys = ['toString', Symbol.toStringTag];
 const inspectKeys = ['inspect', util.inspect.custom];
+const toJsonKeys = ['toJSON'];
+const observersKeys = ['observers'];
 
 const contentProxy = (step, prefix) => {
   const get = (target, name) => {
@@ -27,7 +29,7 @@ const contentProxy = (step, prefix) => {
       return Object.keys(content);
     }
     const key = `${step.name}:${prefix}`;
-    if (toStringKeys.includes(name)) {
+    if (toStringKeys.includes(name) || toJsonKeys.includes(name) || observersKeys.includes(name)) {
       if (target.exists(key)) {
         return () => target.t(key, step.locals);
       }
