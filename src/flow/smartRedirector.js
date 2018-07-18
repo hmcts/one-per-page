@@ -8,8 +8,10 @@ class SmartRedirector extends Redirector {
       throw new Error(`${instance.name} does not have a flowControl.`);
     }
     const nextStep = instance.flowControl.last();
-    req.session.previousPath = req.path;
-    req.session.save();
+    if (req && req.session) {
+      req.session.previousPath = req.path;
+      req.session.save();
+    }
     res.redirect(nextStep.path);
   }
 }
