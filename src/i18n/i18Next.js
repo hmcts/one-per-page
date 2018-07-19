@@ -73,7 +73,10 @@ const i18nMiddleware = (req, res, next) => {
   res.cookie(
     'i18n',
     defaultIfUndefined(req.i18Next.language, 'en'),
-    { secure: !isDev }
+    {
+      secure: !isDev,
+      httpOnly: !isDev
+    }
   );
 
   next();
