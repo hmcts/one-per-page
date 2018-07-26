@@ -77,40 +77,6 @@ describe('journey/journey', () => {
     });
   });
 
-  describe('baseUrl option', () => {
-    let spy = null;
-    let stubbedJourney = null;
-
-    beforeEach(() => {
-      spy = sinon.spy(session);
-      stubbedJourney = proxyquire(
-        '../../src/flow/journey',
-        { '../session': spy }
-      );
-    });
-
-    const test = domain => () => {
-      const baseUrl = `http://${domain}:1231/foo/bar`;
-      stubbedJourney(testApp(), { baseUrl, session: { secret: 'foo' } });
-      return expect(spy).calledWith(sinon.match({ cookie: { domain } }));
-    };
-
-    it('used as default for cookie.domain (localhost)', test('localhost'));
-    it('used as default for cookie.domain (127.0.0.1)', test('127.0.0.1'));
-    it('used as default for cookie.domain (example.com)', test('example.com'));
-    it('used as default for cookie.domain (new tld)', test('allen.digital'));
-
-    it('wont override an explicit cookie.domain', () => {
-      const domain = 'explicit.override.com';
-      const baseUrl = 'http://base.url.com';
-      stubbedJourney(testApp(), {
-        baseUrl,
-        session: { secret: 'foo', cookie: { domain } }
-      });
-      return expect(spy).calledWith(sinon.match({ cookie: { domain } }));
-    });
-  });
-
   describe('session option', () => {
     describe('as a function', () => {
       it('overrides the session middleware', () => {
@@ -125,10 +91,6 @@ describe('journey/journey', () => {
     });
 
     describe('as an object', () => {
-      it('requires a baseUrl to be provided', () => {
-        expect(() => journey(testApp(), {})).to.throw('Must provide a baseUrl');
-      });
-
       it('configures the session middleware', () => {
         const spy = sinon.spy(session);
         const stubbedJourney = proxyquire(
@@ -140,7 +102,7 @@ describe('journey/journey', () => {
         const secret = 'keyboard cat';
         stubbedJourney(testApp(), { baseUrl, session: { secret } });
         expect(spy).calledWith(sinon.match({ secret }));
-        expect(spy).calledWith(sinon.match({ cookie: { domain } }));
+        expect(spy).calledWith(sinon.match({ cookie: {} }));
       });
     });
   });
