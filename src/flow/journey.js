@@ -30,7 +30,7 @@ const options = userOpts => {
   if (typeof userOpts.session === 'function') {
     sessionProvider = userOpts.session;
   } else {
-    const sessionOpts = Object.assign({}, userOpts.session, { cookie: {} });
+    const sessionOpts = Object.assign({ cookie: {} }, userOpts.session);
     sessionProvider = session(sessionOpts);
   }
   const steps = defaultIfUndefined(userOpts.steps, [])
