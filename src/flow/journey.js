@@ -8,13 +8,6 @@ const RequestBoundJourney = require('./RequestBoundJourney');
 const log = require('../util/logging')('journey');
 const cookieParser = require('cookie-parser');
 
-const parseUrl = baseUrl => {
-  if (typeof baseUrl === 'undefined') {
-    throw new Error('Must provide a baseUrl');
-  }
-  return urlParse(baseUrl);
-};
-
 const constructorFrom = step => {
   if (defined(step.prototype)) {
     return step;
@@ -37,7 +30,6 @@ const options = userOpts => {
     .map(constructorFrom);
 
   return Object.assign({}, userOpts, {
-    baseUrl: userOpts.baseUrl,
     steps,
     session: sessionProvider,
     noSessionHandler: userOpts.noSessionHandler

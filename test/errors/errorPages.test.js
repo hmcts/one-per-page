@@ -10,8 +10,7 @@ const Page = require('../../src/steps/Page');
 
 describe('errors/errorPages', () => {
   const defaultOptions = {
-    session: { secret: 'foo' },
-    baseUrl: 'http://localhost'
+    session: { secret: 'foo' }
   };
   const options = (...overrides) => {
     const foo = Object.assign(
