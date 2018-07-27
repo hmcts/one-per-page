@@ -104,6 +104,19 @@ describe('journey/journey', () => {
         expect(spy).calledWith(sinon.match({ secret }));
         expect(spy).calledWith(sinon.match({ cookie: {} }));
       });
+
+      it('accepts custom cookie options', () => {
+        const spy = sinon.spy(session);
+        const stubbedJourney = proxyquire(
+          '../../src/flow/journey',
+          { '../session': spy }
+        );
+        const domain = '127.0.0.1';
+        const baseUrl = `http://${domain}`;
+        const cookie = { customOption: true };
+        stubbedJourney(testApp(), { baseUrl, session: { cookie } });
+        expect(spy).calledWith(sinon.match({ cookie }));
+      });
     });
   });
 
