@@ -49,7 +49,6 @@ lookAndFeel.configure(app, {
 });
 
 journey(app, {
-  baseUrl,
   steps: [
     Start,
     Entry,

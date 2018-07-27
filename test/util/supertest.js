@@ -42,7 +42,7 @@ const supertestInstance = stepDSL => {
     next();
   });
 
-  app.use(session({ baseUrl: '127.0.0.1', secret: 'keyboard cat' }));
+  app.use(session({ secret: 'keyboard cat' }));
   app.use(cookieParser());
   app.use(i18nMiddleware);
 

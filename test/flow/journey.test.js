@@ -7,10 +7,7 @@ const Page = require('../../src/steps/Page');
 const session = require('../../src/session');
 
 class TestPage extends Page {}
-const defaultOptions = {
-  session: { secret: 'foo' },
-  baseUrl: 'http://localhost'
-};
+const defaultOptions = { session: { secret: 'foo' } };
 const options = (...overrides) => {
   const foo = Object.assign(
     {},
@@ -97,10 +94,8 @@ describe('journey/journey', () => {
           '../../src/flow/journey',
           { '../session': spy }
         );
-        const domain = '127.0.0.1';
-        const baseUrl = `http://${domain}`;
         const secret = 'keyboard cat';
-        stubbedJourney(testApp(), { baseUrl, session: { secret } });
+        stubbedJourney(testApp(), { session: { secret } });
         expect(spy).calledWith(sinon.match({ secret }));
         expect(spy).calledWith(sinon.match({ cookie: {} }));
       });
@@ -111,10 +106,8 @@ describe('journey/journey', () => {
           '../../src/flow/journey',
           { '../session': spy }
         );
-        const domain = '127.0.0.1';
-        const baseUrl = `http://${domain}`;
         const cookie = { customOption: true };
-        stubbedJourney(testApp(), { baseUrl, session: { cookie } });
+        stubbedJourney(testApp(), { session: { cookie } });
         expect(spy).calledWith(sinon.match({ cookie }));
       });
     });
@@ -146,7 +139,6 @@ describe('journey/journey', () => {
 
       stubbedJourney(app,
         {
-          baseUrl: 'http://localhost',
           session: { secret: 'foo' },
           errorPages: errorPagesConfig
         }
