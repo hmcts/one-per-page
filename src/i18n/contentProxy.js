@@ -26,7 +26,7 @@ const contentProxy = (step, prefix) => {
       const language = target.language || target.options.fallbackLng;
       const content = target
         .getResourceBundle(language, `${step.name}`);
-      return Object.keys(content);
+      return content;
     }
     const key = `${step.name}:${prefix}`;
     if (toStringKeys.includes(name) || toJsonKeys.includes(name) || observersKeys.includes(name)) {
