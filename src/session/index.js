@@ -17,9 +17,9 @@ const redisOrInMemory = (options = {}) => {
 const sessionOptions = (userOpts, store, req) => {
   const userCookie = userOpts.cookie || {};
   const cookie = Object.assign({}, {
-    secure: req.secure,
+    secure: defaultIfUndefined(userCookie.secure, req.secure),
     expires: defaultIfUndefined(userCookie.expires, false),
-    domain: req.hostname
+    domain: defaultIfUndefined(userCookie.hostname, req.hostname)
   }, userCookie);
 
   if (userOpts.sessionEncryption) {
