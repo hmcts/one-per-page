@@ -1,3 +1,4 @@
 port: 3000
 secret: 'iamnotaverygoodsecret'
 redisUrl: redis://127.0.0.1:6379
+encryptionAtRestKey: 'iamnotaverygoodsecret'
