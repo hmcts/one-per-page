@@ -1,7 +1,6 @@
 const session = require('../session');
 const { i18nMiddleware } = require('../i18n/i18Next');
 const errorPages = require('../errors/errorPages');
-const urlParse = require('url-parse');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { defined } = require('../util/checks');
 const RequestBoundJourney = require('./RequestBoundJourney');

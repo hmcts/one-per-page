@@ -70,7 +70,23 @@ journey(app, {
   errorPages: {},
   session: {
     redis: { url: config.redisUrl },
-    cookie: { secure: false }
+    cookie: {
+      // default req.hostname
+      domain: 'localhost',
+
+      // default: false
+      expires: false,
+
+      // default: req.secure
+      secure: false
+    },
+
+    // default: undefined
+    secret: config.secret,
+
+    // Optional, default: undefined
+    // return key to encryption session at rest ( redis )
+    sessionEncryption: (/* req */) => config.encryptionAtRestKey
   },
   apiUrl: `${baseUrl}/api/submit`
 });
