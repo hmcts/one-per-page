@@ -104,7 +104,7 @@ describe('i18n/contentProxy', () => {
 
     describe('#keys (used by one-per-page-test-suite)', () => {
       it('returns all keys for properties', () => {
-        expect(proxy.foo.keys).to.eql(['key']);
+        expect(proxy.foo.keys).to.eql({ key: 'key' });
       });
     });
   });
