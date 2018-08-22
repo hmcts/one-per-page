@@ -33,7 +33,7 @@ class Question extends Page {
   }
 
   get csurfCsrfToken() {
-    return this.req.csrfToken();
+    return this.req.csrfToken && this.req.csrfToken();
   }
 
   renderPage() {
