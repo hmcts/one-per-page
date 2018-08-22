@@ -9,6 +9,9 @@ const { RefValue } = require('../forms/fieldValue');
 const logging = require('@log4js-node/log4js-api');
 const { ifCompleteThenContinue } = require('../flow/treeWalker');
 const preventCaching = require('../middleware/preventCaching');
+const csurf = require('csurf');
+
+const csrfProtection = csurf({ cookie: false });
 
 class Question extends Page {
   constructor(...args) {
@@ -17,12 +20,20 @@ class Question extends Page {
   }
 
   get middleware() {
-    return [
+    const mw = [
       ...super.middleware,
       bodyParser.urlencoded({ extended: true }),
       requireSession,
       preventCaching
     ];
+    if (this.journey.settings.useCsrfToken) {
+      mw.push(csrfProtection);
+    }
+    return mw;
+  }
+
+  get csurfCsrfToken() {
+    return this.req.csrfToken();
   }
 
   renderPage() {
