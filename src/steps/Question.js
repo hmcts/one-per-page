@@ -26,7 +26,7 @@ class Question extends Page {
       requireSession,
       preventCaching
     ];
-    if (this.journey.settings.useCsrfToken) {
+    if (this.journey.settings && this.journey.settings.useCsrfToken) {
       mw.push(csrfProtection);
     }
     return mw;
