@@ -199,6 +199,27 @@ describe('forms/fields', () => {
     it.serializes({ to: ['Foo', 'Bar'], from: ['Foo', 'Bar'] });
   }));
 
+  describe('list(object({ a: text, b: bool }))', fieldTest(
+    list(object({ a: text, b: bool })), it => {
+      it.parses({ to: [{}], from: [{}] });
+
+      it.parses({
+        to: [{ a: 'text', b: true }],
+        from: [{ a: 'text', b: 'true' }]
+      });
+
+      it.deserializes({
+        value: [{ a: 'text', b: 'true' }],
+        from: [{ a: 'text', b: 'true' }]
+      });
+
+      it.serializes({
+        to: [{ a: 'text', b: true }],
+        from: [{ a: 'text', b: true }]
+      });
+    }
+  ));
+
   describe('appendToList([list], [index], text)', fieldTest(
     appendToList('items', 1, text), it => {
       it.parses({ to: 'foo', from: 'foo' });
