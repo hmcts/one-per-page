@@ -75,7 +75,13 @@ const list = field => fieldDescriptor({
     const fields = arr
       .map((value, i) => {
         const fieldName = `${name}[${i}]`;
-        return { [i]: field.parse(fieldName, { [fieldName]: value }) };
+        const valueBody = { [fieldName]: value };
+        if (typeof value === 'object') {
+          Object.keys(value).forEach(key => {
+            valueBody[`${fieldName}.${key}`] = value[key];
+          });
+        }
+        return { [i]: field.parse(fieldName, valueBody) };
       })
       .reduce(flattenObject, {});
 
