@@ -99,7 +99,6 @@ Read our [development documentation][dev-docs] for help on getting started.
 [dev-docs]: https://one-per-page.herokuapp.com/docs/development
 [`@hmcts/look-and-feel`]: https://github.com/hmcts/look-and-feel
 
-
 <script type="text/javascript">
 function changeImage(id, newImage) {
   document.getElementById(id).src = newImage;
