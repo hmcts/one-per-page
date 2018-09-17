@@ -32,7 +32,7 @@ const ref = (step, fieldType, fieldName) => {
 const object = childFields => fieldDescriptor({
   parser(name, body) {
     const fields = mapEntries(childFields, (key, field) => {
-      const fieldName = `${name}.${key}`;
+      const fieldName = `${name}-${key}`;
       return field.parse(fieldName, body);
     });
 
@@ -44,7 +44,7 @@ const object = childFields => fieldDescriptor({
       .valueOrElse({});
 
     const fields = mapEntries(childFields, (key, field) => {
-      const fieldName = `${name}.${key}`;
+      const fieldName = `${name}-${key}`;
       const value = { [fieldName]: obj[key] };
       return field.deserialize(fieldName, value);
     });
