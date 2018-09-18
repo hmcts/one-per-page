@@ -78,7 +78,7 @@ const list = field => fieldDescriptor({
         const valueBody = {};
         if (typeof value === 'object') {
           Object.keys(value).forEach(key => {
-            valueBody[`${fieldName}-${key}`] = value[key];
+            valueBody[`${fieldName}.${key}`] = value[key];
           });
         } else {
           valueBody[fieldName] = value;
