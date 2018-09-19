@@ -21,10 +21,21 @@ const DateOfMarriage = require('./steps/DateOfMarriage.step');
 const ExampleServerError = require('./steps/errors/ExampleServerError.step');
 const DatesYouCantAttend = require('./steps/DatesYouCantAttend.step');
 const InfoPage = require('./steps/InfoPage.step');
+const moment = require('moment');
 
 const app = express();
 
 const baseUrl = `http://localhost:${config.port}`;
+
+const filters = {
+  date: input => {
+    const dateAsMoment = moment(input);
+    if (dateAsMoment.isValid()) {
+      return dateAsMoment.format('DD MMMM YYYY');
+    }
+    return input;
+  }
+};
 
 lookAndFeel.configure(app, {
   baseUrl,
@@ -41,6 +52,7 @@ lookAndFeel.configure(app, {
     ]
   },
   nunjucks: {
+    filters,
     globals: {
       phase: 'ALPHA',
       feedbackLink: 'https://github.com/hmcts/one-per-page/issues/new'
@@ -88,7 +100,8 @@ journey(app, {
     // return key to encryption session at rest ( redis )
     sessionEncryption: (/* req */) => config.encryptionAtRestKey
   },
-  apiUrl: `${baseUrl}/api/submit`
+  apiUrl: `${baseUrl}/api/submit`,
+  i18n: { filters }
 });
 
 app.post('/api/submit', bodyParser.json(), (req, res) => {

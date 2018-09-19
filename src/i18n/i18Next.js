@@ -38,6 +38,21 @@ i18NextInstance.addBundleIfModified = (
   );
 };
 
+const configurei18n = (opts = {}) => {
+  if (opts.filters) {
+    i18NextInstance.translator.interpolator.format = (value, format) => {
+      if (opts.filters.hasOwnProperty(format)) {
+        if (typeof opts.filters[format] === 'function') {
+          return opts.filters[format](value);
+        }
+        throw new Error(`${format} is not a valid filter`);
+      }
+      return value;
+    };
+    i18NextInstance.translator.interpolator.formatSeparator = '|';
+  }
+};
+
 const i18nMiddleware = (req, res, next) => {
   if (!defined(req.i18Next)) {
     req.i18Next = i18NextInstance;
@@ -82,4 +97,4 @@ const i18nMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = { i18NextInstance, i18nMiddleware };
+module.exports = { i18NextInstance, i18nMiddleware, configurei18n };

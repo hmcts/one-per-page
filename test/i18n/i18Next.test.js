@@ -1,7 +1,33 @@
 const { expect, sinon } = require('../util/chai');
-const { i18NextInstance, i18nMiddleware } = require('../../src/i18n/i18Next');
+const {
+  i18NextInstance,
+  i18nMiddleware,
+  configurei18n
+} = require('../../src/i18n/i18Next');
 
 describe('i18n/i18Next', () => {
+  describe('configurei18n', () => {
+    it('applys interpolator if filters presented as argument', () => {
+      configurei18n({ filters: { test: sinon.stub() } });
+      expect(
+        i18NextInstance.translator.interpolator.formatSeparator
+      ).to.eql('|');
+    });
+    it('applys interpolator format function', () => {
+      const filter = sinon.stub();
+      configurei18n({ filters: { test: filter } });
+      i18NextInstance.translator.interpolator.format('value', 'test');
+      expect(filter).calledOnce;
+    });
+    it('throws error if not valid formatter', () => {
+      const filter = 'not valid filter';
+      configurei18n({ filters: { test: filter } });
+      const format = () =>
+        i18NextInstance.translator.interpolator.format('value', 'test')
+      expect(format).to.throw('test is not a valid filter');
+    });
+  });
+
   describe('i18nMiddleware', () => {
     it('exposes an express middleware', () => {
       expect(i18nMiddleware).to.be.a('function');

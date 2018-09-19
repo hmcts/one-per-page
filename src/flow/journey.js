@@ -6,6 +6,7 @@ const { defined } = require('../util/checks');
 const RequestBoundJourney = require('./RequestBoundJourney');
 const log = require('../util/logging')('journey');
 const cookieParser = require('cookie-parser');
+const { configurei18n } = require('../i18n/i18Next');
 
 const constructorFrom = step => {
   if (defined(step.prototype)) {
@@ -37,6 +38,8 @@ const options = userOpts => {
 
 const journey = (app, userOpts) => {
   log.debug('Initialising journey');
+
+  configurei18n(defaultIfUndefined(userOpts.i18n, {}));
 
   const opts = options(userOpts);
   const steps = opts.steps

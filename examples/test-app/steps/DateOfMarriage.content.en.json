@@ -2,7 +2,7 @@
   "title": "When did you get married?",
   "date": {
     "question": "Date you got married",
-    "hint": "For example, {{ today }}",
+    "hint": "For example, {{ today | date }}",
     "dayLabel": "Day",
     "monthLabel": "Month",
     "yearLabel": "Year",
