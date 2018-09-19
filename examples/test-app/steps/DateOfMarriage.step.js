@@ -20,7 +20,7 @@ class DateOfMarriage extends Question {
   }
 
   get today() {
-    return moment().format('D M YYYY');
+    return moment().format();
   }
 
   next() {
