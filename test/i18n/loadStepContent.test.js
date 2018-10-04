@@ -10,7 +10,8 @@ describe('i18n/loadStepContent', () => {
     'StepName.json',
     'StepName.en.json',
     'StepName.content.json',
-    'StepName.content.en.json'
+    'StepName.content.en.json',
+    'StepName.content.section.json'
   ];
 
   const testRoot = path.resolve(__dirname, './fixtures/loadStepContent');
