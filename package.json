@@ -2,7 +2,7 @@
   "name": "@hmcts/one-per-page",
   "description": "One question per page apps made easy",
   "homepage": "https://github.com/hmcts/one-per-page#readme",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "main": "./src/main.js",
   "repository": {
     "type": "git",
