@@ -82,7 +82,6 @@ const loadStepContent = (step, i18Next) => {
     glob(`${step.dirname}/${step.name}.json`).then(loadContents),
     glob(`${step.dirname}/${step.name}.@(*).json`).then(loadContents),
     glob(`${step.dirname}/${step.name}.content.json`).then(loadContents),
-    glob(`${step.dirname}/${step.name}.content.@(*).json`).then(loadContents),
     glob(`${step.dirname}/**/*/${step.name}.content.@(*).json`).then(loadContents)
   ];
 
