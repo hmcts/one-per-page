@@ -12,7 +12,7 @@ const getValue = (name, body) => option
 
 const omitIfUndefined = field => {
   if (defined(field.value)) {
-    return { [field.name]: field.value };
+    return { [field.name]: field.value.trim() };
   }
   return {};
 };
