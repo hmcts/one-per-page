@@ -98,6 +98,7 @@ describe('forms/fields', () => {
     it.deserializes({ value: '', from: {} });
 
     it.parses({ to: 'value', from: 'value' });
+    it.parses({ to: 'value', from: '   value   ' });
     it.parses({ to: '1', from: 1 });
     it.parses({ to: '', from: '' });
     it.parses({ to: '', from: undefined });

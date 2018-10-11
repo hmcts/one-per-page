@@ -123,7 +123,7 @@ const nonEmptyText = fieldDescriptor({
   parser(name, body) {
     return option
       .fromNullable(body[name])
-      .map(val => val.toString())
+      .map(val => val.toString().trim())
       .valueOrElse('');
   },
   deserializer(name, values) {
