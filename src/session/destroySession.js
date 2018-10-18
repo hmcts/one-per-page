@@ -2,7 +2,9 @@ const destroySession = (req, res, next) => {
   if (typeof req.session === 'undefined') {
     throw new Error('Session not initialized');
   }
-  req.session.destroy();
+  req.on('end', () => {
+    req.session.destroy();
+  });
   next();
 };
 
