@@ -3,7 +3,10 @@ const destroySession = require('../../src/session/destroySession');
 
 describe('session/destroySession', () => {
   it('calls req.session.destroy() to destroy a session', done => {
-    const req = { session: { destroy: sinon.stub() } };
+    const req = {
+      session: { destroy: sinon.stub() },
+      on: sinon.stub().callsArg(1)
+    };
     const res = {};
     const next = () => {
       expect(req.session.destroy).calledOnce;
