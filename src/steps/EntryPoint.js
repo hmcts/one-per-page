@@ -7,9 +7,9 @@ class EntryPoint extends Redirect {
     return [...super.middleware, createSession];
   }
 
-  handler(req, res) {
+  handler(req, res, next) {
     req.session.entryPoint = this.name;
-    super.handler(req, res);
+    super.handler(req, res, next);
   }
 
   get flowControl() {

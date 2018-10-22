@@ -19,17 +19,26 @@ class Action {
           next(errorMessage);
           return;
         }
-        this.nextFlow.redirect(req, res);
+        if (typeof this.nextFlow === 'function') {
+          this.nextFlow(req, res, next);
+        } else {
+          this.nextFlow.redirect(req, res, next);
+        }
       })
       .catch(error => {
         if (notDefined(this.errorFlow)) {
           const errorMsg = `No error flow chained to action from ${req.path}`;
-          log.error(errorMsg);
+          log.warn(errorMsg);
           next(error);
           return;
         }
         log.error(error);
-        this.errorFlow.redirect(req, res);
+
+        if (typeof this.errorFlow === 'function') {
+          this.errorFlow(error, req, res, next);
+        } else {
+          this.errorFlow.redirect(req, res, next);
+        }
       });
   }
 

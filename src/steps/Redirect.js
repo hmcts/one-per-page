@@ -9,9 +9,9 @@ class Redirect extends BaseStep {
     expectImplemented(this, 'next');
   }
 
-  handler(req, res) {
+  handler(req, res, next) {
     if (req.method === 'GET') {
-      this.next().redirect(req, res);
+      this.next().redirect(req, res, next);
     } else {
       res.sendStatus(METHOD_NOT_ALLOWED);
     }
