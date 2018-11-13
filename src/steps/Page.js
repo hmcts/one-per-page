@@ -1,11 +1,11 @@
 const BaseStep = require('./BaseStep');
 const addLocals = require('../middleware/addLocals');
 const { METHOD_NOT_ALLOWED } = require('http-status-codes');
-const { loadStepContent } = require('../i18n/loadStepContent');
 const resolveTemplate = require('../middleware/resolveTemplate');
 const { i18NextInstance } = require('../i18n/i18Next');
 const { contentProxy } = require('../i18n/contentProxy');
 const { defined } = require('../util/checks');
+const loadStepContent = require('../middleware/loadStepContent');
 
 const notLocals = [
   '_router',
@@ -38,11 +38,15 @@ class Page extends BaseStep {
   constructor(...args) {
     super(...args);
     this.content = new Proxy(i18NextInstance, contentProxy(this));
-    this.waitFor(loadStepContent(this, i18NextInstance));
   }
 
   get middleware() {
-    return [...super.middleware, resolveTemplate, addLocals];
+    return [
+      loadStepContent(this),
+      ...super.middleware,
+      resolveTemplate,
+      addLocals
+    ];
   }
 
   get locals() {
