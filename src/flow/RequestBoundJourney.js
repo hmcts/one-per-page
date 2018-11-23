@@ -56,12 +56,9 @@ class RequestBoundJourney {
   collectSteps(req, res, next) {
     this.visitedSteps = this.walkTree();
 
-    const allPromises = this.visitedSteps.reduce((promises, step) => {
-      promises.push(loadStepContent.loadStepContent(step, i18NextInstance));
-      return promises;
-    }, []);
-
-    Promise.all(allPromises)
+    Promise.all(this.visitedSteps.map(step =>
+      loadStepContent.loadStepContent(step, i18NextInstance)
+    ))
       .then(() => next())
       .catch(next);
   }
