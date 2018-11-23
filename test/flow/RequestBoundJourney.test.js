@@ -7,6 +7,7 @@ const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAn
 const { goTo, RequestBoundJourney } = require('../../src/flow');
 const { text, form } = require('../../src/forms');
 const Joi = require('joi');
+const loadStepContent = require('../../src/i18n/loadStepContent');
 
 describe('journey/RequestBoundJourney', () => {
   it('sets itself to req.journey', () => {
@@ -162,7 +163,12 @@ describe('journey/RequestBoundJourney', () => {
     describe('#collectSteps', () => {
       before(() => {
         sinon.spy(journey, 'walkTree');
+        sinon.spy(loadStepContent, 'loadStepContent');
         journey.collectSteps(req, res, next);
+      });
+
+      after(() => {
+        loadStepContent.loadStepContent.restore();
       });
 
       it('walks the tree', () => {
@@ -175,8 +181,8 @@ describe('journey/RequestBoundJourney', () => {
         expect(journey.visitedSteps).to.eql([entry, name]);
       });
 
-      it('makes the current step to wait for the steps to be ready', () => {
-        expect(req.currentStep.waitFor).calledTwice;
+      it('makes the current step to wait for the steps content to be ready', () => {
+        expect(loadStepContent.loadStepContent).calledTwice;
       });
     });
 

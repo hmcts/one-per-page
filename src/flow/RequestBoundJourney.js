@@ -1,6 +1,8 @@
 const { notDefined, defined, ensureArray } = require('../util/checks');
 const deepmerge = require('deepmerge');
 const log = require('../util/logging')('RequestBoundJourney');
+const loadStepContent = require('../i18n/loadStepContent');
+const { i18NextInstance } = require('../i18n/i18Next');
 
 const getName = stepOrName => {
   if (typeof stepOrName === 'string') {
@@ -53,8 +55,15 @@ class RequestBoundJourney {
 
   collectSteps(req, res, next) {
     this.visitedSteps = this.walkTree();
-    this.visitedSteps.forEach(step => req.currentStep.waitFor(step.ready()));
-    next();
+
+    const allPromises = this.visitedSteps.reduce((promises, step) => {
+      promises.push(loadStepContent.loadStepContent(step, i18NextInstance));
+      return promises;
+    }, []);
+
+    Promise.all(allPromises)
+      .then(() => next())
+      .catch(next);
   }
 
   completeUpTo(step) {
