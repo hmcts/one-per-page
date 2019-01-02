@@ -9,6 +9,7 @@ const { RefValue } = require('../forms/fieldValue');
 const logging = require('@log4js-node/log4js-api');
 const { ifCompleteThenContinue } = require('../flow/treeWalker');
 const preventCaching = require('../middleware/preventCaching');
+const sanitizeRequestBody = require('../middleware/sanitizeRequestBody');
 const csurf = require('csurf');
 
 const csrfProtection = csurf({ cookie: false });
@@ -23,6 +24,7 @@ class Question extends Page {
     const mw = [
       ...super.middleware,
       bodyParser.urlencoded({ extended: true }),
+      sanitizeRequestBody,
       requireSession,
       preventCaching
     ];
