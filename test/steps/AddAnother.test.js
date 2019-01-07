@@ -480,7 +480,7 @@ describe('steps/AddAnother', () => {
         };
         return testStep(ValidateAText)
           .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
-          .withField('item-a', 'foo')
+          .withField('item.a', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')
           .expect(UNPROCESSABLE_ENTITY)

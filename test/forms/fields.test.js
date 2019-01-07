@@ -257,11 +257,11 @@ describe('forms/fields', () => {
     it.parses({ to: {}, from: {} });
     it.parses({
       to: { a: 'A text field', b: true },
-      from: { 'foo-a': 'A text field', 'foo-b': 'true' }
+      from: { 'foo.a': 'A text field', 'foo.b': 'true' }
     });
     it.parses({
       to: { a: 'A text field' },
-      from: { 'foo-a': 'A text field' }
+      from: { 'foo.a': 'A text field' }
     });
 
     it.deserializes({
@@ -380,7 +380,7 @@ describe('forms/fields', () => {
     it.parses({ to: {}, from: {} });
     it.parses({
       to: { day: '1', month: '12', year: '2017' },
-      from: { 'foo-day': '1', 'foo-month': '12', 'foo-year': '2017' }
+      from: { 'foo.day': '1', 'foo.month': '12', 'foo.year': '2017' }
     });
 
     it.deserializes({
@@ -401,7 +401,7 @@ describe('forms/fields', () => {
       expect(errored.errors).to.eql(['Enter a date']);
     });
     it('errors if any fields missing', () => {
-      const errored = date.required().parse('date', { 'date-month': '1' });
+      const errored = date.required().parse('date', { 'date.month': '1' });
       errored.validate();
       expect(errored.day.errors).to.eql(['Enter a day']);
       expect(errored.year.errors).to.eql(['Enter a year']);
