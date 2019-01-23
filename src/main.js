@@ -11,6 +11,8 @@ const { field, form, checkboxField } = require('./forms');
 
 const { goTo, branch, journey } = require('./flow');
 
+const { parseBool }  = require('./util');
+
 module.exports = {
   EntryPoint,
   ExitPoint,
@@ -24,5 +26,6 @@ module.exports = {
   checkboxField,
   form,
   goTo,
-  branch
+  branch,
+  parseBool
 };
