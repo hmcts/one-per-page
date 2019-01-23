@@ -1,4 +1,4 @@
-const modulePath = '../../src/util/checks';
+const modulePath = '../../src/util/parseBool';
 const parseBool = require(modulePath);
 
 const { expect } = require('./chai');
