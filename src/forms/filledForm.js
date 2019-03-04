@@ -4,6 +4,8 @@ const {
   flattenArray, flattenObject
 } = require('../util/ops');
 const option = require('option');
+const { cloneDeep } = require('lodash');
+const watches = require('../util/watches');
 
 const fieldsProp = Symbol('fields');
 const filled = Symbol('filledFromTemp');
@@ -26,6 +28,9 @@ class FilledForm {
     if (notDefined(req.session)) {
       throw new Error('Session not initialized');
     }
+
+    const prevSession = cloneDeep(req.session);
+
     const existingValues = option
       .fromNullable(req.session[stepName])
       .valueOrElse({});
@@ -37,7 +42,10 @@ class FilledForm {
     if (values !== {}) {
       Object.assign(req.session, { [stepName]: values, temp: {} });
     }
-  }
+
+    const session = watches.traverseWatches(req.journey, prevSession, req.session);
+    Object.assign(req.session, session);
+  };
 
   tempStore(stepName, req) {
     if (notDefined(req.session)) {
