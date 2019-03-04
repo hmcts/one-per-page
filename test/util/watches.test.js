@@ -22,7 +22,7 @@ describe('util/watches', () => {
     const SimpleQuestion2 = class extends Question {
       get watches() {
         return {
-          'SimpleQuestion.name': (previousSession, session, remove) => {
+          'SimpleQuestion.name': (previousValue, currentValue, remove) => {
             remove('SimpleQuestion2.name');
           }
         };
@@ -44,7 +44,7 @@ describe('util/watches', () => {
     const SimpleQuestion3 = class extends Question {
       get watches() {
         return {
-          'SimpleQuestion2.name': (previousSession, session, remove) => {
+          'SimpleQuestion2.name': (previousValue, currentValue, remove) => {
             remove('SimpleQuestion3.name');
           }
         };
