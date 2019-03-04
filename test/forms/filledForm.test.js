@@ -35,6 +35,7 @@ describe('forms/filledForm', () => {
       });
       afterEach(() => {
         fields.foo.serialize.restore();
+        fields.bar.serialize.restore();
         watches.traverseWatches.restore();
       });
 

@@ -21,14 +21,14 @@ const getWatches = (journey = { steps: [] }) => {
 };
 
 const hasChanged = (path, previousSession, session) => {
-  const prevVariable = get(previousSession, path);
-  const newVariable = get(session, path);
+  const previousValue = get(previousSession, path);
+  const newValue = get(session, path);
 
-  if (typeof prevVariable === 'string' && typeof newVariable === 'string') {
-    return prevVariable !== newVariable;
+  if (typeof previousValue === 'string' && typeof newValue === 'string') {
+    return previousValue !== newValue;
   }
   // if variables are not strings then turn them into strings to compare
-  return JSON.stringify(prevVariable) !== JSON.stringify(newVariable);
+  return JSON.stringify(previousValue) !== JSON.stringify(newValue);
 };
 
 const traverseWatches = (journey, previousSession = {}, session = {}) => {
@@ -51,9 +51,11 @@ const traverseWatches = (journey, previousSession = {}, session = {}) => {
   watchPaths.forEach(path => {
     const watchCallbacks = watches[path];
     if (hasChanged(path, previousSession, session)) {
-      watchCallbacks.forEach(watchCallback =>
-        watchCallback(previousSession, session, remove)
-      );
+      watchCallbacks.forEach(watchCallback => {
+        const previousValue = get(previousSession, path);
+        const currentValue = get(session, path);
+        watchCallback(previousValue, currentValue, remove, session);
+      });
     }
   });
 };
