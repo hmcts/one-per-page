@@ -1,13 +1,13 @@
-const { get } = require('lodash');
+const { get, unset } = require('lodash');
 
 
-const getWatches = (journey = { steps: [] }) => {
+const getWatches = (journey = { steps: {} }) => {
   const watches = {};
 
-  if (journey.steps && journey.steps.length) {
-    journey.steps.forEach(step => {
+  if (journey.steps) {
+    Object.keys(journey.steps).forEach(StepName => {
+      const step = journey.steps[StepName];
       const stepInstance = journey.instance(step);
-
       if (stepInstance.watches) {
         Object.keys(stepInstance.watches).forEach(path => {
           watches[path] = watches[path] || [];
@@ -36,13 +36,13 @@ const traverseWatches = (journey, previousSession = {}, session = {}) => {
 
   const watchPaths = Object.keys(watches);
 
-  const remove = (...fieldsToRemove) => {
-    fieldsToRemove.forEach(field => {
-      if (typeof session[field] === 'undefined') {
+  const remove = (...pathsToRemove) => {
+    pathsToRemove.forEach(path => {
+      if (typeof get(session, path) === 'undefined') {
         return;
       }
 
-      delete session[field];
+      unset(session, path);
 
       traverseWatches(journey, previousSession, session);
     });
