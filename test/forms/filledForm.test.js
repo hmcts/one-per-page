@@ -2,6 +2,7 @@ const { expect, sinon } = require('../util/chai');
 const { FilledForm, filledForm } = require('../../src/forms/filledForm');
 const FieldError = require('../../src/forms/fieldError');
 const { text } = require('../../src/forms/fields');
+const watches = require('../../src/util/watches');
 
 describe('forms/filledForm', () => {
   describe('#filledForm', () => {
@@ -30,10 +31,11 @@ describe('forms/filledForm', () => {
       beforeEach(() => {
         sinon.spy(fields.foo, 'serialize');
         sinon.spy(fields.bar, 'serialize');
+        sinon.spy(watches, 'traverseWatches');
       });
       afterEach(() => {
         fields.foo.serialize.restore();
-        fields.bar.serialize.restore();
+        watches.traverseWatches.restore();
       });
 
       it('throws an error if session is not initialized', () => {
@@ -62,6 +64,15 @@ describe('forms/filledForm', () => {
         expect(req.session).has.property('StepName');
         expect(req.session.StepName).has.property('foo', 'A text value');
         expect(req.session.StepName).has.property('bar', 'Another text value');
+      });
+
+      it('runs the watches', () => {
+        const f = new FilledForm(fields);
+        const req = { session: {} };
+
+        f.store('StepName', req);
+
+        expect(watches.traverseWatches).calledOnce;
       });
     });
 
