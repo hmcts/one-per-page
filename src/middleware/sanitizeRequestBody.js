@@ -1,11 +1,16 @@
 /* eslint-disable no-invalid-this */
 const sanitizer = require('sanitizer');
 const traverse = require('traverse');
+const emoji = require('node-emoji');
+const { flow } = require('lodash');
 
 const sanitizeRequestBody = (req, res, next) => {
+  const santizeValue = flow([emoji.strip, sanitizer.sanitize]);
+
   traverse(req.body).forEach(function sanitizeValue(value) {
     if (this.isLeaf) {
-      this.update(sanitizer.sanitize(value));
+      const sanitizedValue = santizeValue(value);
+      this.update(sanitizedValue);
     }
   });
   next();
