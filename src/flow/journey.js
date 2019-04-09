@@ -29,10 +29,13 @@ const options = userOpts => {
   const steps = defaultIfUndefined(userOpts.steps, [])
     .map(constructorFrom);
 
+  const routes = defaultIfUndefined(userOpts.routes, []);
+
   return Object.assign({}, userOpts, {
     steps,
     session: sessionProvider,
-    noSessionHandler: userOpts.noSessionHandler
+    noSessionHandler: userOpts.noSessionHandler,
+    routes
   });
 };
 
@@ -60,6 +63,14 @@ const journey = (app, userOpts) => {
   app.use(setupMiddleware);
   app.use(opts.session);
   app.use(i18nMiddleware);
+
+  opts.routes.forEach(route => {
+    if (!route.hasOwnProperty('bind')) {
+      // eslint-disable-next-line max-len
+      throw new TypeError('Your custom route should have a bind function i.e. bind: app => {}');
+    }
+    return route.bind(app);
+  });
 
   opts.steps.forEach(Step => Step.bind(app));
   errorPages.bind(app, userOpts.errorPages);
