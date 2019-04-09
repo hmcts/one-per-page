@@ -59,7 +59,7 @@ describe('journey/journey', () => {
     return supertest(app).get('/custom-route').expect(OK);
   });
 
-  it('thowes an error if route doesnt have bind function', () => {
+  it('throws an error if route doesnt have bind function', () => {
     const shouldThrowError = () => {
       journey(testApp(), options({ routes: [{}] }));
     };
