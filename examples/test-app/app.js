@@ -60,7 +60,16 @@ lookAndFeel.configure(app, {
   }
 });
 
+const customRoute = {
+  bind: theApp => {
+    theApp.use('/my-custom-route', (req, res) => {
+      res.send();
+    });
+  }
+};
+
 journey(app, {
+  routes: [customRoute],
   steps: [
     Start,
     Entry,
