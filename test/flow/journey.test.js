@@ -47,6 +47,27 @@ describe('journey/journey', () => {
     return supertest(app).get(TestPage.path).expect(OK);
   });
 
+  it('binds custom routes to the router', () => {
+    const routes = [
+      {
+        bind: app => {
+          app.use('/custom-route', (req, res) => res.send());
+        }
+      }
+    ];
+    const app = journey(testApp(), options({ routes }));
+    return supertest(app).get('/custom-route').expect(OK);
+  });
+
+  it('thowes an error if route doesnt have bind function', () => {
+    const shouldThrowError = () => {
+      journey(testApp(), options({ routes: [{}] }));
+    };
+    return expect(shouldThrowError)
+      // eslint-disable-next-line max-len
+      .throws('Your custom route should have a bind function i.e. bind: app => {}');
+  });
+
   describe('req.journey', () => {
     it('is created by journey', handlerTest({
       test(req) {
