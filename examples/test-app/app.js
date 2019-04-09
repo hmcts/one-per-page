@@ -63,6 +63,7 @@ lookAndFeel.configure(app, {
 const customRoute = {
   bind: theApp => {
     theApp.use('/my-custom-route', (req, res) => {
+      // do some stuff
       res.send();
     });
   }
