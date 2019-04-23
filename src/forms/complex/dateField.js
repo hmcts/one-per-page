@@ -16,23 +16,16 @@ const dateField = (
   const yearField = textField('year');
   return compoundField(name, dayField, monthField, yearField)
     .joi(
-      allRequired,
-      Joi.object().keys({
-        day: Joi.string().required(),
-        month: Joi.string().required(),
-        year: Joi.string().required()
-      })
-    )
-    .joi(
       errorFor('day', dayRequired),
       Joi.object({
         day: Joi.number().integer()
           .min(1)
-          .max(31)
-          .required(),
+          .max(31),
         month: Joi.any(),
         year: Joi.any()
       })
+      .with('year', 'day')
+      .with('month', 'day')
     )
     .joi(
       errorFor('month', monthRequired),
@@ -40,10 +33,11 @@ const dateField = (
         day: Joi.any(),
         month: Joi.number().integer()
           .min(1)
-          .max(12)
-          .required(),
+          .max(12),
         year: Joi.any()
       })
+      .with('year', 'month')
+      .with('day', 'month')
     )
     .joi(
       errorFor('year', yearRequired),
@@ -53,8 +47,17 @@ const dateField = (
         year: Joi.number().integer()
           .min(1)
           .max(9999)
-          .required()
       })
+      .with('day', 'year')
+      .with('month', 'year')
+    )
+    .joi(
+        allRequired,
+        Joi.object({
+          day: Joi.string().required(),
+          month: Joi.string().required(),
+          year: Joi.string().required()
+        })
     );
 };
 
