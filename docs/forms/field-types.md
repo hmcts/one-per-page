@@ -262,10 +262,10 @@ required.
 The `errorMessages` object is optional and allows you to customise the error
 messages:
 
-- `allRequired` - Error message to display if no values are present, defaults to "Enter a date"
-- `dayRequired` - Error message to display if day is not present, defaults to "Enter a day"
-- `monthRequired` - Error message to display if month is not present, defaults to "Enter a month"
-- `yearRequired` - Error message to display if year is not present, defaults to "Enter a year"
+- `allRequired` - Error message to display if no values are present, defaults to "Enter a valid date"
+- `dayRequired` - Error message to display if day is not present, defaults to "Enter a valid day"
+- `monthRequired` - Error message to display if month is not present, defaults to "Enter a valid month"
+- `yearRequired` - Error message to display if year is not present, defaults to "Enter a valid year"
 
 [`FieldDescriptor`]: /docs/forms/internal-api/FieldDescriptor
 [date-pattern]: https://govuk-elements.herokuapp.com/form-elements/example-date/
