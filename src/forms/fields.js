@@ -201,37 +201,55 @@ const convert = (transformation, field) => fieldDescriptor({
 
 const date = object({ day: text, month: text, year: text });
 date.required = ({
-  allRequired = 'Enter a date',
-  dayRequired = 'Enter a day',
-  monthRequired = 'Enter a month',
-  yearRequired = 'Enter a year'
+  allRequired = 'Enter a valid date',
+  dayRequired = 'Enter a valid day',
+  monthRequired = 'Enter a valid month',
+  yearRequired = 'Enter a valid year'
 } = {}) => date
   .joi(
     errorFor('day', dayRequired),
-    Joi.object()
-      .with('year', 'day')
-      .with('month', 'day')
+    Joi.object({
+      day: Joi.number().integer()
+        .min(1)
+        .max(31),
+      month: Joi.any(),
+      year: Joi.any()
+    })
+    .with('year', 'day')
+    .with('month', 'day')
   )
   .joi(
     errorFor('month', monthRequired),
-    Joi.object()
-      .with('year', 'month')
-      .with('day', 'month')
+    Joi.object({
+      day: Joi.any(),
+      month: Joi.number().integer()
+        .min(1)
+        .max(12),
+      year: Joi.any()
+    })
+    .with('year', 'month')
+    .with('day', 'month')
   )
   .joi(
     errorFor('year', yearRequired),
-    Joi.object()
-      .with('day', 'year')
-      .with('month', 'year')
+    Joi.object({
+      day: Joi.any(),
+      month: Joi.any(),
+      year: Joi.number().integer()
+        .min(1)
+        .max(9999)
+    })
+    .with('day', 'year')
+    .with('month', 'year')
   )
   .joi(
-    allRequired,
-    Joi.object().keys({
-      day: Joi.string().required(),
-      month: Joi.string().required(),
-      year: Joi.string().required()
-    })
-  );
+      allRequired,
+      Joi.object({
+        day: Joi.string().required(),
+        month: Joi.string().required(),
+        year: Joi.string().required()
+      })
+   );
 
 const appendToList = (collectionKey, index, field) => fieldDescriptor({
   parser(name, body, req) {

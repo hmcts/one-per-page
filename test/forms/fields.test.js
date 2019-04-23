@@ -397,14 +397,21 @@ describe('forms/fields', () => {
   describe('date.required', () => {
     it('errors if all fields missing', () => {
       const errored = date.required().parse('date', {});
+
       errored.validate();
-      expect(errored.errors).to.eql(['Enter a date']);
+      expect(errored.errors).to.eql(['Enter a valid date']);
     });
-    it('errors if any fields missing', () => {
+    it('errors if day, year missing', () => {
       const errored = date.required().parse('date', { 'date.month': '1' });
       errored.validate();
-      expect(errored.day.errors).to.eql(['Enter a day']);
-      expect(errored.year.errors).to.eql(['Enter a year']);
+      expect(errored.day.errors).to.eql(['Enter a valid day']);
+      expect(errored.year.errors).to.eql(['Enter a valid year']);
+    });
+    it('errors if month, year fields missing', () => {
+      const errored = date.required().parse('date', { 'date.day': '1' });
+      errored.validate();
+      expect(errored.month.errors).to.eql(['Enter a valid month']);
+      expect(errored.year.errors).to.eql(['Enter a valid year']);
     });
   });
 });
