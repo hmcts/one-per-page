@@ -8,7 +8,8 @@ const dateField = (
     allRequired = 'Enter a valid date',
     dayRequired = 'Enter a valid day',
     monthRequired = 'Enter a valid month',
-    yearRequired = 'Enter a valid year'
+    yearRequired = 'Enter a valid year',
+    invalidDate = 'Entered date is invalid'
   } = {}
 ) => {
   const dayField = textField('day');
@@ -58,7 +59,15 @@ const dateField = (
           month: Joi.string().required(),
           year: Joi.string().required()
         })
+    )
+    .check(
+      invalidDate, isValidDate
     );
 };
+
+  
+const isValidDate = date => {
+  return moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD').isValid();
+}
 
 module.exports = dateField;
