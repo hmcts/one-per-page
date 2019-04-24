@@ -10,6 +10,7 @@ const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
 const { errorFor } = require('./validator');
 const Joi = require('joi');
+const moment = require('moment');
 
 const ref = (step, fieldType, fieldName) => {
   const returnNothing = () => {
@@ -204,7 +205,8 @@ date.required = ({
   allRequired = 'Enter a valid date',
   dayRequired = 'Enter a valid day',
   monthRequired = 'Enter a valid month',
-  yearRequired = 'Enter a valid year'
+  yearRequired = 'Enter a valid year',
+  invalidDate = 'Entered date is invalid'
 } = {}) => date
   .joi(
     errorFor('day', dayRequired),
@@ -249,7 +251,14 @@ date.required = ({
         month: Joi.string().required(),
         year: Joi.string().required()
       })
-   );
+   )
+   .check(
+    invalidDate, isValidDate
+  );
+
+const isValidDate = date => {
+  return moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD').isValid();
+}
 
 const appendToList = (collectionKey, index, field) => fieldDescriptor({
   parser(name, body, req) {
