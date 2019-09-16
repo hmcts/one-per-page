@@ -5,7 +5,8 @@ const emoji = require('node-emoji');
 const { flow } = require('lodash');
 
 const sanitizeRequestBody = (req, res, next) => {
-  const santizeValue = flow([emoji.strip, sanitizer.sanitize]);
+  // Strip emojis, remove scripts then restore special characters
+  const santizeValue = flow([emoji.strip, sanitizer.sanitize, sanitizer.unescapeEntities]);
 
   traverse(req.body).forEach(function sanitizeValue(value) {
     if (this.isLeaf) {

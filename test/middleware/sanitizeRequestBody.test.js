@@ -11,16 +11,18 @@ let req = {};
 describe('sanitizeRequestBody', () => {
   beforeEach(() => {
     sanitizerSpy = sinon.spy(sanitizer, 'sanitize');
+    unescapeSpy = sinon.spy(sanitizer, 'unescapeEntities');
     emojiSpy = sinon.spy(emoji, 'strip');
     req = {};
   });
 
   afterEach(() => {
     sanitizerSpy.restore();
+    unescapeSpy.restore();
     emojiSpy.restore();
   });
 
-  it('runs sanitizer and emoji stripper on each item in body', done => {
+  it('runs sanitizer, unescape and emoji stripper on each item in body', done => {
     req.body = {
       foo: 'value1',
       bar: { bar: 'value2', baz: ['array1', 'array2', 'array3'] }
@@ -28,14 +30,19 @@ describe('sanitizeRequestBody', () => {
 
     sanitizeRequestBody(req, {}, () => {
       expect(sanitizerSpy.withArgs('value1')).calledOnce;
+      expect(unescapeSpy.withArgs('value1')).calledOnce;
       expect(emojiSpy.withArgs('value1')).calledOnce;
       expect(sanitizerSpy.withArgs('value2')).calledOnce;
+      expect(unescapeSpy.withArgs('value2')).calledOnce;
       expect(emojiSpy.withArgs('value2')).calledOnce;
       expect(sanitizerSpy.withArgs('array1')).calledOnce;
+      expect(unescapeSpy.withArgs('array1')).calledOnce;
       expect(emojiSpy.withArgs('array1')).calledOnce;
       expect(sanitizerSpy.withArgs('array2')).calledOnce;
+      expect(unescapeSpy.withArgs('array2')).calledOnce;
       expect(emojiSpy.withArgs('array2')).calledOnce;
       expect(sanitizerSpy.withArgs('array3')).calledOnce;
+      expect(unescapeSpy.withArgs('array3')).calledOnce;
       expect(emojiSpy.withArgs('array3')).calledOnce;
       done();
     });
@@ -52,6 +59,19 @@ describe('sanitizeRequestBody', () => {
     sanitizeRequestBody(req, {}, () => {
       Object.keys(req.body).forEach(key => {
         expect(req.body[key]).to.eql('some text');
+      });
+      done();
+    });
+  });
+
+  it('does not modify special characters', done => {
+    req.body = {
+      script: 'special characters & >< some script tags<script>Hello World</script>'
+    };
+
+    sanitizeRequestBody(req, {}, () => {
+      Object.keys(req.body).forEach(key => {
+        expect(req.body[key]).to.eql('special characters & >< some script tags');
       });
       done();
     });
