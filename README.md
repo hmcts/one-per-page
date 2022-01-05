@@ -1,5 +1,12 @@
 # One per page
 
+## :warning: Deprecated
+
+This project is no longer supported or recommended for use.
+There has been no one maintaining it in over 3 years, and is only used by 4 projects at the current time most of which are being retired.
+
+## Introduction
+
 Easily build GOV.UK style one question per page services using express,
 nunjucks and webpack.
 
@@ -98,9 +105,3 @@ Read our [development documentation][dev-docs] for help on getting started.
 [issues]: https://github.com/hmcts/one-per-page/issues
 [dev-docs]: https://one-per-page.herokuapp.com/docs/development
 [`@hmcts/look-and-feel`]: https://github.com/hmcts/look-and-feel
-
-<script type="text/javascript">
-function changeImage(id, newImage) {
-  document.getElementById(id).src = newImage;
-}
-</script>
