@@ -58,7 +58,7 @@ class FieldDescriptor {
 
   joi(targetOrError, joiSchema) {
     const joi = field => {
-      const { error } = Joi.validate(field.value, joiSchema);
+      const { error } = joiSchema.validate(field.value);
       return !error;
     };
     return this.checkField(targetOrError, joi);

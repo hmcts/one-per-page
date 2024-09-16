@@ -13,7 +13,7 @@ class RespondentTitle extends Question {
       husbandOrWife: text.joi(
         'Select who you are divorcing',
         Joi.string().required()
-          .valid(['wife', 'husband'])
+          .valid(...['wife', 'husband'])
       )
     });
   }
