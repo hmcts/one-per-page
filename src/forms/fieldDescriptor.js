@@ -1,6 +1,5 @@
 const option = require('option');
 const { FieldValue } = require('./fieldValue');
-const Joi = require('joi');
 const { validator, parseErrorTarget } = require('./validator');
 const { defined } = require('../util/checks');
 

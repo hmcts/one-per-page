@@ -29,7 +29,8 @@ const contentProxy = (step, prefix) => {
       return content;
     }
     const key = `${step.name}:${prefix}`;
-    if (toStringKeys.includes(name) || toJsonKeys.includes(name) || observersKeys.includes(name)) {
+    if ([toStringKeys, toJsonKeys, observersKeys]
+      .some(keys => keys.includes(name))) {
       if (target.exists(key)) {
         return () => target.t(key, step.locals);
       }

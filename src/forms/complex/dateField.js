@@ -1,6 +1,10 @@
 const Joi = require('joi');
 const { compoundField, errorFor } = require('../compoundField');
 const { textField } = require('../simpleFields');
+const moment = require('moment');
+
+const isValidDate = date =>
+  moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD').isValid();
 
 const dateField = (
   name,
@@ -15,18 +19,21 @@ const dateField = (
   const dayField = textField('day');
   const monthField = textField('month');
   const yearField = textField('year');
+  const dayLimit = 31;
+  const monthLimit = 12;
+  const yearLimit = 9999;
   return compoundField(name, dayField, monthField, yearField)
     .joi(
       errorFor('day', dayRequired),
       Joi.object({
         day: Joi.number().integer()
           .min(1)
-          .max(31),
+          .max(dayLimit),
         month: Joi.any(),
         year: Joi.any()
       })
-      .with('year', 'day')
-      .with('month', 'day')
+        .with('year', 'day')
+        .with('month', 'day')
     )
     .joi(
       errorFor('month', monthRequired),
@@ -34,11 +41,11 @@ const dateField = (
         day: Joi.any(),
         month: Joi.number().integer()
           .min(1)
-          .max(12),
+          .max(monthLimit),
         year: Joi.any()
       })
-      .with('year', 'month')
-      .with('day', 'month')
+        .with('year', 'month')
+        .with('day', 'month')
     )
     .joi(
       errorFor('year', yearRequired),
@@ -47,27 +54,22 @@ const dateField = (
         month: Joi.any(),
         year: Joi.number().integer()
           .min(1)
-          .max(9999)
+          .max(yearLimit)
       })
-      .with('day', 'year')
-      .with('month', 'year')
+        .with('day', 'year')
+        .with('month', 'year')
     )
     .joi(
-        allRequired,
-        Joi.object({
-          day: Joi.string().required(),
-          month: Joi.string().required(),
-          year: Joi.string().required()
-        })
+      allRequired,
+      Joi.object({
+        day: Joi.string().required(),
+        month: Joi.string().required(),
+        year: Joi.string().required()
+      })
     )
     .check(
       invalidDate, isValidDate
     );
 };
-
-  
-const isValidDate = date => {
-  return moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD').isValid();
-}
 
 module.exports = dateField;

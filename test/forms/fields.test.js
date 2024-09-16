@@ -414,22 +414,22 @@ describe('forms/fields', () => {
       expect(errored.year.errors).to.eql(['Enter a valid year']);
     });
     it('errors if day entered is not valid', () => {
-      const errored = date.required().parse('date', { 'date.day': '32', 'date.month': '1', 'date.year': '1000'});
+      const errored = date.required().parse('date', { 'date.day': '32', 'date.month': '1', 'date.year': '1000' });
       errored.validate();
       expect(errored.day.errors).to.eql(['Enter a valid day']);
     });
     it('errors if month entered is not valid', () => {
-      const errored = date.required().parse('date', { 'date.day': '3', 'date.month': '13', 'date.year': '1000'});
+      const errored = date.required().parse('date', { 'date.day': '3', 'date.month': '13', 'date.year': '1000' });
       errored.validate();
       expect(errored.month.errors).to.eql(['Enter a valid month']);
     });
     it('errors if year entered is not valid', () => {
-      const errored = date.required().parse('date', { 'date.day': '3', 'date.month': '10', 'date.year': '10000'});
+      const errored = date.required().parse('date', { 'date.day': '3', 'date.month': '10', 'date.year': '10000' });
       errored.validate();
       expect(errored.year.errors).to.eql(['Enter a valid year']);
     });
     it('errors if the entered date is invalid like not a leap year', () => {
-      const errored = date.required().parse('date', { 'date.day': '29', 'date.month': '2', 'date.year': '2019'});
+      const errored = date.required().parse('date', { 'date.day': '29', 'date.month': '2', 'date.year': '2019' });
       errored.validate();
       expect(errored.errors).to.eql(['Entered date is invalid']);
     });

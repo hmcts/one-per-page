@@ -1,5 +1,3 @@
 const parseBool = require('./parseBool');
 
-module.exports = {
-  parseBool
-};
+module.exports = { parseBool };

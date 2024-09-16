@@ -65,9 +65,7 @@ describe('sanitizeRequestBody', () => {
   });
 
   it('does not modify special characters', done => {
-    req.body = {
-      script: 'special characters & >< some script tags<script>Hello World</script>'
-    };
+    req.body = { script: 'special characters & >< some script tags<script>Hello World</script>' };
 
     sanitizeRequestBody(req, {}, () => {
       Object.keys(req.body).forEach(key => {
