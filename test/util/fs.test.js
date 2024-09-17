@@ -44,7 +44,7 @@ describe('util/fs', () => {
     });
 
     it('rejects if no path provided', () => {
-      return expect(glob()).rejectedWith(/pattern string required/);
+      return expect(glob()).rejectedWith(/invalid pattern/);
     });
   });
 
