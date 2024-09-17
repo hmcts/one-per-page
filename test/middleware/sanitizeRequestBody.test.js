@@ -5,6 +5,7 @@ const sanitizer = require('sanitizer');
 const emoji = require('node-emoji');
 
 let sanitizerSpy = {};
+let unescapeSpy = {};
 let emojiSpy = {};
 let req = {};
 
