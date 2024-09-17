@@ -9,9 +9,7 @@ const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const Page = require('../../src/steps/Page');
 
 describe('errors/errorPages', () => {
-  const defaultOptions = {
-    session: { secret: 'foo' }
-  };
+  const defaultOptions = { session: { secret: 'foo' } };
   const options = (...overrides) => {
     const foo = Object.assign(
       {},

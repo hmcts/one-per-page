@@ -83,21 +83,26 @@ describe('i18n/contentProxy', () => {
 
     describe('#hasOwnProperty (used by nunjucks)', () => {
       it('returns true for #toString (string)', () => {
+        // eslint-disable-next-line no-prototype-builtins
         expect(proxy.foo.hasOwnProperty('toString')).to.be.true;
       });
       it('returns true for #toString (symbol)', () => {
+        // eslint-disable-next-line no-prototype-builtins
         expect(proxy.foo.hasOwnProperty(Symbol.toStringTag)).to.be.true;
       });
       it('returns true for #inspect (string)', () => {
+        // eslint-disable-next-line no-prototype-builtins
         expect(proxy.foo.hasOwnProperty('inspect')).to.be.true;
       });
       it('returns true for #inspect (symbol)', () => {
+        // eslint-disable-next-line no-prototype-builtins
         expect(proxy.foo.hasOwnProperty(util.inspect.custom)).to.be.true;
       });
 
       it('returns false for #__keywords', () => {
         // used by nunjucks to determine if the last argument in a macro
         // is a dict of keyword args
+        // eslint-disable-next-line no-prototype-builtins
         expect(proxy.foo.hasOwnProperty('__keywords')).to.be.false;
       });
     });

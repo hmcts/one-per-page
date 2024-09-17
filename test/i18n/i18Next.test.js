@@ -23,7 +23,7 @@ describe('i18n/i18Next', () => {
       const filter = 'not valid filter';
       configurei18n({ filters: { test: filter } });
       const format = () =>
-        i18NextInstance.translator.interpolator.format('value', 'test')
+        i18NextInstance.translator.interpolator.format('value', 'test');
       expect(format).to.throw('test is not a valid filter');
     });
   });

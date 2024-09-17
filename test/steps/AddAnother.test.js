@@ -415,7 +415,9 @@ describe('steps/AddAnother', () => {
       it('sends json with empty validation when field is valid and request is an ajax', () => {
         const validationErrors = { validationErrors: [] };
         return testStep(AddAText)
-          .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+          })
           .withField('item', 'foo')
           .withSession({})
           .post('/add-a-text/item-0')
@@ -455,7 +457,9 @@ describe('steps/AddAnother', () => {
           }
         };
         return testStep(ValidateAText)
-          .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+          })
           .withField('item', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')
@@ -468,18 +472,22 @@ describe('steps/AddAnother', () => {
       it('sends json with the validation errors if object field not valid and request is an ajax', () => {
         const ValidateAText = class ValidateAText extends AddAText {
           get field() {
-            return object({a: text}).check(errorFor('a', 'always fails'), () => false);
+            return object({ a: text }).check(errorFor('a', 'always fails'), () => false);
           }
         };
         const validationErrors = {
-          validationErrors: [{
-            field: 'a',
-            errors: ['always fails'],
-            value: 'foo'
-          }]
+          validationErrors: [
+            {
+              field: 'a',
+              errors: ['always fails'],
+              value: 'foo'
+            }
+          ]
         };
         return testStep(ValidateAText)
-          .withSetup(req => req.headers['X-Requested-With'] = 'XMLHttpRequest')
+          .withSetup(req => {
+            req.headers['X-Requested-With'] = 'XMLHttpRequest';
+          })
           .withField('item.a', 'foo')
           .withSession({})
           .post('/validate-a-text/item-0')

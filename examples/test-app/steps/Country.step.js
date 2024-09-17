@@ -25,7 +25,7 @@ class Country extends Question {
   get form() {
     const ukCountries = ['northern-ireland', 'scotland', 'england', 'wales'];
     const validCountry = Joi.string()
-      .valid(ukCountries)
+      .valid(...ukCountries)
       .required();
 
     const country = text.joi(this.content.errors.required, validCountry);

@@ -1,6 +1,5 @@
 const option = require('option');
 const { FieldValue } = require('./fieldValue');
-const Joi = require('joi');
 const { validator, parseErrorTarget } = require('./validator');
 const { defined } = require('../util/checks');
 
@@ -58,7 +57,7 @@ class FieldDescriptor {
 
   joi(targetOrError, joiSchema) {
     const joi = field => {
-      const { error } = Joi.validate(field.value, joiSchema);
+      const { error } = joiSchema.validate(field.value);
       return !error;
     };
     return this.checkField(targetOrError, joi);

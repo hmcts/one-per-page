@@ -1,10 +1,8 @@
 const { fieldDescriptor } = require('./fieldDescriptor');
 const option = require('option');
 const {
-  ObjectFieldValue,
-  ListFieldValue,
-  TransformFieldValue,
-  RefValue
+  ObjectFieldValue, ListFieldValue,
+  TransformFieldValue, RefValue
 } = require('./fieldValue');
 const { defined, ensureArray } = require('../util/checks');
 const { mapEntries, flattenObject } = require('../util/ops');
@@ -12,6 +10,8 @@ const { errorFor } = require('./validator');
 const Joi = require('joi');
 const moment = require('moment');
 
+const isValidDate = date =>
+  moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD').isValid();
 const ref = (step, fieldType, fieldName) => {
   const returnNothing = () => {
     return {};
@@ -29,14 +29,12 @@ const ref = (step, fieldType, fieldName) => {
     serializer: returnNothing
   });
 };
-
 const object = childFields => fieldDescriptor({
   parser(name, body) {
     const fields = mapEntries(childFields, (key, field) => {
       const fieldName = `${name}.${key}`;
       return field.parse(fieldName, body);
     });
-
     return ObjectFieldValue.from({ name, fields }, this);
   },
   deserializer(name, values) {
@@ -49,7 +47,6 @@ const object = childFields => fieldDescriptor({
       const value = { [fieldName]: obj[key] };
       return field.deserialize(fieldName, value);
     });
-
     return ObjectFieldValue.from({ name, fields }, this);
   },
   serializer(field, existingValues) {
@@ -57,7 +54,6 @@ const object = childFields => fieldDescriptor({
       field.fields,
       (key, childField) => childField.serializedValues(existingValues)
     );
-
     if (Object.keys(serialized).length === 0) {
       return {};
     }
@@ -199,8 +195,10 @@ const convert = (transformation, field) => fieldDescriptor({
     return transformed.wrapped.serialize(transformed.wrapped);
   }
 });
-
 const date = object({ day: text, month: text, year: text });
+const dayLimit = 31;
+const monthLimit = 12;
+const yearLimit = 9999;
 date.required = ({
   allRequired = 'Enter a valid date',
   dayRequired = 'Enter a valid day',
@@ -213,12 +211,12 @@ date.required = ({
     Joi.object({
       day: Joi.number().integer()
         .min(1)
-        .max(31),
+        .max(dayLimit),
       month: Joi.any(),
       year: Joi.any()
     })
-    .with('year', 'day')
-    .with('month', 'day')
+      .with('year', 'day')
+      .with('month', 'day')
   )
   .joi(
     errorFor('month', monthRequired),
@@ -226,11 +224,11 @@ date.required = ({
       day: Joi.any(),
       month: Joi.number().integer()
         .min(1)
-        .max(12),
+        .max(monthLimit),
       year: Joi.any()
     })
-    .with('year', 'month')
-    .with('day', 'month')
+      .with('year', 'month')
+      .with('day', 'month')
   )
   .joi(
     errorFor('year', yearRequired),
@@ -239,26 +237,22 @@ date.required = ({
       month: Joi.any(),
       year: Joi.number().integer()
         .min(1)
-        .max(9999)
+        .max(yearLimit)
     })
-    .with('day', 'year')
-    .with('month', 'year')
+      .with('day', 'year')
+      .with('month', 'year')
   )
   .joi(
-      allRequired,
-      Joi.object({
-        day: Joi.string().required(),
-        month: Joi.string().required(),
-        year: Joi.string().required()
-      })
-   )
-   .check(
+    allRequired,
+    Joi.object({
+      day: Joi.string().required(),
+      month: Joi.string().required(),
+      year: Joi.string().required()
+    })
+  )
+  .check(
     invalidDate, isValidDate
   );
-
-const isValidDate = date => {
-  return moment(`${date.year}-${date.month}-${date.day}`, 'YYYY-MM-DD').isValid();
-}
 
 const appendToList = (collectionKey, index, field) => fieldDescriptor({
   parser(name, body, req) {
@@ -298,7 +292,6 @@ const appendToList = (collectionKey, index, field) => fieldDescriptor({
     return { [collectionKey]: listOfItems };
   }
 });
-
 
 module.exports = {
   nonEmptyText, text, bool, list, object, ref,

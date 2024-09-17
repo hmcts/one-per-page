@@ -18,8 +18,8 @@ describe('util/crypto', () => {
       const dataToEncrypt = JSON.stringify(sampleData);
       const passwordHash = createHash(sampleKey);
       const encryptedData = encryptData(dataToEncrypt, passwordHash);
-      expect(encryptedData.hasOwnProperty('iv')).to.eql(true);
-      expect(encryptedData.hasOwnProperty('encryptedData')).to.eql(true);
+      expect(Object.prototype.hasOwnProperty.call(encryptedData, 'iv')).to.eql(true);
+      expect(Object.prototype.hasOwnProperty.call(encryptedData, 'encryptedData')).to.eql(true);
     });
     it('throws an error if no passwordHash supplied', () => {
       const dataToEncrypt = JSON.stringify(sampleData);

@@ -7,7 +7,7 @@ const twoMethods = 2;
 
 class Contact extends Question {
   get form() {
-    const validAnswers = Joi.string().valid(['phone', 'email', 'post']);
+    const validAnswers = Joi.string().valid(...['phone', 'email', 'post']);
 
     return form({
       contactMe: bool,

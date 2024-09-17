@@ -133,7 +133,8 @@ class Question extends Page {
   }
 
   get xhr() {
-    return this.req.xhr || this.req.headers['X-Requested-With'] === 'XMLHttpRequest';
+    return this.req.xhr || this
+      .req.headers['X-Requested-With'] === 'XMLHttpRequest';
   }
 }
 

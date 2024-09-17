@@ -23,8 +23,8 @@ describe('session/sessionStoreSerializer', () => {
       spy.restore();
     });
     it('presents an serializer object', () => {
-      expect(serializer.hasOwnProperty('parse')).to.eql(true);
-      expect(serializer.hasOwnProperty('stringify')).to.eql(true);
+      expect(Object.prototype.hasOwnProperty.call(serializer, 'parse')).to.eql(true);
+      expect(Object.prototype.hasOwnProperty.call(serializer, 'stringify')).to.eql(true);
     });
     it('creates a password hash', () => {
       expect(spy).calledWith(sampleKey);
@@ -52,9 +52,9 @@ describe('session/sessionStoreSerializer', () => {
     });
     it('encrypts session and returns it as string', () => {
       const stringifyiedData = stringify(sampleData);
-      expect(JSON.parse(stringifyiedData).hasOwnProperty('iv'))
+      expect(Object.prototype.hasOwnProperty.call(JSON.parse(stringifyiedData), 'iv'))
         .to.eql(true);
-      expect(JSON.parse(stringifyiedData).hasOwnProperty('encryptedData'))
+      expect(Object.prototype.hasOwnProperty.call(JSON.parse(stringifyiedData), 'encryptedData'))
         .to.eql(true);
     });
   });

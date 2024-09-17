@@ -43,9 +43,10 @@ class FilledForm {
       Object.assign(req.session, { [stepName]: values, temp: {} });
     }
 
-    const session = watches.traverseWatches(req.journey, prevSession, req.session);
+    const session = watches
+      .traverseWatches(req.journey, prevSession, req.session);
     Object.assign(req.session, session);
-  };
+  }
 
   tempStore(stepName, req) {
     if (notDefined(req.session)) {

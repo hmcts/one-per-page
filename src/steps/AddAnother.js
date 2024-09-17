@@ -3,7 +3,11 @@ const { defined } = require('../util/checks');
 const { flattenObject } = require('../util/ops');
 const { filledForm } = require('../forms/filledForm');
 const { form, list, appendToList } = require('../forms');
-const { METHOD_NOT_ALLOWED, OK, UNPROCESSABLE_ENTITY } = require('http-status-codes');
+const {
+  METHOD_NOT_ALLOWED,
+  OK,
+  UNPROCESSABLE_ENTITY
+} = require('http-status-codes');
 const { expectImplemented } = require('../errors/expectImplemented');
 
 class AddAnother extends Question {
@@ -112,12 +116,10 @@ class AddAnother extends Question {
         } else {
           res.redirect(this.path);
         }
+      } else if (this.xhr) {
+        res.status(UNPROCESSABLE_ENTITY).json(this.buildValidationErrors);
       } else {
-        if (this.xhr) {
-          res.status(UNPROCESSABLE_ENTITY).json(this.buildValidationErrors);
-        } else {
-          res.render(this.template, this.locals);
-        }
+        res.render(this.template, this.locals);
       }
     } else {
       res.redirect(this.path);
