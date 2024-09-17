@@ -32,7 +32,7 @@ const resolveTest = (step, viewFolders = []) => {
 describe('middleware/resolveTemplate', () => {
   beforeEach(() => {
     views.reset();
-    fsUtils.fileExists.reset();
+    fsUtils.fileExists.resetHistory();
   });
 
   it('skips if the step already has a template defined', () => {
