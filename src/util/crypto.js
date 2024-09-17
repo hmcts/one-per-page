@@ -25,8 +25,8 @@ const decryptData = (encryptedData, passwordHash) => {
     throw new Error('Cannot decrypt data without a passwordHash');
   }
 
-  const hasIv = encryptedData.hasOwnProperty('iv');
-  const hasEncryptedData = encryptedData.hasOwnProperty('encryptedData');
+  const hasIv = Object.prototype.hasOwnProperty.call(encryptedData, 'iv');
+  const hasEncryptedData = Object.prototype.hasOwnProperty.call(encryptedData, 'encryptedData');
   const isValidEncryptedData = hasIv && hasEncryptedData;
 
   if (!isValidEncryptedData) {

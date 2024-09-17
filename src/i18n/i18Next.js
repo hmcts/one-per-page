@@ -41,7 +41,7 @@ i18NextInstance.addBundleIfModified = (
 const configurei18n = (opts = {}) => {
   if (opts.filters) {
     i18NextInstance.translator.interpolator.format = (value, format) => {
-      if (opts.filters.hasOwnProperty(format)) {
+      if (Object.prototype.hasOwnProperty.call(opts.filters, format)) {
         if (typeof opts.filters[format] === 'function') {
           return opts.filters[format](value);
         }

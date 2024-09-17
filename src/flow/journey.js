@@ -65,7 +65,7 @@ const journey = (app, userOpts) => {
   app.use(i18nMiddleware);
 
   opts.routes.forEach(route => {
-    if (!route.hasOwnProperty('bind')) {
+    if (!Object.prototype.hasOwnProperty.call(route, 'bind')) {
       // eslint-disable-next-line max-len
       throw new TypeError('Your custom route should have a bind function i.e. bind: app => {}');
     }

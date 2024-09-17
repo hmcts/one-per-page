@@ -6,6 +6,9 @@
     "extends": "@hmcts",
     "parserOptions": {
         "sourceType": "module"
+    },
+    "rules": {
+        "max-len": ["error", 160]
     }
 }
 
