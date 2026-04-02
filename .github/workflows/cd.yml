@@ -12,7 +12,7 @@ on:
       - '*'
 
 env:
-  NODE_VERSION: '20.20.2'
+  NODE_VERSION: '21.7.3'
 
 jobs:
   build:
