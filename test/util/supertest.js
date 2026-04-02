@@ -9,18 +9,10 @@ const { i18nMiddleware } = require('../../src/i18n/i18Next');
 const { defined } = require('../../src/util/checks');
 const { RequestBoundJourney } = require('../../src/flow');
 const cookieParser = require('cookie-parser');
-const path = require('path');
 
 function testApp(views = []) {
   const app = express();
-
-  const viewsDirs = [
-    path.join(__dirname, '../../lib'),
-    path.join(__dirname, '../views'),
-    ...views.map(v => path.resolve(v))
-  ];
-
-  app.set('views', viewsDirs);
+  app.set('views', ['lib/', 'test/views', ...views]);
 
   nunjucks(app, {
     autoescape: true,
