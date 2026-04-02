@@ -16,7 +16,7 @@ function testApp(views = []) {
 
   const viewsDirs = [
     path.resolve(__dirname, '../../test/views'),
-    path.resolve(__dirname, '../../test/steps')
+    path.resolve(__dirname, '../../test/steps/check-your-answers/fixtures')
   ];
 
   app.set('views', viewsDirs);
