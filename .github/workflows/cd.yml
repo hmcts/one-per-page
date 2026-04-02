@@ -27,8 +27,8 @@ jobs:
       - run: corepack enable
       - run: yarn install --immutable
 
-      - name: List views directories
-        run: ls -lR ./lib ./test/views
+      - name: List test views
+        run: ls -lR ./test/views
 
 
       - run: yarn test
