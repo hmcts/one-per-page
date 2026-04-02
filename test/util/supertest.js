@@ -16,10 +16,11 @@ function testApp(views = []) {
 
   const viewsDirs = [
     path.resolve(__dirname, '../../test/views'),
-    path.resolve(__dirname, '../../test/steps/check-your-answers/fixtures')
+    path.resolve(__dirname, '../../test/steps')
   ];
 
   app.set('views', viewsDirs);
+  app.set('view engine', 'html');
 
   nunjucks(app, {
     autoescape: true,
