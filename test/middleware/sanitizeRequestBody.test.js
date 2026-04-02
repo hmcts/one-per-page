@@ -53,8 +53,8 @@ describe('sanitizeRequestBody', () => {
     req.body = {
       script1: 'some text',
       script2: 'some text<script>alert(document.cookie);</script>',
-      script3: 'some text<script type="text/vbscript">alert(DOCUMENT.COOKIE)</script>', // eslint-disable-line max-len
-      script4: 'some text\x3cscript src=http://www.example.com/malicious-code.js\x3e\x3c/script\x3e' // eslint-disable-line max-len
+      script3: 'some text<script type="text/vbscript">alert(DOCUMENT.COOKIE)</script>',
+      script4: 'some text\x3cscript src=http://www.example.com/malicious-code.js\x3e\x3c/script\x3e'
     };
 
     sanitizeRequestBody(req, {}, () => {

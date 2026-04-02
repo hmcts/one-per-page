@@ -539,7 +539,7 @@ describe('steps/AddAnother', () => {
           .expect('Location', '/add-a-text');
       });
 
-      it("doesn't modify the list if the index is out of bounds", () => {
+      it('doesn\'t modify the list if the index is out of bounds', () => {
         const items = ['foo', 'bar'];
         return testStep(AddAText)
           .withSession({ AddAText: { items } })
@@ -562,7 +562,7 @@ describe('steps/AddAnother', () => {
           .expect(MOVED_TEMPORARILY);
       });
 
-      it("doesn't modify the list", () => {
+      it('doesn\'t modify the list', () => {
         return request
           .session(session => {
             expect(session.AddAText.items).to.eql(items);

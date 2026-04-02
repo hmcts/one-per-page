@@ -122,7 +122,7 @@ describe('errors/errorPages', () => {
             app, failurePage.path,
             INTERNAL_SERVER_ERROR,
             [
-              "Sorry, we're having technical problems",
+              'Sorry, we\'re having technical problems',
               'Please try again in a few minutes.'
             ].join('\n')
           );

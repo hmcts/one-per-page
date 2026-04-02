@@ -1,9 +1,9 @@
-/* eslint-disable global-require */
+
 const { expect, sinon } = require('../util/chai');
 const BaseStep = require('../../src/steps/BaseStep');
 const EntryPoint = require('../../src/steps/EntryPoint');
 const Question = require('../../src/steps/Question');
-const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
+const CheckYourAnswers = require('../../src/steps/check-your-answers/CheckYourAnswers');
 const { goTo, RequestBoundJourney } = require('../../src/flow');
 const { text, form } = require('../../src/forms');
 const Joi = require('joi');
@@ -36,7 +36,7 @@ describe('journey/RequestBoundJourney', () => {
       expect(journey.instance(Step)).an.instanceof(Step);
     });
 
-    it("throws if given a Step that hasn't been registered", () => {
+    it('throws if given a Step that hasn\'t been registered', () => {
       const UnknownStep = class extends BaseStep {
         handler(/* req, res */) { /* intentionally blank */ }
       };
@@ -46,7 +46,7 @@ describe('journey/RequestBoundJourney', () => {
       expect(creatingUnknownStep).to.throw(/UnknownStep not registered/);
     });
 
-    it("throws if given an object that isn't a step", () => {
+    it('throws if given an object that isn\'t a step', () => {
       const journey = new RequestBoundJourney(req, res, steps, settings);
       const arbitraryObj = () => journey.instance({});
 
@@ -77,7 +77,8 @@ describe('journey/RequestBoundJourney', () => {
       } = require('./fixtures/completeJourney.fixture');
 
       it('returns instances of the questions in the order of the flow', () => {
-        const names = journey().walkTree().map(s => s.name);
+        const names = journey().walkTree()
+          .map(s => s.name);
 
         expect(names).to.eql([Entry.name, Name.name, CheckAnswers.name]);
       });
@@ -189,7 +190,7 @@ describe('journey/RequestBoundJourney', () => {
     describe('#completeUpTo', () => {
       const someStep = { name: 'SomeStep' };
 
-      it("throws if steps haven't been collected yet", () => {
+      it('throws if steps haven\'t been collected yet', () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
         expect(() => _journey.completeUpTo(someStep)).to.throw(
           /Must collectSteps before using journey.completeUpTo/
@@ -212,7 +213,7 @@ describe('journey/RequestBoundJourney', () => {
     describe('#continueUrl', () => {
       const someStep = { name: 'SomeStep', path: '/some-step' };
 
-      it("throws if steps haven't been collected yet", () => {
+      it('throws if steps haven\'t been collected yet', () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
         expect(() => _journey.continueUrl()).to.throw(
           /Must collectSteps before using journey.continueUrl/
@@ -233,7 +234,7 @@ describe('journey/RequestBoundJourney', () => {
     });
 
     describe('#values', () => {
-      it("throws if steps haven't been collected yet", () => {
+      it('throws if steps haven\'t been collected yet', () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
         expect(() => _journey.values).to.throw(
           /Add this.journey.collectSteps to CurrentStep.middleware/
@@ -247,7 +248,7 @@ describe('journey/RequestBoundJourney', () => {
     });
 
     describe('#answers', () => {
-      it("throws if steps haven't been collected yet", () => {
+      it('throws if steps haven\'t been collected yet', () => {
         const _journey = new RequestBoundJourney(req, res, steps, {});
         expect(() => _journey.answers).to.throw(
           /Add this.journey.collectSteps to CurrentStep.middleware/

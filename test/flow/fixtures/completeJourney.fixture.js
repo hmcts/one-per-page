@@ -1,6 +1,6 @@
 const EntryPoint = require('../../../src/steps/EntryPoint');
 const Question = require('../../../src/steps/Question');
-const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
+const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers');
 const { goTo, RequestBoundJourney } = require('../../../src/flow');
 const { text, form } = require('../../../src/forms');
 

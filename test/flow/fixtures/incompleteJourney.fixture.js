@@ -2,7 +2,7 @@ const EntryPoint = require('../../../src/steps/EntryPoint');
 const Question = require('../../../src/steps/Question');
 const { text, form } = require('../../../src/forms');
 const { goTo, RequestBoundJourney } = require('../../../src/flow');
-const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
+const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers');
 const Joi = require('joi');
 
 class Entry extends EntryPoint {

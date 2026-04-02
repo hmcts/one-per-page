@@ -86,7 +86,8 @@ describe('steps/BaseStep', () => {
           res.end();
         }
       };
-      return testStep(test).get().expect(OK);
+      return testStep(test).get()
+        .expect(OK);
     });
   });
 

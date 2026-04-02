@@ -6,7 +6,8 @@ describe('flow/Redirector', () => {
     it('controls whether you redirect to this goTo', () => {
       const fakeStep = { path: '/foo' };
       const fakeRes = { redirect: sinon.stub() };
-      new Redirector(fakeStep).if(() => false).redirect({}, fakeRes);
+      new Redirector(fakeStep).if(() => false)
+        .redirect({}, fakeRes);
       expect(fakeRes.redirect).to.not.be.called;
     });
   });

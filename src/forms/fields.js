@@ -137,13 +137,13 @@ const text = fieldDescriptor({
     return option
       .fromNullable(nonEmptyText.parser(name, body))
       .filter(str => str !== '')
-      .valueOrElse(undefined); // eslint-disable-line no-undefined
+      .valueOrElse(undefined);
   },
   deserializer(name, values) {
     return option
       .fromNullable(nonEmptyText.deserializer(name, values))
       .filter(str => str !== '')
-      .valueOrElse(undefined); // eslint-disable-line no-undefined
+      .valueOrElse(undefined);
   }
 });
 text.ref = (step, fieldName) => ref(step, text, fieldName);
@@ -164,7 +164,7 @@ const bool = fieldDescriptor({
         }
         return option.none;
       })
-      .valueOrElse(undefined); // eslint-disable-line no-undefined
+      .valueOrElse(undefined);
   }
 });
 bool.default = defaultValue => fieldDescriptor({
