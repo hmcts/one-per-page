@@ -1,7 +1,7 @@
 class NotImplemented extends Error {
   constructor(obj, unimplemented) {
     super();
-    const thing = obj.constructor.name;
+    const thing = obj.constructor.name || Object.getPrototypeOf(obj.constructor).name;
     const missingMethods = unimplemented.join(', ');
 
     this.name = 'NotImplemented';
