@@ -162,6 +162,7 @@ class TestStepDSL {
   }
 
   execute(method, maybePath) {
+    // eslint-disable-next-line no-shadow
     const path = defined(maybePath) ? maybePath : this.step.path;
     const testExecution = supertestInstance(this)[method](path);
     return wrapWithResponseAssertions(testExecution);
