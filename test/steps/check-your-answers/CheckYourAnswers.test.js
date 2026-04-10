@@ -1,5 +1,5 @@
 const { expect, sinon } = require('../../util/chai');
-const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers'); // eslint-disable-line max-len
+const CheckYourAnswers = require('../../../src/steps/check-your-answers/CheckYourAnswers');
 const { answer } = require('../../../src/steps/check-your-answers/answer');
 const { section } = require('../../../src/steps/check-your-answers/section');
 const { form, text } = require('../../../src/forms');
@@ -271,11 +271,12 @@ describe('steps/CheckYourAnswers', () => {
     const res = {};
 
     it('returns false if no statementOfTruth set', () => {
-      return new CheckYourAnswers(req, res).ready().then(cya => {
-        cya.parse();
-        cya.validate();
-        expect(cya.valid).to.be.false;
-      });
+      return new CheckYourAnswers(req, res).ready()
+        .then(cya => {
+          cya.parse();
+          cya.validate();
+          expect(cya.valid).to.be.false;
+        });
     });
   });
 });

@@ -18,7 +18,7 @@ class DatesYouCantAttend extends AddAnother {
 
   answers() {
     return answer(this, {
-      question: "Dates you can't attend a court hearing",
+      question: 'Dates you can\'t attend a court hearing',
       answer: this.fields.items.value.map(d => d.format('DD/MM/YYYY'))
     });
   }

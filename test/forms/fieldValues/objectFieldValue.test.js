@@ -48,7 +48,7 @@ describe('forms/fieldValue', () => {
         expect(notMapped.predicate).calledWith(f.child);
       });
 
-      it("won't execute the parents validators if child.validate fails", () => {
+      it('won\'t execute the parents validators if child.validate fails', () => {
         const willFail = validator('child', '', sinon.stub().returns(false));
         const wontRun = validator('f', '', sinon.stub().returns(true));
 

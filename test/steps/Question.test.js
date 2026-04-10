@@ -184,7 +184,7 @@ describe('steps/Question', () => {
         expect(_values).to.have.property('name', 'John');
       });
 
-      it("doesn't include ref fields", () => {
+      it('doesn\'t include ref fields', () => {
         const Name = class extends SimpleQuestion {
           static get path() {
             return '/next-step';

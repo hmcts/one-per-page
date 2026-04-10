@@ -28,7 +28,8 @@ const handlerTest = ({ test, options: extraOptions }) => {
   };
   const opts = options({ steps: [testPage] }, extraOptions);
   const app = journey(testApp(), opts);
-  return () => supertest(app).get(testPage.path).expect(200);
+  return () => supertest(app).get(testPage.path)
+    .expect(200);
 };
 
 
@@ -44,7 +45,8 @@ describe('journey/journey', () => {
 
   it('binds steps to the router', () => {
     const app = journey(testApp(), options({ steps: [TestPage] }));
-    return supertest(app).get(TestPage.path).expect(OK);
+    return supertest(app).get(TestPage.path)
+      .expect(OK);
   });
 
   it('binds custom routes to the router', () => {
@@ -56,7 +58,8 @@ describe('journey/journey', () => {
       }
     ];
     const app = journey(testApp(), options({ routes }));
-    return supertest(app).get('/custom-route').expect(OK);
+    return supertest(app).get('/custom-route')
+      .expect(OK);
   });
 
   it('throws an error if route doesnt have bind function', () => {
@@ -64,7 +67,7 @@ describe('journey/journey', () => {
       journey(testApp(), options({ routes: [{}] }));
     };
     return expect(shouldThrowError)
-      // eslint-disable-next-line max-len
+
       .throws('Your custom route should have a bind function i.e. bind: app => {}');
   });
 

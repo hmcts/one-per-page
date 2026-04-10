@@ -6,7 +6,7 @@ const { defined } = require('../util/checks');
 
 const getValue = (name, body) => option
   .fromNullable(body[name])
-  .valueOrElse(undefined); // eslint-disable-line no-undefined
+  .valueOrElse(undefined);
 
 
 const omitIfUndefined = field => {

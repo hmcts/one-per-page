@@ -77,7 +77,7 @@ describe('forms/fieldValue', () => {
         expect(field.validate).calledOnce;
       });
 
-      it("only executes it's validations if the fields passed", () => {
+      it('only executes it\'s validations if the fields passed', () => {
         const field = { name: 'field', validate: () => false };
         const notRun = validator('field', 'pass', sinon.stub().returns(true));
 

@@ -19,7 +19,7 @@ class ErrorPages {
         // and uses that to identify it as an error handler. So we need to
         // declare next even though we don't use it.
         //
-        // eslint-disable-next-line no-unused-vars
+
         app.use((errors, req, res, next) => {
           log.error(req.path, errors);
           const serverError = opts.serverError || {};

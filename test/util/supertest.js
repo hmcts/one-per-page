@@ -9,10 +9,18 @@ const { i18nMiddleware } = require('../../src/i18n/i18Next');
 const { defined } = require('../../src/util/checks');
 const { RequestBoundJourney } = require('../../src/flow');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 function testApp(views = []) {
   const app = express();
-  app.set('views', ['lib/', 'test/views', ...views]);
+
+  const viewsDirs = [
+    path.resolve(__dirname, '../../test/views'),
+    path.resolve(__dirname, '../../test/steps/check-your-answers/fixtures')
+  ];
+
+  app.set('views', viewsDirs);
+  app.set('view engine', 'html');
 
   nunjucks(app, {
     autoescape: true,
@@ -154,6 +162,7 @@ class TestStepDSL {
   }
 
   execute(method, maybePath) {
+    // eslint-disable-next-line no-shadow
     const path = defined(maybePath) ? maybePath : this.step.path;
     const testExecution = supertestInstance(this)[method](path);
     return wrapWithResponseAssertions(testExecution);

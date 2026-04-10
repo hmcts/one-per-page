@@ -53,8 +53,9 @@ class BaseStep {
       log(this.name).warn('Deprecated: define static #path instead of #url');
       return this.prototype.url;
     }
+    const className = this.name || 'BaseStep';
     const pathSlug = slug(
-      this.name.replace(/([A-Z])/g, ' $1'),
+      className.replace(/([A-Z])/g, ' $1'),
       { lower: true }
     );
     return `/${pathSlug}`;

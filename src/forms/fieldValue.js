@@ -58,7 +58,7 @@ class FieldValue {
   serializedValues(existingValues) {
     const serialized = this.serialize(existingValues);
     if (serialized === {}) {
-      return undefined; // eslint-disable-line no-undefined
+      return undefined;
     }
     return serialized[this.name];
   }

@@ -15,7 +15,9 @@ describe('session/requireSession', () => {
 
   describe('no session', () => {
     it('redirects to /', () => {
-      return testStep(page).get().expect(302).expect('Location', '/');
+      return testStep(page).get()
+        .expect(302)
+        .expect('Location', '/');
     });
 
     it('req.journey.noSessionHandler can override behaviour', () => {

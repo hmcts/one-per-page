@@ -1,5 +1,5 @@
 const expressSession = require('express-session');
-const RedisStore = require('connect-redis')(expressSession);
+const RedisStore = require('connect-redis');
 const config = require('config');
 const { isTest } = require('../util/nodeEnv');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
@@ -16,37 +16,31 @@ const redisOrInMemory = (options = {}) => {
     return new MemoryStore();
   }
 
-  /* eslint-disable max-len,no-console */
-  // there's quite poor default connection handling in the version of the redis client used here
-  // ideally we would upgrade and switch to ioredis but this repository is on life support
-  // so just doing a hardening while I'm here
-  // also es-lint 80 character line length is rediculous but I'm not going to dig into it more currently
-  // I didn't manage to get logging working inside the framework, so console.log it is
-  if (!redisOptions.retry_strategy) {
-    redisOptions.retry_strategy = clientOpts => {
-      const { error, attempt } = clientOpts;
+  const client = createClient({
+    url: redisOptions.url, // e.g. redis://localhost:6379
+    legacyMode: true, // keeps callback API for old code
+    socket: redisOptions.socket // optional
+  });
 
-      const minRetryFactor = 300;
-      const retryTime = attempt * minRetryFactor;
-      const maxRetryWait = 5000;
-      const exponentialBackoffInMillis = Math.min(retryTime, maxRetryWait);
-      // eslint-disable-next-line max-len
-      const errorMessage = `retrying attempt ${attempt} next retry will be in ${exponentialBackoffInMillis}ms`;
-      if (error) {
-        // take actions or throw exception
-        // eslint-disable-next-line no-console,max-len
-        console.log(`${new Date().toISOString()} Redis connection failed with ${error.code}, ${errorMessage}`);
-      } else {
-        // eslint-disable-next-line no-console
-        console.log(`${new Date().toISOString()} Redis connection failed, ${errorMessage}`);
-      }
-      /* eslint-enable max-len,no-console */
-      // reconnect after
-      return exponentialBackoffInMillis;
-    };
+  client.on('error', error => {
+    console.log(`${new Date().toISOString()} Redis connection failed: ${error.message}`);
+  });
+
+  client.connect().catch(error => {
+    console.log(`${new Date().toISOString()} Redis connect error: ${error.message}`);
+  });
+
+  const store = new RedisStore({ client });
+
+  // Optional retry/backoff
+  if (!redisOptions.retry_strategy) {
+    client.on('end', () => {
+      console.log(`${new Date().toISOString()} Redis client disconnected, attempting reconnect...`);
+      setTimeout(() => client.connect().catch(console.error), 1000);
+    });
   }
 
-  return new RedisStore(redisOptions);
+  return store;
 };
 
 const sessionOptions = (userOpts, store, req) => {
@@ -97,11 +91,11 @@ const setupStore = userOptions => {
 
   const store = redisOrInMemory(userOptions);
 
-  /* eslint-disable max-len */
+
   // Azure Cache for Redis has issues with a 10 minute connection idle timeout, the recommendation is to keep the connection alive
   // https://gist.github.com/JonCole/925630df72be1351b21440625ff2671f#file-redis-bestpractices-node-js-md
-  /* eslint-enable */
-  if (store instanceof RedisStore) {
+
+  if (store && store.client && typeof store.client.ping === 'function') {
     const oneMinute = 60000;
     setInterval(() => {
       const client = store.client;

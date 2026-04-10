@@ -18,7 +18,7 @@ const fallback = promises => {
     return next;
   };
   const chainPromises = (chain, head) => head.catch(handleRejection(chain));
-  const terminal = undefined; // eslint-disable-line no-undefined
+  const terminal = undefined;
 
   promises
     .reverse()
