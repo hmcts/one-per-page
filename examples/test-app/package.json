@@ -13,7 +13,7 @@
   "dependencies": {
     "@hmcts/look-and-feel": "./../../../look-and-feel",
     "@hmcts/one-per-page": "./../../",
-    "express": "^4.15.3",
+    "express": "^4.17.3",
     "i18next": "^9.0.0",
     "joi": "^10.6.0",
     "moment": "^2.19.3",
