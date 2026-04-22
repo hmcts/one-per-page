@@ -42,7 +42,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
           registry-url: https://registry.npmjs.org/
       - run: yarn publish
         env:
