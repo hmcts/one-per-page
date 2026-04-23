@@ -1,0 +1,89 @@
+name: Package Pipeline
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [published]
+
+jobs:
+  ci:
+    name: Build & Test
+    if: github.event_name != 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
+
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@4.10.0 --activate
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Audit vulnerabilities
+        run: yarn audit:check
+
+      - name: Lint code
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test
+
+  release:
+    name: Release & Publish
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Validate and extract release information
+        id: release
+        uses: manovotny/github-releases-for-automated-package-publishing-action@v2.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Ensure npm version (Trusted Publishing)
+        run: |
+          npm --version
+          npm i -g npm@11.5.1
+          npm --version
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Publish version (OIDC)
+        run: |
+          # Ensure we do not publish using token-based auth (classic/granular).
+          unset NODE_AUTH_TOKEN
+          
+          # Use a fresh npm user config with no auth token to force OIDC Trusted Publishing.
+          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/npmrc-noauth"
+          printf "registry=https://registry.npmjs.org/\n" > "$NPM_CONFIG_USERCONFIG"
+          
+          # Remove any auth token entries if something tries to inject them.
+          npm config delete //registry.npmjs.org/:_authToken || true
+          npm config delete _authToken || true
+          
+          npm publish --access public
