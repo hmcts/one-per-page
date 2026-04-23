@@ -1,49 +1,87 @@
 name: Build
-
 on:
-  pull_request:
-    branches:
-      - master
   push:
     branches:
       - master
-      - refs/tags/*
-    tags:
-      - '*'
-
-env:
-  NODE_VERSION: '21.7.3'
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [published]
 
 jobs:
   build:
+    if: github.event_name != 'release'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '24.x'
 
-      - run: corepack enable
-      - run: yarn install --immutable
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare yarn@4.10.0 --activate
 
-      - name: List test views
-        run: ls -lR ./test/views
+      - name: Install dependencies
+        run: yarn install --immutable
 
+      - name: Audit vulnerabilities
+        run: yarn audit:check
 
-      - run: yarn test
+      - name: Lint code
+        run: yarn lint
 
-  publish:
-    needs: build
+      - name: Run tests
+        run: yarn test
+
+  release:
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags')
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: https://registry.npmjs.org/
-      - run: yarn install --immutable
-      - run: yarn npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_API_TOKEN }}
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Validate and extract release information
+        id: release
+        uses: manovotny/github-releases-for-automated-package-publishing-action@v2.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Ensure npm version (Trusted Publishing)
+        run: |
+          npm --version
+          npm i -g npm@11.5.1
+          npm --version
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Publish version (OIDC)
+        run: |
+          # Ensure we do not publish using token-based auth (classic/granular).
+          unset NODE_AUTH_TOKEN
+          
+          # Use a fresh npm user config with no auth token to force OIDC Trusted Publishing.
+          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/npmrc-noauth"
+          printf "registry=https://registry.npmjs.org/\n" > "$NPM_CONFIG_USERCONFIG"
+          
+          # Remove any auth token entries if something tries to inject them.
+          npm config delete //registry.npmjs.org/:_authToken || true
+          npm config delete _authToken || true
+          
+          npm publish --access public
