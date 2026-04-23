@@ -39,10 +39,9 @@ jobs:
     if: startsWith(github.ref, 'refs/tags')
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
           registry-url: https://registry.npmjs.org/
       - run: yarn publish
         env:
