@@ -1,5 +1,6 @@
 const expressSession = require('express-session');
-const RedisStore = require('connect-redis');
+const { RedisStore } = require('connect-redis');
+const { createClient } = require('redis');
 const config = require('config');
 const { isTest } = require('../util/nodeEnv');
 const defaultIfUndefined = require('../util/defaultIfUndefined');
@@ -17,9 +18,12 @@ const redisOrInMemory = (options = {}) => {
   }
 
   const client = createClient({
-    url: redisOptions.url, // e.g. redis://localhost:6379
-    legacyMode: true, // keeps callback API for old code
-    socket: redisOptions.socket // optional
+    url: redisOptions.url,
+    socket: {
+      ...redisOptions.socket,
+      reconnectStrategy: retries =>
+        Math.min(retries * 50, 1000)
+    }
   });
 
   client.on('error', error => {
@@ -30,17 +34,7 @@ const redisOrInMemory = (options = {}) => {
     console.log(`${new Date().toISOString()} Redis connect error: ${error.message}`);
   });
 
-  const store = new RedisStore({ client });
-
-  // Optional retry/backoff
-  if (!redisOptions.retry_strategy) {
-    client.on('end', () => {
-      console.log(`${new Date().toISOString()} Redis client disconnected, attempting reconnect...`);
-      setTimeout(() => client.connect().catch(console.error), 1000);
-    });
-  }
-
-  return store;
+  return new RedisStore({ client });
 };
 
 const sessionOptions = (userOpts, store, req) => {

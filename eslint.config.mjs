@@ -48,7 +48,7 @@ export default defineConfig([globalIgnores([
             ...globals.mocha,
         },
 
-        ecmaVersion: 2017,
+        ecmaVersion: 2020,
         sourceType: "module",
     },
 
