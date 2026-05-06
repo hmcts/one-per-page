@@ -96,9 +96,15 @@ class RequestBoundJourney {
       throw new StepsNotCollected(this.req.currentStep.name);
     }
     return this.visitedSteps
-      .filter(hasValues)
+      .filter(step => step && typeof step.values === 'function')
       .map(step => step.values())
-      .reduce(deepmerge, {});
+      .reduce((acc, val) => {
+        if (!val || typeof val !== 'object' || Array.isArray(val)) {
+          return acc;
+        }
+
+        return deepmerge(acc, JSON.parse(JSON.stringify(val)));
+      }, {});
   }
 
   get answers() {

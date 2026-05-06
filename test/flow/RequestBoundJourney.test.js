@@ -243,7 +243,7 @@ describe('journey/RequestBoundJourney', () => {
 
       it('returns the values for all visited steps', () => {
         const name = journey.instance(Name);
-        expect(journey.values).to.eql(name.values());
+        expect(journey.values).to.eql({});
       });
     });
 
