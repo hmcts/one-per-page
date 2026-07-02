@@ -348,7 +348,7 @@ __metadata:
     codacy-coverage: "npm:^3.4.0"
     colors: "npm:^1.4.0"
     config: "npm:^3.3.12"
-    connect-redis: "npm:3.4.2"
+    connect-redis: "npm:5.2.0"
     cookie-parser: "npm:^1.4.6"
     csurf: "npm:^1.11.0"
     debug: "npm:^4.3.7"
@@ -1361,13 +1361,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connect-redis@npm:3.4.2":
-  version: 3.4.2
-  resolution: "connect-redis@npm:3.4.2"
-  dependencies:
-    debug: "npm:^4.1.1"
-    redis: "npm:^2.8.0"
-  checksum: 10c0/d592e25eeeb75f8dfdae38f6168f7ad3ef3fbc01bcbf0859ebf48c35b91b4bcdc908c7f591ee95d49b917892f03225511d9f747c5ba583f5c7fd0f522122bb94
+"connect-redis@npm:5.2.0":
+  version: 5.2.0
+  resolution: "connect-redis@npm:5.2.0"
+  checksum: 10c0/89352028531d0c7ed86ebbb3af923e0cf41dc098aa556925d7372ec9b9fafb228bfc1085a77888a1c7c2373844c8ac336b2ebb8771cb9b89785770e932ae5888
   languageName: node
   linkType: hard
 
