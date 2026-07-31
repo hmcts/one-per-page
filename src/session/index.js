@@ -6,11 +6,12 @@ const defaultIfUndefined = require('../util/defaultIfUndefined');
 const { shimSession } = require('../session/sessionShims');
 const { shimSessionStore } = require('../session/sessionStoreShims');
 const { sessionStoreSerializer } = require('../session/sessionStoreSerializer');
+const { createClient } = require('redis');
 
 const MemoryStore = expressSession.MemoryStore;
 
 const redisOrInMemory = (options = {}) => {
-  const redisOptions = options.redis || {};
+  const redisOptions = Object.assign({}, options.redis || {});
 
   if (isTest) {
     return new MemoryStore();
@@ -44,7 +45,16 @@ const redisOrInMemory = (options = {}) => {
     };
   }
 
-  return new RedisStore(redisOptions);
+  const client = createClient(redisOptions);
+
+  // eslint-disable-next-line id-blacklist
+  client.on('error', err => {
+    // eslint-disable-next-line id-blacklist
+    const code = err && err.code ? err.code : 'UNKNOWN';
+    console.log(`${new Date().toISOString()} Redis connection error ${code}`);
+  });
+
+  return new RedisStore({ client });
 };
 
 const sessionOptions = (userOpts, store, req) => {
